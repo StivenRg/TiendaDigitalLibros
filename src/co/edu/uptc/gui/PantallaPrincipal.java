@@ -12,7 +12,8 @@ public class PantallaPrincipal extends JPanel{
 	private        JPanel      panelLibros;
 	private        JPanel      panelCarrito;
 	private        JPanel      panelPerfil;
-	private static JTable      table; //Temporalmente estático para validar la funcionalidad
+	private static JTable      tableCarrito; //Temporalmente estático para validar la funcionalidad
+	private static JTable      tableLibros; //Temporalmente estático para validar la funcionalidad
 
 	public PantallaPrincipal (VentanaPrincipal ventana, ManejadorEventos eventos){
 		setLayout(new BorderLayout());
@@ -33,10 +34,12 @@ public class PantallaPrincipal extends JPanel{
 	//Metodo agregado temporalmente para validar la funcionalidad
 	public static ArrayList <Object> obtenerLibrosSelectos (){
 		ArrayList <Object> librosSeleccionados = new ArrayList <>();
-		for (int i = 0; i < table.getRowCount(); i++){
+		//DefaultTableModel  model               = (DefaultTableModel) tableLibros.getModel();
+		//Vector <Vector>    datos               = model.getDataVector();
+		for (int i = 0; i < tableLibros.getRowCount(); i++){
 			try{
-				if (table.getValueAt(i, 9).equals(true)){
-					librosSeleccionados.add(table.getValueAt(i, 0));
+				if (tableLibros.getValueAt(i, 9).equals(true)){
+					librosSeleccionados.add(tableLibros.getValueAt(i, 0));
 				}
 			} catch (NullPointerException e){
 				System.err.println("Error en obtener Libros Selectos" + e.getMessage());
@@ -47,22 +50,27 @@ public class PantallaPrincipal extends JPanel{
 
 	private void inicializarPanelLibros (ManejadorEventos eventos){
 		panelLibros = new JPanel(new BorderLayout());
-		String[] nombreColumnas = {"Titulo", "Autor", "Precio C/u", "% Impuesto", "Cantidad", "Precio Total", "+", "-", "X"};
+		String[] nombreColumnas = {"Titulo", "Autor", "Genero", "# Paginas", "Editorial", "Año", "Formato", "Precio", "Cantidad Disponible", "Agregar"};
 
 		int totalFilas = 10;
 		DefaultTableModel model = new DefaultTableModel(nombreColumnas, 0){
 			@Override public boolean isCellEditable (int row, int column){
-				return column >= 6 && column < 9;
+				return column == 9;
+			}
+
+			@Override public Class <?> getColumnClass (int columnIndex){
+				// La última columna es de tipo Boolean para mostrar un JCheckBox
+				return (columnIndex == 9) ? Boolean.class : String.class;
 			}
 		};
 
 		for (int i = 0; i < totalFilas; i++){
-			Object[] libro = new Object[] {"Titulo " + (i + 1)};
+			Object[] libro = new Object[] {"Titulo " + (i + 1), "Autor " + (i + 1), "Acción", 30, "Norma", 2025, "Digital", 2500 * i, 30, false};
 			model.addRow(libro);
 		}
 
-		table = new JTable(model);
-		JScrollPane scrollPane = new JScrollPane(table);
+		tableLibros = new JTable(model);
+		JScrollPane scrollPane = new JScrollPane(tableLibros);
 
 		panelLibros.add(scrollPane, BorderLayout.CENTER);
 		JButton botonAgregar = new JButton("Agregar Libro");
@@ -76,17 +84,18 @@ public class PantallaPrincipal extends JPanel{
 
 		DefaultTableModel model      = getDefaultTableModel();
 		JLabel            labelTotal = new JLabel("Total: $0.00");
+		labelTotal.setHorizontalAlignment(JLabel.CENTER);
+		labelTotal.setFont(new Font("Lucida Sans Typewriter", Font.BOLD, 20));
 		eventosCarrito(model, labelTotal);
 		rellenarCarrito(model);
 
-		table = new JTable(model);
+		tableCarrito = new JTable(model);
 
-		JScrollPane scrollPane = new JScrollPane(table);
+		JScrollPane scrollPane = new JScrollPane(tableCarrito);
 
 		panelCarrito.add(scrollPane, BorderLayout.CENTER);
 
-		//Footer
-		labelTotal.setHorizontalAlignment(JLabel.CENTER);
+		//Footer (incluye el label anteriormente definido)
 		JButton botonPagarEfectivo = new JButton("Pagar en Efectivo");
 		botonPagarEfectivo.setActionCommand("pagarEfectivo");
 		botonPagarEfectivo.addActionListener(eventos);
@@ -99,22 +108,23 @@ public class PantallaPrincipal extends JPanel{
 		gbc.insets = new Insets(5, 5, 10, 5);
 		gbc.fill   = GridBagConstraints.HORIZONTAL;
 		float[] pesoComponentes = {0.5f, 0.15f, 0.15f};
-		JPanel  botones         = new JPanel(new GridBagLayout());
+		JPanel  footer          = new JPanel(new GridBagLayout());
 
 		gbc.gridx   = 0;
 		gbc.weightx = pesoComponentes[0];
-		botones.add(botonPagarEfectivo, gbc);
+		footer.add(labelTotal, gbc);
 
 		gbc.gridx   = 1;
 		gbc.weightx = pesoComponentes[1];
-		botones.add(botonPagarTarjeta, gbc);
+		footer.add(botonPagarEfectivo, gbc);
 
 		gbc.gridx   = 2;
 		gbc.weightx = pesoComponentes[2];
-		botones.add(Box.createGlue(), gbc);
-		panelCarrito.add(botones, BorderLayout.SOUTH);
+		footer.add(botonPagarTarjeta, gbc);
+		panelCarrito.add(footer, BorderLayout.SOUTH);
 	}
 
+	//Metodo auxiliar para validar la funcionalidad del carrito
 	private void rellenarCarrito (DefaultTableModel model){
 		int totalFilas = 10; //Esta constante debe ser eliminada cuando se agregue la funcionalidad de agregar libros
 		//Agregamos 10 filas para validar la funcionalidad
@@ -298,6 +308,7 @@ public class PantallaPrincipal extends JPanel{
 		return ((precioUnidad + valorImpuesto) * cantidad);
 	}
 
+	//Metodo auxiliar para manejar eventos locales del carrito
 	private void eventosCarrito (DefaultTableModel model, JLabel labelTotal){
 		model.addTableModelListener(event -> {
 			// Obtenemos la fila y columna que cambiaron
