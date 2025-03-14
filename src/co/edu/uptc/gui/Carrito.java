@@ -1,3 +1,9 @@
-package co.edu.uptc.gui;public class Carrito {
-    public Carrito(VentanaPrincipal ventana, ManejadorEventos eventos) {}
+package co.edu.uptc.gui;
+
+import javax.swing.*;
+
+public class Carrito extends JPanel{
+	public Carrito (VentanaPrincipal ventana, ManejadorEventos eventos){
+
+	}
 }

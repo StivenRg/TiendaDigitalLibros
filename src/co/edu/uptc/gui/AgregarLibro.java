@@ -1,3 +1,8 @@
-package co.edu.uptc.gui;public class AgregarLibro {
-    public AgregarLibro(VentanaPrincipal ventana, ManejadorEventos eventos) {}
+package co.edu.uptc.gui;
+
+import javax.swing.*;
+
+public class AgregarLibro extends JPanel{
+	public AgregarLibro (VentanaPrincipal ventana, ManejadorEventos eventos){
+	}
 }

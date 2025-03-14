@@ -1,4 +1,8 @@
 package co.edu.uptc.gui;
-public class ActualizarDatosCliente {
-    public ActualizarDatosCliente(VentanaPrincipal ventana, ManejadorEventos eventos) {}
+
+import javax.swing.*;
+
+public class ActualizarDatosCliente extends JPanel{
+	public ActualizarDatosCliente (VentanaPrincipal ventana, ManejadorEventos eventos){
+	}
 }

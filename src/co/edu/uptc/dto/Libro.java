@@ -30,4 +30,84 @@ public class Libro{
 	                                  String formato)
 	{
 	}
+
+	public String getIsbn (){
+		return isbn;
+	}
+
+	public void setIsbn (String paramIsbn){
+		isbn = paramIsbn;
+	}
+
+	public String getTitulo (){
+		return titulo;
+	}
+
+	public void setTitulo (String paramTitulo){
+		titulo = paramTitulo;
+	}
+
+	public String getAutores (){
+		return autores;
+	}
+
+	public void setAutores (String paramAutores){
+		autores = paramAutores;
+	}
+
+	public int getAnioPublicacion (){
+		return anioPublicacion;
+	}
+
+	public void setAnioPublicacion (int paramAnioPublicacion){
+		anioPublicacion = paramAnioPublicacion;
+	}
+
+	public String getCategoria (){
+		return categoria;
+	}
+
+	public void setCategoria (String paramCategoria){
+		categoria = paramCategoria;
+	}
+
+	public String getEditorial (){
+		return editorial;
+	}
+
+	public void setEditorial (String paramEditorial){
+		editorial = paramEditorial;
+	}
+
+	public int getNumeroPaginas (){
+		return numeroPaginas;
+	}
+
+	public void setNumeroPaginas (int paramNumeroPaginas){
+		numeroPaginas = paramNumeroPaginas;
+	}
+
+	public double getPrecioVenta (){
+		return precioVenta;
+	}
+
+	public void setPrecioVenta (double paramPrecioVenta){
+		precioVenta = paramPrecioVenta;
+	}
+
+	public int getCantidadDisponible (){
+		return cantidadDisponible;
+	}
+
+	public void setCantidadDisponible (int paramCantidadDisponible){
+		cantidadDisponible = paramCantidadDisponible;
+	}
+
+	public String getFormato (){
+		return formato;
+	}
+
+	public void setFormato (String paramFormato){
+		formato = paramFormato;
+	}
 }

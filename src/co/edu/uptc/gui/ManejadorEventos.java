@@ -13,10 +13,16 @@ public class ManejadorEventos implements ActionListener{
 
 	public void iniciarSesion (){
 		JOptionPane.showMessageDialog(ventana, "Boton de Iniciar Sesión");
+		if (validarDatosLogin()){
+			ventana.mostrarInterfaz(VentanaPrincipal.Interfaz.PANTALLA_PRINCIPAL);
+		}
 	}
 
 	public void registrarUsuario (){
 		JOptionPane.showMessageDialog(ventana, "Boton de Registro");
+		if (validarDatosRegistro()){
+			ventana.mostrarInterfaz(VentanaPrincipal.Interfaz.PANTALLA_PRINCIPAL);
+		}
 	}
 
 	public void mostrarListaLibros (){
@@ -47,6 +53,10 @@ public class ManejadorEventos implements ActionListener{
 		JOptionPane.showMessageDialog(ventana, "Boton de Pagar Efectivo");
 	}
 
+	public void pagarTarjeta (){
+		JOptionPane.showMessageDialog(ventana, "Boton de Pagar Tarjeta");
+	}
+
 	public void mostrarDatosCliente (){
 		JOptionPane.showMessageDialog(ventana, "Boton de Ver Datos Cliente");
 	}
@@ -61,6 +71,12 @@ public class ManejadorEventos implements ActionListener{
 
 	public void agregarLibro (){
 		JOptionPane.showMessageDialog(ventana, "Boton de Agregar Libro");
+		//Lógica agregada temporalmente para validar la funcionalidad
+		StringBuilder stringBuilder = new StringBuilder("Libros Agregados\n");
+		for (Object locLibro : PantallaPrincipal.obtenerLibrosSelectos()){
+			stringBuilder.append(locLibro).append("\n");
+		}
+		JOptionPane.showMessageDialog(ventana, stringBuilder.toString());
 	}
 
 	public void modificarLibro (){
@@ -86,9 +102,18 @@ public class ManejadorEventos implements ActionListener{
 			case "mostrarDatosCliente" -> mostrarDatosCliente();
 			case "mostrarListaLibros" -> mostrarListaLibros();
 			case "pagarEfectivo" -> pagarEfectivo();
+			case "pagarTarjeta" -> pagarTarjeta();
 			case "registrarUsuario" -> registrarUsuario();
 			case "removerUnidad" -> removerUnidad();
 			default -> JOptionPane.showMessageDialog(ventana, "Boton no encontrado");
 		}
+	}
+
+	private boolean validarDatosRegistro (){
+		return true;
+	}
+
+	private boolean validarDatosLogin (){
+		return true;
 	}
 }
