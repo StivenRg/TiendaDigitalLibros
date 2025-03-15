@@ -5,23 +5,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ManejadorEventos implements ActionListener{
-	private VentanaPrincipal ventana;
+	private FramePrincipal ventana;
 
-	public ManejadorEventos (VentanaPrincipal ventana){
+	public ManejadorEventos (FramePrincipal ventana){
 		this.ventana = ventana;
 	}
 
 	public void iniciarSesion (){
 		JOptionPane.showMessageDialog(ventana, "Boton de Iniciar Sesión");
 		if (validarDatosLogin()){
-			ventana.mostrarInterfaz(VentanaPrincipal.Interfaz.PANTALLA_PRINCIPAL);
+			ventana.mostrarInterfaz(FramePrincipal.Interfaz.PANTALLA_PRINCIPAL);
 		}
 	}
 
 	public void registrarUsuario (){
 		JOptionPane.showMessageDialog(ventana, "Boton de Registro");
 		if (validarDatosRegistro()){
-			ventana.mostrarInterfaz(VentanaPrincipal.Interfaz.PANTALLA_PRINCIPAL);
+			ventana.mostrarInterfaz(FramePrincipal.Interfaz.PANTALLA_PRINCIPAL);
 		}
 	}
 
@@ -34,7 +34,7 @@ public class ManejadorEventos implements ActionListener{
 	}
 
 	public void mostrarCarrito (){
-		JOptionPane.showMessageDialog(ventana, "Boton de Ver Carrito");
+		JOptionPane.showMessageDialog(ventana, "Boton de Ver PanelCarrito");
 	}
 
 	public void agregarUnidad (){

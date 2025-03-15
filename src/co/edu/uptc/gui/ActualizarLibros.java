@@ -3,6 +3,6 @@ package co.edu.uptc.gui;
 import javax.swing.*;
 
 public class ActualizarLibros extends JPanel{
-	public ActualizarLibros (VentanaPrincipal ventana, ManejadorEventos eventos){
+	public ActualizarLibros (FramePrincipal ventana, ManejadorEventos eventos){
 	}
 }

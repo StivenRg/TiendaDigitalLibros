@@ -10,7 +10,7 @@ public class LoginSignup extends JPanel{
 	private       JPanel      panelLogin;
 	private       JPanel      panelRegistro;
 
-	public LoginSignup (VentanaPrincipal ventana, ManejadorEventos eventos){
+	public LoginSignup (FramePrincipal ventana, ManejadorEventos eventos){
 		panelPrincipal = new JTabbedPane();
 		add(panelPrincipal);
 		agregarLogin(eventos);

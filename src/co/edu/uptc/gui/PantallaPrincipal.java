@@ -15,7 +15,7 @@ public class PantallaPrincipal extends JPanel{
 	private static JTable      tableCarrito; //Temporalmente estático para validar la funcionalidad
 	private static JTable      tableLibros; //Temporalmente estático para validar la funcionalidad
 
-	public PantallaPrincipal (VentanaPrincipal ventana, ManejadorEventos eventos){
+	public PantallaPrincipal (FramePrincipal ventana, ManejadorEventos eventos){
 		setLayout(new BorderLayout());
 		panelPrincipal = new JTabbedPane();
 
@@ -24,7 +24,7 @@ public class PantallaPrincipal extends JPanel{
 		inicializarPanelPerfil(eventos);
 
 		panelPrincipal.addTab("Lista de Libros", panelLibros);
-		panelPrincipal.addTab("Carrito", panelCarrito);
+		panelPrincipal.addTab("PanelCarrito", panelCarrito);
 		panelPrincipal.addTab("Perfil", panelPerfil);
 		add(panelPrincipal, BorderLayout.CENTER);
 
@@ -49,116 +49,11 @@ public class PantallaPrincipal extends JPanel{
 	}
 
 	private void inicializarPanelLibros (ManejadorEventos eventos){
-		panelLibros = new JPanel(new BorderLayout());
-		String[] nombreColumnas = {"Titulo", "Autor", "Genero", "# Paginas", "Editorial", "Año", "Formato", "Precio", "Cantidad Disponible", "Agregar"};
 
-		int totalFilas = 10;
-		DefaultTableModel model = new DefaultTableModel(nombreColumnas, 0){
-			@Override public boolean isCellEditable (int row, int column){
-				return column == 9;
-			}
-
-			@Override public Class <?> getColumnClass (int columnIndex){
-				// La última columna es de tipo Boolean para mostrar un JCheckBox
-				return (columnIndex == 9) ? Boolean.class : String.class;
-			}
-		};
-
-		for (int i = 0; i < totalFilas; i++){
-			Object[] libro = new Object[] {"Titulo " + (i + 1), "Autor " + (i + 1), "Acción", 30, "Norma", 2025, "Digital", 2500 * i, 30, false};
-			model.addRow(libro);
-		}
-
-		tableLibros = new JTable(model);
-		JScrollPane scrollPane = new JScrollPane(tableLibros);
-
-		panelLibros.add(scrollPane, BorderLayout.CENTER);
-		JButton botonAgregar = new JButton("Agregar Libro");
-		botonAgregar.setActionCommand("agregarLibro");
-		botonAgregar.addActionListener(eventos);
-		panelLibros.add(botonAgregar, BorderLayout.SOUTH);
 	}
 
 	private void inicializarPanelCarrito (ManejadorEventos eventos){
-		panelCarrito = new JPanel(new BorderLayout());
-
-		DefaultTableModel model      = getDefaultTableModel();
-		JLabel            labelTotal = new JLabel("Total: $0.00");
-		labelTotal.setHorizontalAlignment(JLabel.CENTER);
-		labelTotal.setFont(new Font("Lucida Sans Typewriter", Font.BOLD, 20));
-		eventosCarrito(model, labelTotal);
-		rellenarCarrito(model);
-
-		tableCarrito = new JTable(model);
-
-		JScrollPane scrollPane = new JScrollPane(tableCarrito);
-
-		panelCarrito.add(scrollPane, BorderLayout.CENTER);
-
-		//Footer (incluye el label anteriormente definido)
-		JButton botonPagarEfectivo = new JButton("Pagar en Efectivo");
-		botonPagarEfectivo.setActionCommand("pagarEfectivo");
-		botonPagarEfectivo.addActionListener(eventos);
-
-		JButton botonPagarTarjeta = new JButton("Pagar con Tarjeta");
-		botonPagarTarjeta.setActionCommand("pagarTarjeta");
-		botonPagarTarjeta.addActionListener(eventos);
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 10, 5);
-		gbc.fill   = GridBagConstraints.HORIZONTAL;
-		float[] pesoComponentes = {0.5f, 0.15f, 0.15f};
-		JPanel  footer          = new JPanel(new GridBagLayout());
-
-		gbc.gridx   = 0;
-		gbc.weightx = pesoComponentes[0];
-		footer.add(labelTotal, gbc);
-
-		gbc.gridx   = 1;
-		gbc.weightx = pesoComponentes[1];
-		footer.add(botonPagarEfectivo, gbc);
-
-		gbc.gridx   = 2;
-		gbc.weightx = pesoComponentes[2];
-		footer.add(botonPagarTarjeta, gbc);
-		panelCarrito.add(footer, BorderLayout.SOUTH);
-	}
-
-	//Metodo auxiliar para validar la funcionalidad del carrito
-	private void rellenarCarrito (DefaultTableModel model){
-		int totalFilas = 10; //Esta constante debe ser eliminada cuando se agregue la funcionalidad de agregar libros
-		//Agregamos 10 filas para validar la funcionalidad
-		for (int i = 0; i < totalFilas; i++){
-			Object[] libro = new Object[9];
-			libro[0] = "Titulo " + (i + 1);
-			libro[1] = "Autor " + (i + 1);
-			double precioUnidad = ((i + 1) * 1000.0);
-			libro[2] = precioUnidad;
-			libro[3] = calcularValorImpuesto(precioUnidad);
-			int cantidad = i + 2;
-			libro[4] = cantidad;
-			libro[5] = calcularPrecioVenta(precioUnidad, cantidad);
-			libro[6] = false;
-			libro[7] = false;
-			libro[8] = false;
-			model.addRow(libro);
-		}
-	}
-
-	private static DefaultTableModel getDefaultTableModel (){
-		String[] nombreColumnas = {"Titulo", "Autor", "Precio C/u", "Valor Impuesto", "Cantidad", "Precio Total", "+", "-", "X"};
-
-		DefaultTableModel model = new DefaultTableModel(nombreColumnas, 0){
-			@Override public boolean isCellEditable (int row, int column){
-				return column >= 6 && column < 9;
-			}
-
-			@Override public Class <?> getColumnClass (int columnIndex){
-				// La última columna es de tipo Boolean para mostrar un JCheckBox
-				return (columnIndex >= 6 && columnIndex < 9) ? Boolean.class : String.class;
-			}
-		};
-		return model;
+		panelCarrito = new PanelCarrito(eventos);
 	}
 
 	private void inicializarPanelPerfil (ManejadorEventos eventos){
@@ -276,106 +171,5 @@ public class PantallaPrincipal extends JPanel{
 		//Se agrega el panel de datos y de botones
 		panelPerfil.add(panelActualizarDatos, BorderLayout.CENTER);
 		panelPerfil.add(panelBotones, BorderLayout.SOUTH);
-	}
-
-	private void calcularTotal (DefaultTableModel model, JLabel labelTotal){
-		model.addTableModelListener(event -> {
-			// Obtenemos la fila y columna que cambiaron
-			int columna = event.getColumn();
-
-			//Validamos si los precios de venta de los libros cambian
-			if (columna == 5){
-				double total = 0;
-				for (int i = 0; i < model.getRowCount(); i++){
-					double subTotal = (Double.parseDouble(model.getValueAt(i, 5).toString()));
-					total += subTotal;
-				}
-				labelTotal.setText(String.format("$%,.2f", total));
-			}
-		});
-	}
-
-	private double calcularValorImpuesto (double precioUnidad){
-		if (precioUnidad >= 50000){
-			return precioUnidad * 0.19;
-		} else{
-			return precioUnidad * 0.05;
-		}
-	}
-
-	private double calcularPrecioVenta (double precioUnidad, int cantidad){
-		double valorImpuesto = calcularValorImpuesto(precioUnidad);
-		return ((precioUnidad + valorImpuesto) * cantidad);
-	}
-
-	//Metodo auxiliar para manejar eventos locales del carrito
-	private void eventosCarrito (DefaultTableModel model, JLabel labelTotal){
-		model.addTableModelListener(event -> {
-			// Obtenemos la fila y columna que cambiaron
-			int fila    = event.getFirstRow();
-			int columna = event.getColumn();
-
-			double precioVenta;
-			//Validamos el aumento o disminucion de cantidad
-			if (columna == 4){
-				try{
-					double precioUnidad  = Double.parseDouble(model.getValueAt(fila, 2).toString());
-					double valorImpuesto = calcularValorImpuesto(precioUnidad);
-					int    cantidad      = Integer.parseInt(model.getValueAt(fila, 4).toString());
-					precioVenta = ((precioUnidad + valorImpuesto) * cantidad);
-					model.setValueAt(precioVenta, fila, 5);
-				} catch (NullPointerException error){
-					model.setValueAt(0, fila, 5);
-				}
-			}
-
-			//Validamos si se agrego, se quito o se descarto un producto
-			boolean agregarPulsado, quitarPulsado, descartarPulsado;
-			if (columna == 6){
-				agregarPulsado = (Boolean) model.getValueAt(fila, columna);
-				if (agregarPulsado){
-					int cantidad;
-					try{
-						cantidad = Integer.parseInt(model.getValueAt(fila, 4).toString());
-						model.setValueAt(cantidad + 1, fila, 4);
-					} catch (NullPointerException error){
-						model.setValueAt(0, fila, 4);
-						return;
-					} finally{
-						model.setValueAt(false, fila, 6);
-					}
-				}
-				return;
-			}
-
-			if (columna == 7){
-				int cantidad;
-				quitarPulsado = (Boolean) model.getValueAt(fila, 7);
-				if (quitarPulsado){
-					try{
-						cantidad = Integer.parseInt(model.getValueAt(fila, 4).toString());
-						if (cantidad > 0){
-							model.setValueAt(cantidad - 1, fila, 4);
-						} else{
-							model.removeRow(fila);
-						}
-					} catch (NullPointerException error){
-						model.setValueAt(0, fila, 4);
-						return;
-					} finally{
-						model.setValueAt(false, fila, 7);
-					}
-				}
-				return;
-			}
-
-			if (columna == 8){
-				descartarPulsado = (Boolean) model.getValueAt(fila, 8);
-				if (descartarPulsado){
-					model.removeRow(fila);
-				}
-			}
-			calcularTotal(model, labelTotal);
-		});
 	}
 }

@@ -3,18 +3,18 @@ package co.edu.uptc.gui;
 import javax.swing.*;
 import java.awt.*;
 
-public class VentanaPrincipal extends JFrame{
+public class FramePrincipal extends JFrame{
 	private final ManejadorEventos       manejadorEventos;
-	private       LoginSignup            fieldLoginSignup;
-	private       Carrito                carrito;
-	private       PantallaPrincipal      fieldPantallaPrincipal;
+	private LoginSignup       fieldLoginSignup;
+	private PanelCarrito      fieldPanelCarrito;
+	private PantallaPrincipal fieldPantallaPrincipal;
 	private       ModificarLibros        modificarLibros;
 	private       ActualizarLibros       actualizarLibros;
 	private       AgregarLibro           agregarLibro;
 	private       ActualizarDatosCliente actualizarDatosCliente;
 	private       JComponent             panelActual;
 
-	public VentanaPrincipal (){
+	public FramePrincipal (){
 		setTitle("Tienda Digital de Libros");
 		setBackground(Color.black);
 
@@ -28,7 +28,7 @@ public class VentanaPrincipal extends JFrame{
 	}
 
 	public static void main (String[] args){
-		new VentanaPrincipal();
+		new FramePrincipal();
 	}
 
 	private void repintar (JComponent nuevoPanel){
