@@ -95,10 +95,6 @@ public class PanelCarrito extends JPanel{
 				}
 			}
 
-			if (event.getFirstRow() == - 1){
-				return;
-			}
-
 			actualizarPrecioVenta(model, fila);
 			calcularTotal(model, labelTotal);
 		});
@@ -151,9 +147,9 @@ public class PanelCarrito extends JPanel{
 				return column >= 6 && column < 9;
 			}
 
-			@Override public Class <?> getColumnClass (int columnIndex){
+			@Override public Class <?> getColumnClass (int columna){
 				// La última columna es de tipo Boolean para mostrar un JCheckBox
-				return (columnIndex >= 6 && columnIndex < 9) ? Boolean.class : String.class;
+				return (columna >= 6 && columna < 9) ? Boolean.class : String.class;
 			}
 		};
 		return model;
