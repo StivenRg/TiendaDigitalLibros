@@ -1,7 +1,7 @@
-package co.edu.uptc.dto;
+package co.edu.uptc.modelo;
 
 public class Libro{
-	private String isbn;
+	private long   isbn;
 	private String titulo;
 	private String autores;
 	private int    anioPublicacion;
@@ -27,15 +27,15 @@ public class Libro{
 	                                  int numeroPaginas,
 	                                  double precioVenta,
 	                                  int cantidadDisponible,
-	                                  String formato)
-	{
+	                                  String formato
+	){
 	}
 
-	public String getIsbn (){
+	public long getIsbn (){
 		return isbn;
 	}
 
-	public void setIsbn (String paramIsbn){
+	public void setIsbn (long paramIsbn){
 		isbn = paramIsbn;
 	}
 

@@ -1,15 +1,34 @@
 package co.edu.uptc.gui;
 
+import co.edu.uptc.controlador.EventosCarrito;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class PanelCarrito extends JPanel{
-	private final JLabel labelTotal = new JLabel("Total: $0.00");
+	private       EventosCarrito eventos;
+	private final JLabel         labelTotal = new JLabel("Total: $0.00");
 
-	public PanelCarrito (ManejadorEventos eventos){
+	public PanelCarrito (EventosCarrito eventos){
+		this.eventos = eventos;
 		inicializarPanelCarrito();
-		inicializarPanelFooter(eventos);
+		inicializarPanelFooter();
+	}
+
+	private static DefaultTableModel getDefaultTableModel (){
+		String[] nombreColumnas = {"Titulo", "Autor", "Precio C/u", "Valor Impuesto", "Cantidad", "Precio Total", "+", "-", "X"};
+		DefaultTableModel model = new DefaultTableModel(nombreColumnas, 0){
+			@Override public boolean isCellEditable (int row, int column){
+				return column >= 6 && column < 9;
+			}
+
+			@Override public Class<?> getColumnClass (int columna){
+				// La última columna es de tipo Boolean para mostrar un JCheckBox
+				return (columna >= 6 && columna < 9) ? Boolean.class : String.class;
+			}
+		};
+		return model;
 	}
 
 	private void inicializarPanelCarrito (){
@@ -27,7 +46,7 @@ public class PanelCarrito extends JPanel{
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
 
-	private void inicializarPanelFooter (ManejadorEventos eventos){
+	private void inicializarPanelFooter (){
 		//Footer (incluye el label de precio total)
 		JButton botonPagarEfectivo = new JButton("Pagar en Efectivo");
 		botonPagarEfectivo.setActionCommand("pagarEfectivo");
@@ -122,7 +141,7 @@ public class PanelCarrito extends JPanel{
 			int    cantidad      = Integer.parseInt(model.getValueAt(fila, 4).toString());
 			double precioVenta   = ((precioUnidad + valorImpuesto) * cantidad);
 			model.setValueAt(precioVenta, fila, 5);
-		} catch (NullPointerException error){
+		}catch (NullPointerException error){
 			model.setValueAt(0, fila, 5);
 		}
 	}
@@ -130,7 +149,7 @@ public class PanelCarrito extends JPanel{
 	private double calcularValorImpuesto (double precioUnidad){
 		if (precioUnidad >= 50000){
 			return precioUnidad * 0.19;
-		} else{
+		}else{
 			return precioUnidad * 0.05;
 		}
 	}
@@ -138,21 +157,6 @@ public class PanelCarrito extends JPanel{
 	private double calcularPrecioVenta (double precioUnidad, int cantidad){
 		double valorImpuesto = calcularValorImpuesto(precioUnidad);
 		return ((precioUnidad + valorImpuesto) * cantidad);
-	}
-
-	private static DefaultTableModel getDefaultTableModel (){
-		String[] nombreColumnas = {"Titulo", "Autor", "Precio C/u", "Valor Impuesto", "Cantidad", "Precio Total", "+", "-", "X"};
-		DefaultTableModel model = new DefaultTableModel(nombreColumnas, 0){
-			@Override public boolean isCellEditable (int row, int column){
-				return column >= 6 && column < 9;
-			}
-
-			@Override public Class <?> getColumnClass (int columna){
-				// La última columna es de tipo Boolean para mostrar un JCheckBox
-				return (columna >= 6 && columna < 9) ? Boolean.class : String.class;
-			}
-		};
-		return model;
 	}
 
 	private void sumarAlCarrito (DefaultTableModel model, int fila){
@@ -163,9 +167,9 @@ public class PanelCarrito extends JPanel{
 		try{
 			int cantidad = Integer.parseInt(model.getValueAt(fila, 4).toString());
 			model.setValueAt(cantidad + 1, fila, 4);
-		} catch (NullPointerException error){
+		}catch (NullPointerException error){
 			model.setValueAt(0, fila, 4);
-		} finally{
+		}finally{
 			model.setValueAt(false, fila, 6);
 		}
 		actualizarPrecioVenta(model, fila);
@@ -183,10 +187,10 @@ public class PanelCarrito extends JPanel{
 				model.setValueAt(cantidad - 1, fila, 4);
 				model.setValueAt(false, fila, 7);
 				actualizarPrecioVenta(model, fila);
-			} else{
+			}else{
 				model.removeRow(fila);
 			}
-		} catch (NullPointerException error){
+		}catch (NullPointerException error){
 			model.setValueAt(0, fila, 4);
 			model.setValueAt(false, fila, 7);
 		}

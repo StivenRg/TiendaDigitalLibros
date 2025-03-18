@@ -1,4 +1,4 @@
-package co.edu.uptc.dto;
+package co.edu.uptc.modelo;
 
 import java.util.LinkedList;
 

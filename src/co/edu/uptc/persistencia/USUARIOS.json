@@ -1,0 +1,54 @@
+{
+  "ADMIN": [
+    {
+      "nombreCompleto": "Administrador Uno",
+      "usuario": "admin1@example.com",
+      "direccionEnvio": "Calle Admin 1",
+      "telefonoContacto": 1111111111,
+      "claveAcceso": "admin"
+    },
+    {
+      "nombreCompleto": "Administrador Dos",
+      "usuario": "admin2@example.com",
+      "direccionEnvio": "Calle Admin 2",
+      "telefonoContacto": 2222222222,
+      "claveAcceso": "admin456"
+    }
+  ],
+  "REGULAR": [
+    {
+      "nombreCompleto": "Usuario Regular Uno",
+      "usuario": "regular1@example.com",
+      "direccionEnvio": "Avenida Regular 1",
+      "telefonoContacto": 3333333333,
+      "claveAcceso": "regular123",
+      "CID": 3
+    },
+    {
+      "nombreCompleto": "Usuario Regular Dos",
+      "usuario": "regular2@example.com",
+      "direccionEnvio": "Avenida Regular 2",
+      "telefonoContacto": 4444444444,
+      "claveAcceso": "regular456",
+      "CID": 4
+    }
+  ],
+  "PREMIUM": [
+    {
+      "nombreCompleto": "Usuario Premium Uno",
+      "usuario": "premium1@example.com",
+      "direccionEnvio": "Calle Premium 1",
+      "telefonoContacto": 5555555555,
+      "claveAcceso": "premium123",
+      "CID": 5
+    },
+    {
+      "nombreCompleto": "Usuario Premium Dos",
+      "usuario": "premium2@example.com",
+      "direccionEnvio": "Calle Premium 2",
+      "telefonoContacto": 6666666666,
+      "claveAcceso": "premium456",
+      "CID": 6
+    }
+  ]
+}

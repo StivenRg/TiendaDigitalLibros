@@ -1,20 +1,30 @@
 package co.edu.uptc.gui;
 
+import co.edu.uptc.controlador.EventosUsuario;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class LoginSignup extends JPanel{
-	private final JTabbedPane panelPrincipal;
-	private       JPanel      panelLogin;
-	private       JPanel      panelRegistro;
+	private final JTabbedPane       panelPrincipal;
+	private       JPanel            panelLogin;
+	private       JPanel            panelRegistro;
+	private       JTextField        boxNombreCompleto;
+	private       JTextField        boxCorreo;
+	private       JTextField        boxDireccion;
+	private       JTextField        boxTelefono;
+	private final String[]          tiposUsuario = {"Regular", "Premium", "Admin"};
+	private       JComboBox<String> comboBoxTipoUsuario;
+	private       JPasswordField    boxContrasena;
+	private       JPasswordField    passwordFieldContrasena;
 
-	public LoginSignup (FramePrincipal ventana, ManejadorEventos eventos){
+	public LoginSignup (FramePrincipal ventana, EventosUsuario eventosUsuario){
 		panelPrincipal = new JTabbedPane();
 		add(panelPrincipal);
-		agregarLogin(eventos);
-		agregarRegistro(eventos);
+		agregarLogin(eventosUsuario);
+		agregarRegistro(eventosUsuario);
 		panelPrincipal.addTab("Login", panelLogin);
 		panelPrincipal.addTab("SingUp", panelRegistro);
 		ventana.getContentPane().add(this);
@@ -22,18 +32,16 @@ public class LoginSignup extends JPanel{
 		ventana.setResizable(false);
 	}
 
-	private void agregarLogin (ManejadorEventos eventos){
+	private void agregarLogin (EventosUsuario eventosUsuario){
 		//Panel de Login
 		panelLogin = new JPanel(new BorderLayout()); //Aunque no se usen las regiones, al agregar al centro, se extiende hacia los lados, lo cual mejora la UX
 
 		//Campos de Usuario y Contraseña
-		JPanel     panelLoginDatos = new JPanel(new GridBagLayout());
-		JLabel     labelUsuario    = new JLabel("Correo Electronico", SwingConstants.CENTER);
-		JLabel     labelContrasena = new JLabel("Contraseña", SwingConstants.CENTER);
-		JTextField boxCorreo       = new JTextField("");
-		boxCorreo.setSize(100, 20);
-		JPasswordField passwordFieldContrasena = new JPasswordField();
-		boxCorreo.setSize(20, 100);
+		JPanel panelLoginDatos = new JPanel(new GridBagLayout());
+		JLabel labelUsuario    = new JLabel("Correo Electronico", SwingConstants.CENTER);
+		JLabel labelContrasena = new JLabel("Contraseña", SwingConstants.CENTER);
+		boxCorreo               = new JTextField("admin1@example.com");
+		passwordFieldContrasena = new JPasswordField("admin");
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 5, 10, 5);
@@ -66,7 +74,7 @@ public class LoginSignup extends JPanel{
 		checkBoxMostrarContrasena.addActionListener(e -> {
 			if (checkBoxMostrarContrasena.isSelected()){
 				passwordFieldContrasena.setEchoChar((char) 0);
-			} else{
+			}else{
 				passwordFieldContrasena.setEchoChar('•');
 			}
 		});
@@ -75,8 +83,8 @@ public class LoginSignup extends JPanel{
 		//Botones
 		JPanel  botones            = new JPanel(new GridLayout(2, 1));
 		JButton botonIniciarSesion = new JButton("Iniciar Sesión");
-		botonIniciarSesion.setActionCommand("iniciarSesion");
-		botonIniciarSesion.addActionListener(eventos);
+		botonIniciarSesion.setActionCommand("validarLogin");
+		botonIniciarSesion.addActionListener(eventosUsuario);
 
 		botones.add(botonIniciarSesion, gbc);
 
@@ -91,12 +99,12 @@ public class LoginSignup extends JPanel{
 		});
 		botones.add(linkRegistrarse, gbc);
 
-		//Se agrega el panel de datos
+		//Se agrega el panel de persistencia
 		panelLogin.add(panelLoginDatos, BorderLayout.CENTER);
 		panelLogin.add(botones, BorderLayout.SOUTH);
 	}
 
-	private void agregarRegistro (ManejadorEventos eventos){
+	private void agregarRegistro (EventosUsuario eventos){
 		//Panel SignUp
 		panelRegistro = new JPanel(new BorderLayout());
 
@@ -109,13 +117,12 @@ public class LoginSignup extends JPanel{
 		JLabel labelContrasena     = new JLabel("*Contraseña", SwingConstants.CENTER);
 
 		//Text Fields
-		JTextField         boxNombreCompleto   = new JTextField("");
-		JTextField         boxCorreo           = new JTextField("");
-		JTextField         boxDireccion        = new JTextField("");
-		JTextField         boxTelefono         = new JTextField("");
-		String[]           tiposUsuario        = {"Regular", "Premium", "Admin"};
-		JComboBox <String> comboBoxTipoUsuario = new JComboBox <>(tiposUsuario);
-		JPasswordField     boxContrasena       = new JPasswordField();
+		boxNombreCompleto   = new JTextField("");
+		boxCorreo           = new JTextField("admin1@example.com");
+		boxDireccion        = new JTextField("");
+		boxTelefono         = new JTextField("");
+		comboBoxTipoUsuario = new JComboBox<>(tiposUsuario);
+		boxContrasena       = new JPasswordField("admin");
 		boxNombreCompleto.setHorizontalAlignment(JTextField.CENTER);
 		boxCorreo.setHorizontalAlignment(JTextField.CENTER);
 		boxDireccion.setHorizontalAlignment(JTextField.CENTER);
@@ -130,7 +137,7 @@ public class LoginSignup extends JPanel{
 		checkBoxMostrarContrasena.addActionListener(e -> {
 			if (checkBoxMostrarContrasena.isSelected()){
 				boxContrasena.setEchoChar((char) 0);
-			} else{
+			}else{
 				boxContrasena.setEchoChar('•');
 			}
 		});
@@ -210,8 +217,26 @@ public class LoginSignup extends JPanel{
 		});
 		panelBotones.add(linkIniciarSesion, gbc);
 
-		//Se agrega el panel de datos y de botones
+		//Se agrega el panel de persistencia y de botones
 		panelRegistro.add(panelRegistroDatos, BorderLayout.CENTER);
 		panelRegistro.add(panelBotones, BorderLayout.SOUTH);
+	}
+
+	public JTextField getBoxCorreo (){
+		return boxCorreo;
+	}
+
+	public JPasswordField getPasswordFieldContrasena (){
+		return passwordFieldContrasena;
+	}
+
+	public Object getDatosRegistro (){
+		return new Object[]{boxNombreCompleto.getText(),
+		                    boxCorreo.getText(),
+		                    boxDireccion.getText(),
+		                    boxTelefono.getText(),
+		                    comboBoxTipoUsuario.getSelectedItem().toString(),
+		                    boxContrasena.getPassword()
+		};
 	}
 }

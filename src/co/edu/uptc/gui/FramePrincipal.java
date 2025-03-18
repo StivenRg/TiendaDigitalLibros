@@ -1,37 +1,36 @@
 package co.edu.uptc.gui;
 
+import co.edu.uptc.controlador.EventosCarrito;
+import co.edu.uptc.controlador.EventosLibros;
+import co.edu.uptc.controlador.EventosUsuario;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class FramePrincipal extends JFrame{
-	private final ManejadorEventos       manejadorEventos;
-	private LoginSignup       fieldLoginSignup;
-	private PanelCarrito      fieldPanelCarrito;
-	private PantallaPrincipal fieldPantallaPrincipal;
-	private       ModificarLibros        modificarLibros;
-	private       ActualizarLibros       actualizarLibros;
-	private       AgregarLibro           agregarLibro;
-	private       ActualizarDatosCliente actualizarDatosCliente;
-	private       JComponent             panelActual;
+	private EventosUsuario         eventosUsuario;
+	private EventosCarrito         eventosCarrito;
+	private EventosLibros          eventosLibros;
+	private LoginSignup            panelLoginSignup;
+	private PanelCarrito           panelCarrito;
+	private PantallaPrincipal      pantallaPrincipal;
+	private ActualizarDatosCliente panelActualizarDatosCliente;
+	private JPanel                 panelActual;
 
 	public FramePrincipal (){
-		setTitle("Tienda Digital de Libros");
-		setBackground(Color.black);
+		inicializarFrame();
+	}
 
+	private void inicializarFrame (){
+		setTitle("Tienda Digital de Libros");
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		manejadorEventos = new ManejadorEventos(this);
-		mostrarInterfaz(Interfaz.PANTALLA_PRINCIPAL);
+		mostrarInterfaz(Interfaz.LOGIN_SIGNUP_PROFILE);
 		setVisible(true);
-		pack();
+		setResizable(true);
 	}
 
-	public static void main (String[] args){
-		new FramePrincipal();
-	}
-
-	private void repintar (JComponent nuevoPanel){
+	public void repintar (JPanel nuevoPanel){
 		if (panelActual != null){
 			remove(panelActual);
 		}
@@ -44,13 +43,29 @@ public class FramePrincipal extends JFrame{
 
 	public void mostrarInterfaz (Interfaz nombreInterfaz){
 		switch (nombreInterfaz){
-			case CRUD_LIBRO -> repintar(new AgregarLibro(this, manejadorEventos));
-			case PANTALLA_PRINCIPAL -> repintar(new PantallaPrincipal(this, manejadorEventos));
-			case LOGIN_SIGNUP_PROFILE -> repintar(new LoginSignup(this, manejadorEventos));
+			case LOGIN_SIGNUP_PROFILE -> {
+				eventosUsuario   = new EventosUsuario(this);
+				panelLoginSignup = new LoginSignup(this, eventosUsuario);
+				repintar(panelLoginSignup);
+			}
+			case PANTALLA_PRINCIPAL -> {
+				eventosCarrito    = new EventosCarrito(this);
+				eventosLibros     = new EventosLibros(this);
+				pantallaPrincipal = new PantallaPrincipal(this);
+				repintar(pantallaPrincipal);
+			}
+			case CRUD_LIBRO -> {
+				//panelActualizarDatosCliente = new ActualizarDatosCliente(this, eventosLibros);
+			}
+			default -> JOptionPane.showMessageDialog(this, "Interfaz no encontrada");
 		}
 	}
 
-	enum Interfaz{
+	public LoginSignup getPanelLoginSignup (){
+		return panelLoginSignup;
+	}
+
+	public enum Interfaz{
 		PANTALLA_PRINCIPAL, CRUD_LIBRO, LOGIN_SIGNUP_PROFILE
 	}
 }
