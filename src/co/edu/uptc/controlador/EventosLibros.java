@@ -46,6 +46,11 @@ public class EventosLibros implements ActionListener{
 				return;
 			}
 
+			JsonArrayBuilder librosBuilder = Json.createArrayBuilder();
+			for (JsonObject libro : libros.getValuesAs(JsonObject.class)){
+				librosBuilder.add(libro);
+			}
+
 			JsonObject libroNuevo = Json.createObjectBuilder()
 			                            .add("ISBN", ISBN)
 			                            .add("titulo", titulo)
@@ -58,15 +63,12 @@ public class EventosLibros implements ActionListener{
 			                            .add("cantidadDisponible", cantidadDisponible)
 			                            .add("Formato", Formato)
 			                            .build();
-
-			JsonArrayBuilder librosBuilder = Json.createArrayBuilder();
-			for (JsonObject libro : libros.getValuesAs(JsonObject.class)){
-				librosBuilder.add(libro);
-			}
 			librosBuilder.add(libroNuevo);
 
+			JsonObject librosActualizados = Json.createObjectBuilder().add("LIBROS", librosBuilder).build();
+
 			try (OutputStream outputStream = new FileOutputStream(RUTA_LIBROS); JsonWriter writer = Json.createWriter(outputStream)){
-				writer.writeObject(libroNuevo);
+				writer.writeObject(librosActualizados);
 			}
 		}catch (Exception e){
 			System.err.println(e.getMessage());
