@@ -10,6 +10,7 @@ public class PanelCarrito extends JPanel{
 	private final JLabel         labelTotal = new JLabel("Total: $0.00");
 	private final EventosCarrito eventos;
 
+
 	public PanelCarrito (EventosCarrito eventos){
 		this.eventos = eventos;
 		inicializarPanelCarrito();

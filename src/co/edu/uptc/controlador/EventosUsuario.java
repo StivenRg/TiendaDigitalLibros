@@ -13,6 +13,7 @@ import javax.json.JsonReader;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 public class EventosUsuario implements ActionListener{
@@ -21,7 +22,7 @@ public class EventosUsuario implements ActionListener{
 	private              FramePrincipal   framePrincipal;
 	private              EventosBotones   eventosBotones;
 	private static       boolean          LOGIN_CORRECTO = false;
-	private static final String           RUTA_USUARIOS  = "/co/edu/uptc/persistencia/USUARIOS.json";
+	private static final String           RUTA_USUARIOS  = "persistencia/USUARIOS.json";
 
 	public EventosUsuario (FramePrincipal framePrincipal){
 		this.framePrincipal = framePrincipal;
@@ -50,8 +51,8 @@ public class EventosUsuario implements ActionListener{
 		JOptionPane.showMessageDialog(panelLoginSignup, "Boton de Registro");
 	}
 
-	private static Usuario obtenerUsuario (String nombreUsuario){
-		try (InputStream inputStream = EventosUsuario.class.getResourceAsStream(RUTA_USUARIOS); JsonReader reader = Json.createReader(inputStream)){
+	private Usuario obtenerUsuario (String nombreUsuario){
+		try (InputStream inputStream = new FileInputStream(RUTA_USUARIOS); JsonReader reader = Json.createReader(inputStream)){
 			JsonObject jsonObject = reader.readObject();
 
 			String ROL = "REGULAR";

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 public class EventosCarrito implements ActionListener{
 	private final FramePrincipal framePrincipal;
+	private       String         RUTA_CARRITOS = "persistencia/CARRITOS.json";
 
 	public EventosCarrito (FramePrincipal framePrincipal){
 		this.framePrincipal = framePrincipal;

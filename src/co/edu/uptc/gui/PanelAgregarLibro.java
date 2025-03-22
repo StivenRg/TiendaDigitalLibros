@@ -260,4 +260,8 @@ public class PanelAgregarLibro extends JPanel{
 
 		return null;
 	}
+
+	public static void libroDuplicado (){
+		JOptionPane.showMessageDialog(null, "Libro ya existe");
+	}
 }
