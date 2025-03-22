@@ -7,20 +7,20 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class LoginSignup extends JPanel{
+public class PanelLoginSignup extends JPanel{
 	private final JTabbedPane       panelPrincipal;
+	private final String[]          tiposUsuario = {"Regular", "Premium", "Admin"};
 	private       JPanel            panelLogin;
 	private       JPanel            panelRegistro;
 	private       JTextField        boxNombreCompleto;
 	private       JTextField        boxCorreo;
 	private       JTextField        boxDireccion;
 	private       JTextField        boxTelefono;
-	private final String[]          tiposUsuario = {"Regular", "Premium", "Admin"};
 	private       JComboBox<String> comboBoxTipoUsuario;
 	private       JPasswordField    boxContrasena;
 	private       JPasswordField    passwordFieldContrasena;
 
-	public LoginSignup (FramePrincipal ventana, EventosUsuario eventosUsuario){
+	public PanelLoginSignup (FramePrincipal ventana, EventosUsuario eventosUsuario){
 		panelPrincipal = new JTabbedPane();
 		add(panelPrincipal);
 		agregarLogin(eventosUsuario);
@@ -128,6 +128,7 @@ public class LoginSignup extends JPanel{
 		boxDireccion.setHorizontalAlignment(JTextField.CENTER);
 		boxTelefono.setHorizontalAlignment(JTextField.CENTER);
 		comboBoxTipoUsuario.setAlignmentX(JComboBox.CENTER_ALIGNMENT);
+		comboBoxTipoUsuario.setSelectedItem("Regular");
 		boxContrasena.setHorizontalAlignment(JPasswordField.CENTER);
 
 		//Botones y otros elementos
@@ -231,12 +232,17 @@ public class LoginSignup extends JPanel{
 	}
 
 	public Object getDatosRegistro (){
-		return new Object[]{boxNombreCompleto.getText(),
-		                    boxCorreo.getText(),
-		                    boxDireccion.getText(),
-		                    boxTelefono.getText(),
-		                    comboBoxTipoUsuario.getSelectedItem().toString(),
+		return new Object[]{boxNombreCompleto.getText(), boxCorreo.getText(), boxDireccion.getText(), boxTelefono.getText(), comboBoxTipoUsuario.getSelectedItem().toString(),
 		                    boxContrasena.getPassword()
 		};
+	}
+
+	public String getRol (){
+		if (boxCorreo.getText().matches("^(?i)admin.*$")){
+			return "ADMIN";
+		}else if (boxCorreo.getText().matches("^(?i)vip.*$")){
+			return "PREMIUM";
+		}
+		return "REGULAR";
 	}
 }

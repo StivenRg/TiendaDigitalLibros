@@ -8,14 +8,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FramePrincipal extends JFrame{
-	private EventosUsuario         eventosUsuario;
-	private EventosCarrito         eventosCarrito;
-	private EventosLibros          eventosLibros;
-	private LoginSignup            panelLoginSignup;
-	private PanelCarrito           panelCarrito;
-	private PantallaPrincipal      pantallaPrincipal;
-	private ActualizarDatosCliente panelActualizarDatosCliente;
-	private JPanel                 panelActual;
+	private EventosUsuario              eventosUsuario;
+	private EventosCarrito              eventosCarrito;
+	private EventosLibros               eventosLibros;
+	private PanelLoginSignup            panelLoginSignup;
+	private PanelCarrito                panelCarrito;
+	private PantallaPrincipal           pantallaPrincipal;
+	private PanelActualizarDatosCliente panelActualizarDatosCliente;
+	private JPanel                      panelActual;
 
 	public FramePrincipal (){
 		inicializarFrame();
@@ -28,6 +28,7 @@ public class FramePrincipal extends JFrame{
 		mostrarInterfaz(Interfaz.LOGIN_SIGNUP_PROFILE);
 		setVisible(true);
 		setResizable(true);
+		pack();
 	}
 
 	public void repintar (JPanel nuevoPanel){
@@ -42,30 +43,46 @@ public class FramePrincipal extends JFrame{
 	}
 
 	public void mostrarInterfaz (Interfaz nombreInterfaz){
+		eventosUsuario = new EventosUsuario(this);
+		eventosCarrito = new EventosCarrito(this);
+		eventosLibros  = new EventosLibros(this);
 		switch (nombreInterfaz){
 			case LOGIN_SIGNUP_PROFILE -> {
-				eventosUsuario   = new EventosUsuario(this);
-				panelLoginSignup = new LoginSignup(this, eventosUsuario);
+				panelLoginSignup = new PanelLoginSignup(this, eventosUsuario);
 				repintar(panelLoginSignup);
 			}
 			case PANTALLA_PRINCIPAL -> {
-				eventosCarrito    = new EventosCarrito(this);
-				eventosLibros     = new EventosLibros(this);
 				pantallaPrincipal = new PantallaPrincipal(this);
 				repintar(pantallaPrincipal);
 			}
 			case CRUD_LIBRO -> {
-				//panelActualizarDatosCliente = new ActualizarDatosCliente(this, eventosLibros);
+				//panelActualizarDatosCliente = new PanelActualizarDatosCliente(this, eventosLibros);
 			}
 			default -> JOptionPane.showMessageDialog(this, "Interfaz no encontrada");
 		}
 	}
 
-	public LoginSignup getPanelLoginSignup (){
+	public PanelLoginSignup getPanelLoginSignup (){
 		return panelLoginSignup;
+	}
+
+	public String getRol (){
+		return panelLoginSignup.getRol();
 	}
 
 	public enum Interfaz{
 		PANTALLA_PRINCIPAL, CRUD_LIBRO, LOGIN_SIGNUP_PROFILE
+	}
+
+	public EventosUsuario getEventosUsuario (){
+		return eventosUsuario;
+	}
+
+	public EventosCarrito getEventosCarrito (){
+		return eventosCarrito;
+	}
+
+	public EventosLibros getEventosLibros (){
+		return eventosLibros;
 	}
 }

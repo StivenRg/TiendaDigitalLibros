@@ -5,14 +5,16 @@
       "usuario": "admin1@example.com",
       "direccionEnvio": "Calle Admin 1",
       "telefonoContacto": 1111111111,
-      "claveAcceso": "admin"
+      "claveAcceso": "admin",
+      "CID": 1
     },
     {
       "nombreCompleto": "Administrador Dos",
       "usuario": "admin2@example.com",
       "direccionEnvio": "Calle Admin 2",
       "telefonoContacto": 2222222222,
-      "claveAcceso": "admin456"
+      "claveAcceso": "admin456",
+      "CID": 2
     }
   ],
   "REGULAR": [

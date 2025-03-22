@@ -6,8 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelPerfil extends JPanel{
-	private EventosUsuario eventos;
-	private JPanel         panelActualizarDatos;
+	private final EventosUsuario eventos;
+	private       JPanel         panelActualizarDatos;
 
 	public PanelPerfil (EventosUsuario eventos){
 		setLayout(new BorderLayout());

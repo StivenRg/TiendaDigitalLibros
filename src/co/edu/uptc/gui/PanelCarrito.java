@@ -7,8 +7,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class PanelCarrito extends JPanel{
-	private       EventosCarrito eventos;
 	private final JLabel         labelTotal = new JLabel("Total: $0.00");
+	private final EventosCarrito eventos;
 
 	public PanelCarrito (EventosCarrito eventos){
 		this.eventos = eventos;

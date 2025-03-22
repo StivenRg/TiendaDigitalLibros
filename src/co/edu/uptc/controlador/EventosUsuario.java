@@ -2,7 +2,7 @@ package co.edu.uptc.controlador;
 
 import co.edu.uptc.gui.EventosBotones;
 import co.edu.uptc.gui.FramePrincipal;
-import co.edu.uptc.gui.LoginSignup;
+import co.edu.uptc.gui.PanelLoginSignup;
 import co.edu.uptc.gui.PantallaPrincipal;
 import co.edu.uptc.modelo.Usuario;
 
@@ -16,12 +16,12 @@ import java.awt.event.ActionListener;
 import java.io.InputStream;
 
 public class EventosUsuario implements ActionListener{
-	private              LoginSignup    panelLoginSignup;
-	private              Usuario        usuario;
-	private              FramePrincipal framePrincipal;
-	private              EventosBotones eventosBotones;
-	private static       boolean        LOGIN_CORRECTO = false;
-	private static final String         RUTA_USUARIOS  = "/co/edu/uptc/persistencia/USUARIOS.json";
+	private              PanelLoginSignup panelLoginSignup;
+	private              Usuario          usuario;
+	private              FramePrincipal   framePrincipal;
+	private              EventosBotones   eventosBotones;
+	private static       boolean          LOGIN_CORRECTO = false;
+	private static final String           RUTA_USUARIOS  = "/co/edu/uptc/persistencia/USUARIOS.json";
 
 	public EventosUsuario (FramePrincipal framePrincipal){
 		this.framePrincipal = framePrincipal;
@@ -48,9 +48,6 @@ public class EventosUsuario implements ActionListener{
 
 	private void registrarUsuario (){
 		JOptionPane.showMessageDialog(panelLoginSignup, "Boton de Registro");
-		if (validarDatosRegistro(panelLoginSignup.getDatosRegistro())){
-
-		}
 	}
 
 	private static Usuario obtenerUsuario (String nombreUsuario){
@@ -93,7 +90,11 @@ public class EventosUsuario implements ActionListener{
 		}
 	}
 
-	private boolean validarDatosRegistro (Object paramDatosRegistro){
-		return true;
+	private void validarDatosRegistro (Object paramDatosRegistro){
+
+	}
+
+	public boolean isLoginCorrecto (){
+		return LOGIN_CORRECTO;
 	}
 }

@@ -14,8 +14,8 @@ import java.io.InputStream;
 
 public class PanelLibros extends JPanel{
 	private static final String            RUTA_LIBROS = "/co/edu/uptc/persistencia/LIBROS.json";
-	private              JTable            tableLibros;
 	private final        DefaultTableModel model       = getDefaultTableModel();
+	private              JTable            tableLibros;
 
 	public PanelLibros (EventosLibros eventos){
 		inicializarPanelLibros(eventos);
@@ -40,6 +40,7 @@ public class PanelLibros extends JPanel{
 		setLayout(new BorderLayout());
 		rellenarLista();
 		tableLibros = new JTable(model);
+		tableLibros.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		JScrollPane scrollPane = new JScrollPane(tableLibros);
 		add(scrollPane, BorderLayout.CENTER);
 
