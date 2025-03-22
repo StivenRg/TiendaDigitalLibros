@@ -61,9 +61,7 @@ public class EventosLibros implements ActionListener{
 
 			JsonArrayBuilder librosBuilder = Json.createArrayBuilder();
 			for (JsonObject libro : libros.getValuesAs(JsonObject.class)){
-				if (libro.getJsonNumber("ISBN").longValue() != ISBN){
-					librosBuilder.add(libro);
-				}
+				librosBuilder.add(libro);
 			}
 			librosBuilder.add(libroNuevo);
 
