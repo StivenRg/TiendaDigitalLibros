@@ -42,7 +42,9 @@ public class EventosLibros implements ActionListener{
 			JsonObject  jsonObject  = reader.readObject();
 
 			JsonArray libros = jsonObject.getJsonArray("LIBROS");
-			libroExistente(ISBN, libros);
+			if (libroExistente(ISBN, libros)){
+				return;
+			}
 
 			JsonObject libroNuevo = Json.createObjectBuilder()
 			                            .add("ISBN", ISBN)
@@ -57,6 +59,14 @@ public class EventosLibros implements ActionListener{
 			                            .add("Formato", Formato)
 			                            .build();
 
+			JsonArrayBuilder librosBuilder = Json.createArrayBuilder();
+			for (JsonObject libro : libros.getValuesAs(JsonObject.class)){
+				if (libro.getJsonNumber("ISBN").longValue() != ISBN){
+					librosBuilder.add(libro);
+				}
+			}
+			librosBuilder.add(libroNuevo);
+
 			try (OutputStream outputStream = new FileOutputStream(RUTA_LIBROS); JsonWriter writer = Json.createWriter(outputStream)){
 				writer.writeObject(libroNuevo);
 			}
@@ -65,13 +75,14 @@ public class EventosLibros implements ActionListener{
 		}
 	}
 
-	private void libroExistente (long ISBN, JsonArray libros){
+	private boolean libroExistente (long ISBN, JsonArray libros){
 		for (JsonObject libro : libros.getValuesAs(JsonObject.class)){
 			if (libro.getJsonNumber("ISBN").longValue() == ISBN){
 				PanelAgregarLibro.libroDuplicado();
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	public Object[][] obtenerListaDeLibros (){
