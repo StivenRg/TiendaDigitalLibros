@@ -55,8 +55,7 @@ public class EventosLibros implements ActionListener{
 			                            .add("precioVenta", precioVenta)
 			                            .add("cantidadDisponible", cantidadDisponible)
 			                            .add("Formato", Formato)
-			                            .build()
-					;
+			                            .build();
 
 			try (OutputStream outputStream = new FileOutputStream(RUTA_LIBROS); JsonWriter writer = Json.createWriter(outputStream)){
 				writer.writeObject(libroNuevo);
