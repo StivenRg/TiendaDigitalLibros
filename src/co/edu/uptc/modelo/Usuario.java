@@ -1,30 +1,30 @@
 package co.edu.uptc.modelo;
 
-import java.util.ArrayList;
+import co.edu.uptc.controlador.EventosUsuario;
+
+import java.util.HashMap;
 
 public class Usuario{
-	private String           nombreCompleto;
-	private String           correoElectronico;
-	private String           direccionEnvio;
-	private long             telefonoContacto;
-	private String           claveAcceso;
-	private String           tipoCliente;
-	private ArrayList<Libro> carritoDeCompras;
-	private int              CID = 0; //Carrito ID
+	private String                 nombreCompleto;
+	private String                 correoElectronico;
+	private String                 direccionEnvio;
+	private long                   telefonoContacto;
+	private String                 claveAcceso;
+	private String                 tipoCliente;
+	private HashMap<Long, Integer> carritoDeCompras;
+	private int                    CID; //Carrito ID
 
-	public Usuario (){
-	}
+	public Usuario (){}
 
-	public Usuario (String nombreCompleto, String correoElectronico, String direccionEnvio, long telefonoContacto, String claveAcceso, String tipoCliente, int CID){
+	public Usuario (String nombreCompleto, String correoElectronico, String direccionEnvio, long telefonoContacto, String claveAcceso, String tipoCliente, HashMap<Long, Integer> carritoDeCompras){
 		this.nombreCompleto    = nombreCompleto;
 		this.correoElectronico = correoElectronico.toUpperCase();
 		this.direccionEnvio    = direccionEnvio;
 		this.telefonoContacto  = telefonoContacto;
 		this.claveAcceso       = claveAcceso;
 		this.tipoCliente       = tipoCliente.toUpperCase();
-		if (CID > 0){
-			this.CID = CID;
-		}
+		this.CID               = getCID_Index();
+		this.carritoDeCompras  = carritoDeCompras;
 	}
 
 	public void actualizarDatos (String nombreCompleto, String correoElectronico, String direccionEnvio, long telefonoContacto){
@@ -82,15 +82,19 @@ public class Usuario{
 		tipoCliente = paramTipoCliente;
 	}
 
-	public ArrayList<Libro> getCarritoDeCompras (){
+	public HashMap<Long, Integer> getCarritoDeCompras (){
 		return carritoDeCompras;
 	}
 
-	public void setCarritoDeCompras (ArrayList<Libro> paramCarritoDeCompras){
+	public void setCarritoDeCompras (HashMap<Long, Integer> paramCarritoDeCompras){
 		carritoDeCompras = paramCarritoDeCompras;
 	}
 
 	public int getCID (){
 		return CID;
+	}
+
+	private static int getCID_Index (){
+		return EventosUsuario.getCID_Index();
 	}
 }

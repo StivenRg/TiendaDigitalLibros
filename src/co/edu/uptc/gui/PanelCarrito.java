@@ -5,15 +5,17 @@ import co.edu.uptc.controlador.EventosCarrito;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.HashMap;
 
 public class PanelCarrito extends JPanel{
-	private final JLabel         labelTotal = new JLabel("Total: $0.00");
-	private final EventosCarrito eventos;
-
+	private final  JLabel                 labelTotal = new JLabel("Total: $0.00");
+	private final  EventosCarrito         eventos;
+	private static HashMap<Long, Integer> carritoDeCompras;
 
 	public PanelCarrito (EventosCarrito eventos){
 		this.eventos = eventos;
 		inicializarPanelCarrito();
+		carritoDeCompras = new HashMap<>();
 		inicializarPanelFooter();
 	}
 
@@ -32,18 +34,16 @@ public class PanelCarrito extends JPanel{
 		return model;
 	}
 
+	public static HashMap<Long, Integer> getCarritoDeCompras (){
+		return carritoDeCompras;
+	}
+
 	private void inicializarPanelCarrito (){
 		setLayout(new BorderLayout());
-
 		DefaultTableModel model = getDefaultTableModel();
-
 		eventosCarrito(model);
-		rellenarCarrito(model);
-
-		JTable locTableCarrito = new JTable(model);
-
-		JScrollPane scrollPane = new JScrollPane(locTableCarrito);
-
+		JTable      locTableCarrito = new JTable(model);
+		JScrollPane scrollPane      = new JScrollPane(locTableCarrito);
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
 
@@ -80,26 +80,6 @@ public class PanelCarrito extends JPanel{
 		this.add(footer, BorderLayout.SOUTH);
 	}
 
-	private void rellenarCarrito (DefaultTableModel model){
-		//Agregamos 10 filas para validar la funcionalidad
-		for (int i = 0; i < 10; i++){
-			Object[] libro = new Object[9];
-			libro[0] = "Titulo " + (i + 1);
-			libro[1] = "Autor " + (i + 1);
-			double precioUnidad = ((i + 1) * 1000.0);
-			libro[2] = precioUnidad;
-			libro[3] = calcularValorImpuesto(precioUnidad);
-			int cantidad = i + 2;
-			libro[4] = cantidad;
-			libro[5] = calcularPrecioVenta(precioUnidad, cantidad);
-			libro[6] = false;
-			libro[7] = false;
-			libro[8] = false;
-			model.addRow(libro);
-		}
-		calcularTotal(model, labelTotal);//Parcialmente validar
-	}
-
 	private void eventosCarrito (DefaultTableModel model){
 		model.addTableModelListener(event -> {
 			// Obtenemos la fila y columna que cambiaron
@@ -109,12 +89,11 @@ public class PanelCarrito extends JPanel{
 			switch (columna){
 				case 6 -> sumarAlCarrito(model, fila);
 				case 7 -> quitarAlCarrito(model, fila);
-				case 8 -> descartarAlCarrito(model, fila);
+				case 8 -> descartarDelCarrito(model, fila);
 				default -> {
 					return;
 				}
 			}
-
 			actualizarPrecioVenta(model, fila);
 			calcularTotal(model, labelTotal);
 		});
@@ -155,11 +134,6 @@ public class PanelCarrito extends JPanel{
 		}
 	}
 
-	private double calcularPrecioVenta (double precioUnidad, int cantidad){
-		double valorImpuesto = calcularValorImpuesto(precioUnidad);
-		return ((precioUnidad + valorImpuesto) * cantidad);
-	}
-
 	private void sumarAlCarrito (DefaultTableModel model, int fila){
 		boolean agregarPulsado = (Boolean) model.getValueAt(fila, 6);
 		if (! agregarPulsado){
@@ -175,6 +149,19 @@ public class PanelCarrito extends JPanel{
 		}
 		actualizarPrecioVenta(model, fila);
 		calcularTotal(model, labelTotal);
+		actualizarCarrito(carritoDeCompras, model);
+	}
+
+	private void actualizarCarrito (HashMap<Long, Integer> carritoDeCompras, DefaultTableModel model){
+		for (int fila = 0; fila < model.getRowCount(); fila++){
+			long ISBN     = Long.parseLong(model.getValueAt(fila, 0).toString());
+			int  cantidad = Integer.parseInt(model.getValueAt(fila, 5).toString());
+			if (cantidad > 0){
+				carritoDeCompras.put(ISBN, cantidad);
+			}else{
+				carritoDeCompras.remove(ISBN);
+			}
+		}
 	}
 
 	private void quitarAlCarrito (DefaultTableModel model, int fila){
@@ -196,10 +183,12 @@ public class PanelCarrito extends JPanel{
 			model.setValueAt(false, fila, 7);
 		}
 		calcularTotal(model, labelTotal);
+		actualizarCarrito(carritoDeCompras, model);
 	}
 
-	private void descartarAlCarrito (DefaultTableModel model, int fila){
+	private void descartarDelCarrito (DefaultTableModel model, int fila){
 		model.removeRow(fila);
 		calcularTotal(model, labelTotal);
+		actualizarCarrito(carritoDeCompras, model);
 	}
 }

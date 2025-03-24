@@ -4,37 +4,46 @@ import co.edu.uptc.controlador.EventosUsuario;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class PanelLoginSignup extends JPanel{
-	private final JTabbedPane    panelPrincipal;
-	private       JPanel         panelLogin;
-	private       JPanel         panelRegistro;
-	private       JTextField     boxNombreCompleto;
-	private       JTextField     boxCorreo;
-	private       JTextField     boxDireccion;
-	private       JTextField     boxTelefono;
-	private       JPasswordField boxContrasena;
-	private       JPasswordField passwordFieldContrasena;
+public class DialogLoginSignup extends JDialog{
+	private JTabbedPane             panelContenedor;
+	private JPanel                  panelLogin;
+	private JPanel                  panelRegistro;
+	private JTextField              boxNombreCompleto;
+	private JTextField              boxCorreo;
+	private JTextField              boxDireccion;
+	private JTextField              boxTelefono;
+	private JPasswordField          boxContrasena;
+	private JPasswordField          passwordFieldContrasena;
+	private InterfacePerfilListener listenerPerfil;
 
-	public PanelLoginSignup (FramePrincipal ventana, EventosUsuario eventosUsuario){
-		panelPrincipal = new JTabbedPane();
-		add(panelPrincipal);
-		agregarLogin(eventosUsuario);
-		agregarRegistro(eventosUsuario);
-		panelPrincipal.addTab("Login", panelLogin);
-		panelPrincipal.addTab("SingUp", panelRegistro);
-		ventana.getContentPane().add(this);
-		ventana.pack();
-		ventana.setResizable(false);
+	public DialogLoginSignup (PanelPerfil panelPerfil, EventosUsuario eventosUsuario){
+		super(new JFrame(), "Login - SingUp", true);
+		this.listenerPerfil = panelPerfil;
+		panelContenedor     = new JTabbedPane();
+		agregarLogin();
+		agregarRegistro();
+		eventosUsuario.setDialogLoginSignup(this);
+		panelContenedor.addTab("Login", panelLogin);
+		panelContenedor.addTab("SingUp", panelRegistro);
+		add(panelContenedor);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.getContentPane().add(panelContenedor);
+		this.pack();
+		this.setLocationRelativeTo(panelPerfil);
+		this.setVisible(true);
 	}
 
-	private void agregarLogin (EventosUsuario eventosUsuario){
+	public String getBoxCorreo (){
+		return boxCorreo.getText();
+	}
+
+	private void agregarLogin (){
 		//Panel de Login
-		panelLogin
-				= new JPanel(new BorderLayout()); //Aunque no se usen las regiones, al agregar al centro, se extiende hacia los lados, lo cual
-		// mejora la UX
+		panelLogin = new JPanel(new BorderLayout()); //Aunque no se usen las regiones, al agregar al centro, se extiende hacia los lados, lo cual mejora la UX
 
 		//Campos de Usuario y Contraseña
 		JPanel panelLoginDatos = new JPanel(new GridBagLayout());
@@ -83,8 +92,12 @@ public class PanelLoginSignup extends JPanel{
 		//Botones
 		JPanel  botones            = new JPanel(new GridLayout(2, 1));
 		JButton botonIniciarSesion = new JButton("Iniciar Sesión");
-		botonIniciarSesion.setActionCommand("validarLogin");
-		botonIniciarSesion.addActionListener(eventosUsuario);
+		botonIniciarSesion.addActionListener((ActionEvent e) -> {
+			if (listenerPerfil != null){
+				listenerPerfil.onSesionIniciada(getDatosLogin());
+			}
+			dispose();
+		});
 
 		botones.add(botonIniciarSesion, gbc);
 
@@ -94,7 +107,7 @@ public class PanelLoginSignup extends JPanel{
 		linkRegistrarse.setHorizontalAlignment(JLabel.CENTER);
 		linkRegistrarse.addMouseListener(new MouseAdapter(){
 			@Override public void mouseClicked (MouseEvent e){
-				panelPrincipal.setSelectedComponent(panelRegistro);
+				panelContenedor.setSelectedComponent(panelRegistro);
 			}
 		});
 		botones.add(linkRegistrarse, gbc);
@@ -104,7 +117,7 @@ public class PanelLoginSignup extends JPanel{
 		panelLogin.add(botones, BorderLayout.SOUTH);
 	}
 
-	private void agregarRegistro (EventosUsuario eventos){
+	private void agregarRegistro (){
 		//Panel SignUp
 		panelRegistro = new JPanel(new BorderLayout());
 
@@ -181,7 +194,6 @@ public class PanelLoginSignup extends JPanel{
 		gbc.gridx = 0;
 		panelRegistroDatos.add(labelContrasena, gbc);
 
-
 		//Fila 5, Columna 0 y 1 => Box Tipo de Usuario y Contraseña
 		gbc.gridy = 5;
 		gbc.gridx = 0;
@@ -191,8 +203,12 @@ public class PanelLoginSignup extends JPanel{
 
 		JPanel  panelBotones   = new JPanel(new GridLayout(2, 1));
 		JButton botonRegistrar = new JButton("Crear Cuenta");
-		botonRegistrar.setActionCommand("registrarUsuario");
-		botonRegistrar.addActionListener(eventos);
+		botonRegistrar.addActionListener(e -> {
+			if (listenerPerfil != null){
+				listenerPerfil.onRegistroExitoso(getDatosRegistro());
+			}
+			dispose();
+		});
 		panelBotones.add(botonRegistrar, gbc);
 
 		JLabel linkIniciarSesion = new JLabel("Iniciar Sesión");
@@ -201,7 +217,7 @@ public class PanelLoginSignup extends JPanel{
 		linkIniciarSesion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		linkIniciarSesion.addMouseListener(new MouseAdapter(){
 			@Override public void mouseClicked (MouseEvent e){
-				panelPrincipal.setSelectedComponent(panelLogin);
+				panelContenedor.setSelectedComponent(panelLogin);
 			}
 		});
 		panelBotones.add(linkIniciarSesion, gbc);
@@ -211,29 +227,15 @@ public class PanelLoginSignup extends JPanel{
 		panelRegistro.add(panelBotones, BorderLayout.SOUTH);
 	}
 
-	public JTextField getBoxCorreo (){
-		return boxCorreo;
-	}
-
-	public JPasswordField getPasswordFieldContrasena (){
-		return passwordFieldContrasena;
-	}
-
-	public Object getDatosRegistro (){
-		return new Object[]{boxNombreCompleto.getText(),
-		                    boxCorreo.getText(),
-		                    boxDireccion.getText(),
-		                    boxTelefono.getText(),
-		                    boxContrasena.getPassword()
-		};
-	}
-
-	public String getRol (){
-		if (boxCorreo.getText().matches("^(?i)admin.*$")){
-			return "ADMIN";
-		}else if (boxCorreo.getText().matches("^(?i)vip.*$")){
-			return "PREMIUM";
+	public Object[] getDatosRegistro (){
+		StringBuilder contrasena = new StringBuilder();
+		for (int i = 0; i < boxContrasena.getPassword().length; i++){
+			contrasena.append(boxContrasena.getPassword()[i]);
 		}
-		return "REGULAR";
+		return new Object[]{boxNombreCompleto.getText(), boxCorreo.getText(), boxDireccion.getText(), boxTelefono.getText(), contrasena.toString()};
+	}
+
+	public Object[] getDatosLogin (){
+		return new Object[]{boxCorreo.getText(), passwordFieldContrasena.getPassword()};
 	}
 }

@@ -1,9 +1,6 @@
 package co.edu.uptc.controlador;
 
-import co.edu.uptc.gui.EventosBotones;
-import co.edu.uptc.gui.FramePrincipal;
-import co.edu.uptc.gui.PanelLoginSignup;
-import co.edu.uptc.gui.PantallaPrincipal;
+import co.edu.uptc.gui.*;
 import co.edu.uptc.modelo.Usuario;
 
 import javax.json.Json;
@@ -15,47 +12,52 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
 
 public class EventosUsuario implements ActionListener{
-	private              PanelLoginSignup panelLoginSignup;
-	private              Usuario          usuario;
-	private              FramePrincipal   framePrincipal;
-	private              EventosBotones   eventosBotones;
-	private static       boolean          LOGIN_CORRECTO = false;
-	private static final String           RUTA_USUARIOS  = "persistencia/USUARIOS.json";
+	private static final String            RUTA_USUARIOS  = "persistencia/USUARIOS.json";
+	private static       boolean           LOGIN_CORRECTO = false;
+	private              Usuario           usuario;
+	private static       String            ROL            = "REGULAR";
+	private static       int               CID_Index;
+	private              DialogLoginSignup dialogLoginSignup;
+	private              PanelPerfil       panelPerfil;
 
 	public EventosUsuario (FramePrincipal framePrincipal){
-		this.framePrincipal = framePrincipal;
+		EventosBotones eventosBotones = new EventosBotones(framePrincipal);
 	}
 
-	private void validarUsusarioLogin (JTextField txNombreUsuario, JPasswordField pwClaveAcceso){
-		String nombreUsuario = txNombreUsuario.getText();
-		char[] claveAcceso   = pwClaveAcceso.getPassword();
+	public boolean validarLogin (Object[] datosUsuario){
+		validarUsusarioLogin(datosUsuario);
+		return isLoginCorrecto();
+	}
+
+	private void validarUsusarioLogin (Object[] datosUsuario){
+		String nombreUsuario = (String) datosUsuario[0];
+		char[] claveAcceso   = (char[]) datosUsuario[1];
 		this.usuario = obtenerUsuario(nombreUsuario);
 		if (usuario == null){
-			JOptionPane.showMessageDialog(panelLoginSignup, "Usuario no encontrado");
+			JOptionPane.showMessageDialog(dialogLoginSignup, "Usuario no encontrado");
 			return;
 		}
 		if (! usuario.getClaveAcceso().equals(new String(claveAcceso))){
-			JOptionPane.showMessageDialog(panelLoginSignup, "Contraseña Incorrecta");
+			JOptionPane.showMessageDialog(dialogLoginSignup, "Contraseña Incorrecta");
 		}
-		iniciarSesion();
+		LOGIN_CORRECTO = true;
 	}
 
-	private void iniciarSesion (){
-		LOGIN_CORRECTO = true;
-		framePrincipal.repintar(new PantallaPrincipal(framePrincipal));
+	public Usuario getDatosUsuario (){
+		return obtenerUsuario(dialogLoginSignup.getBoxCorreo());
 	}
 
 	private void registrarUsuario (){
-		JOptionPane.showMessageDialog(panelLoginSignup, "Boton de Registro");
+		JOptionPane.showMessageDialog(dialogLoginSignup, "Boton de Registro");
 	}
 
 	private Usuario obtenerUsuario (String nombreUsuario){
 		try (InputStream inputStream = new FileInputStream(RUTA_USUARIOS); JsonReader reader = Json.createReader(inputStream)){
 			JsonObject jsonObject = reader.readObject();
 
-			String ROL = "REGULAR";
 			if (nombreUsuario.matches("^(?i)admin.*$")){
 				ROL = "ADMIN";
 			}else if (nombreUsuario.matches("^(?i)vip.*$")){
@@ -65,13 +67,14 @@ public class EventosUsuario implements ActionListener{
 			JsonArray usuariosDelRol = jsonObject.getJsonArray(ROL);
 			for (JsonObject usuario : usuariosDelRol.getValuesAs(JsonObject.class)){
 				if (usuario.getString("usuario").equalsIgnoreCase(nombreUsuario)){
+					//HashMap<Long, Integer> carritoDeCompras = getCarritoDeCompras(usuario.getInt("CID"));
 					return new Usuario(usuario.getString("nombreCompleto"),
 					                   usuario.getString("usuario"),
 					                   usuario.getString("direccionEnvio"),
 					                   usuario.getInt("telefonoContacto"),
 					                   usuario.getString("claveAcceso"),
 					                   ROL,
-					                   ROL.equals("ADMIN") ? 0 : usuario.getInt("CID")
+					                   new HashMap<Long, Integer>()
 					);
 				}
 			}
@@ -82,20 +85,75 @@ public class EventosUsuario implements ActionListener{
 		return null;
 	}
 
-	@Override public void actionPerformed (ActionEvent e){
-		panelLoginSignup = framePrincipal.getPanelLoginSignup();
-		switch (e.getActionCommand()){
-			case "validarLogin" -> validarUsusarioLogin(panelLoginSignup.getBoxCorreo(), panelLoginSignup.getPasswordFieldContrasena());
-			case "validarRegistro" -> validarDatosRegistro(panelLoginSignup.getDatosRegistro());
-			default -> JOptionPane.showMessageDialog(panelLoginSignup, "Boton no encontrado");
+//	private HashMap<Long, Integer> getCarritoDeCompras (int CID){
+//		//TODO
+//		return getCarritoDeCompras(CID);
+//	}
+
+	private Usuario validarDatosRegistro (Object[] datosRegistro, HashMap<Long, Integer> carritoDeCompras){
+		String nombreCompleto    = (String) datosRegistro[0];
+		String correoElectronico = (String) datosRegistro[1];
+		this.usuario = obtenerUsuario(correoElectronico);
+		String direccion   = (String) datosRegistro[2];
+		long   telefono    = (long) datosRegistro[3];
+		String claveAcceso = (String) datosRegistro[4];
+
+		if (this.usuario != null){
+			JOptionPane.showMessageDialog(dialogLoginSignup, "Usuario ya registrado");
+			return null;
 		}
-	}
-
-	private void validarDatosRegistro (Object paramDatosRegistro){
-
+		return new Usuario(nombreCompleto, correoElectronico, direccion, telefono, claveAcceso, getRol(), carritoDeCompras);
 	}
 
 	public boolean isLoginCorrecto (){
 		return LOGIN_CORRECTO;
+	}
+
+	public String getRol (){
+		return ROL;
+	}
+
+	@Override public void actionPerformed (ActionEvent e){
+		switch (e.getActionCommand()){
+			case "validarLogin" -> validarUsusarioLogin(dialogLoginSignup.getDatosLogin());
+			case "validarRegistro" -> validarDatosRegistro(dialogLoginSignup.getDatosRegistro(), PanelCarrito.getCarritoDeCompras());
+			case "actualizarDatosCliente" -> actualizarDatosCliente(panelPerfil.getDatosRegistro());
+			case "cancelarModificacionPerfil" -> cancelarModificacionPerfil(dialogLoginSignup);
+			default -> JOptionPane.showMessageDialog(dialogLoginSignup, "Boton no encontrado");
+		}
+	}
+
+	private void cancelarModificacionPerfil (DialogLoginSignup dialogLoginSignup){
+
+	}
+
+	private void actualizarDatosCliente (Object[] datosRegistro){
+
+	}
+
+	public void setDialogLoginSignup (DialogLoginSignup dialogLoginSignup){
+		this.dialogLoginSignup = dialogLoginSignup;
+	}
+
+	public void setPanelPerfil (PanelPerfil panelPerfil){
+		this.panelPerfil = panelPerfil;
+	}
+
+	public static int getCID_Index (){
+		try (InputStream inputStream = new FileInputStream(RUTA_USUARIOS); JsonReader reader = Json.createReader(inputStream)){
+			JsonObject jsonObject = reader.readObject();
+			for (String locRol : jsonObject.keySet()){
+				JsonArray usuarios = jsonObject.getJsonArray(locRol);
+				for (JsonObject usuario : usuarios.getValuesAs(JsonObject.class)){
+					if (usuario.getInt("CID") > CID_Index){
+						CID_Index = usuario.getInt("CID");
+					}
+				}
+			}
+		}catch (Exception e){
+			System.err.println(e.getMessage());
+			return - 1;
+		}
+		return ++ CID_Index;
 	}
 }

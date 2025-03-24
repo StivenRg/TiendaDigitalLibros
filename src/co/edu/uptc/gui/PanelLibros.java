@@ -7,26 +7,37 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class PanelLibros extends JPanel{
-	private final String[]          nombreColumnas = {"Titulo", "Autor", "Genero", "# Paginas", "Editorial", "Año", "Formato", "Precio", "Cantidad Disponible", "Agregar"};
+	private final String[]          nombreColumnas = {"ISBN",
+	                                                  "Titulo",
+	                                                  "Autor",
+	                                                  "Genero",
+	                                                  "# Paginas",
+	                                                  "Editorial",
+	                                                  "Año",
+	                                                  "Formato",
+	                                                  "Precio",
+	                                                  "Cantidad Disponible",
+	                                                  "Agregar"
+	};
 	private       DefaultTableModel model;
 	private       JTable            tableLibros;
-	private       EventosLibros     eventos;
+	private       EventosLibros     eventosLibros;
 	private final JButton           botonAgregar   = new JButton("Agregar Libro");
 
-	public PanelLibros (EventosLibros eventos){
-		this.eventos = eventos;
+	public PanelLibros (EventosLibros eventosLibros){
+		this.eventosLibros = eventosLibros;
 		inicializarPanelLibros();
 	}
 
 	private DefaultTableModel getDefaultTableModel (){
 		DefaultTableModel model = new DefaultTableModel(nombreColumnas, 0){
 			@Override public boolean isCellEditable (int row, int column){
-				return column == 9;
+				return column == 10;
 			}
 
 			@Override public Class<?> getColumnClass (int columnIndex){
 				// La última columna es de tipo Boolean para mostrar un JCheckBox
-				return (columnIndex == 9) ? Boolean.class : String.class;
+				return (columnIndex == 10) ? Boolean.class : String.class;
 			}
 		};
 		return model;
@@ -34,7 +45,7 @@ public class PanelLibros extends JPanel{
 
 	private void inicializarPanelLibros (){
 		setLayout(new BorderLayout());
-		model       = getDefaultTableModel();
+		model = getDefaultTableModel();
 		rellenarLista();
 		tableLibros = new JTable(model);
 		tableLibros.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -42,19 +53,19 @@ public class PanelLibros extends JPanel{
 		add(scrollPane, BorderLayout.CENTER);
 
 		botonAgregar.setActionCommand("agregarLibro");
-		botonAgregar.addActionListener(eventos);
+		botonAgregar.addActionListener(eventosLibros);
 		add(botonAgregar, BorderLayout.SOUTH);
 		actualizarTabla();
 	}
 
 	private void rellenarLista (){
-		model.setDataVector(eventos.obtenerListaDeLibros(), nombreColumnas);
+		model.setDataVector(eventosLibros.obtenerListaDeLibros(), nombreColumnas);
 	}
 
 	private void actualizarTabla (){
 		model.addTableModelListener(e -> {
 			int columnaCambio = e.getColumn();
-			if (columnaCambio == 9){
+			if (columnaCambio == 10){
 				return;
 			}
 			rellenarLista();

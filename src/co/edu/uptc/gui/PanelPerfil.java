@@ -1,44 +1,40 @@
 package co.edu.uptc.gui;
 
 import co.edu.uptc.controlador.EventosUsuario;
+import co.edu.uptc.modelo.Usuario;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 
-public class PanelPerfil extends JPanel{
-	private final EventosUsuario eventos;
-	private       JPanel         panelActualizarDatos;
+public class PanelPerfil extends JPanel implements InterfacePerfilListener{
+	private final EventosUsuario eventosUsuario;
+	private       Usuario        usuario;
+	private       String[]       nombreAtributos = {"Nombre Completo", "Correo Electronico", "Direccion", "Teléfono", "Tipo de Usuario", "Contraseña"};
+	private       String[]       atributos       = {"", "", "", "", "REGULAR", "************"}; //TODO
 
-	public PanelPerfil (EventosUsuario eventos){
-		setLayout(new BorderLayout());
-		this.eventos = eventos;
+	public PanelPerfil (EventosUsuario eventosUsuario){
+		this.eventosUsuario = eventosUsuario;
+		eventosUsuario.setPanelPerfil(this);
 		inicializarPanelPerfil();
 	}
 
-	private void inicializarPanelPerfil (){
-		//Labels
-		JLabel labelNombreCompleto = new JLabel("Nombre Completo", SwingConstants.CENTER);
-		JLabel labelCorreo         = new JLabel("Correo Electronico", SwingConstants.CENTER);
-		JLabel labelDireccion      = new JLabel("Direccion", SwingConstants.CENTER);
-		JLabel labelTelefono       = new JLabel("Teléfono", SwingConstants.CENTER);
-		JLabel labelTipoUsuario    = new JLabel("Tipo de Usuario", SwingConstants.CENTER);
-		JLabel labelContrasena     = new JLabel("*Contraseña", SwingConstants.CENTER);
+	private void refrescarDatosPerfil (Usuario datosUsuario){
+		//Datos de Usuario
+		usuario      = datosUsuario;
+		atributos[0] = usuario.getNombreCompleto();
+		atributos[1] = usuario.getCorreoElectronico();
+		atributos[2] = usuario.getDireccionEnvio();
+		atributos[3] = String.valueOf(usuario.getTelefonoContacto());
+		atributos[4] = usuario.getTipoCliente().toUpperCase();
+		inicializarPanelDatosUsuario();
+		inicializarPanelDatosUsuario();
+		inicializarPanelFooter();
 
-		//Text Fields
-		JTextField        boxNombreCompleto   = new JTextField("");
-		JTextField        boxCorreo           = new JTextField("");
-		JTextField        boxDireccion        = new JTextField("");
-		JTextField        boxTelefono         = new JTextField("");
-		String[]          tiposUsuario        = {"Regular", "Premium", "Admin"};
+		String[]          tiposUsuario        = {"REGULAR", "PREMIUM", "ADMIN"};
 		JComboBox<String> comboBoxTipoUsuario = new JComboBox<>(tiposUsuario);
-		JPasswordField    boxContrasena       = new JPasswordField();
-
-		boxNombreCompleto.setHorizontalAlignment(JTextField.CENTER);
-		boxCorreo.setHorizontalAlignment(JTextField.CENTER);
-		boxDireccion.setHorizontalAlignment(JTextField.CENTER);
-		boxTelefono.setHorizontalAlignment(JTextField.CENTER);
-		comboBoxTipoUsuario.setAlignmentX(JComboBox.CENTER_ALIGNMENT);
-		boxContrasena.setHorizontalAlignment(JPasswordField.CENTER);
+		comboBoxTipoUsuario.setSelectedItem(usuario.getTipoCliente());
+		JPasswordField boxContrasena = new JPasswordField();
 
 		JCheckBox checkBoxMostrarContrasena = new JCheckBox("Mostrar Contraseña");
 		checkBoxMostrarContrasena.setSelected(false);
@@ -50,69 +46,84 @@ public class PanelPerfil extends JPanel{
 				boxContrasena.setEchoChar('•');
 			}
 		});
+	}
 
-		JPanel             panelActualizarDatos = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc                  = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 10, 5);
-		gbc.fill   = GridBagConstraints.BOTH;
+	private void inicializarPanelPerfil (){
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+	}
 
-		//Peso Componente
-		gbc.weightx = 0.45f; //Esta asignación hace que todos los layouts tengan este peso, hasta que se cambie
+	private void inicializarPanelDatosUsuario (){
+		for (int i = 0; i < nombreAtributos.length; i++){
+			JPanel panelDatos = new JPanel(new BorderLayout(10, 5));
+			panelDatos.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-		//Fila 0, Columnas 0 y 1 ⇒ Labels Nombre y Correo
-		gbc.gridy = 0;
-		gbc.gridx = 0;
-		panelActualizarDatos.add(labelNombreCompleto, gbc);
-		gbc.gridx = 1;
-		panelActualizarDatos.add(labelCorreo, gbc);
+			JLabel label = new JLabel(nombreAtributos[i] + ": ");
+			label.setPreferredSize(new Dimension(100, 25));
+			if (i == 5){
+				JPasswordField textField = new JPasswordField(atributos[i]);
+				textField.setPreferredSize(new Dimension(200, 25));
+				panelDatos.add(label, BorderLayout.WEST);
+				panelDatos.add(textField, BorderLayout.CENTER);
+				add(panelDatos);
+				return;
+			}
+			JTextField textField = new JTextField(atributos[i]);
+			textField.setPreferredSize(new Dimension(200, 25));
 
-		//Fila 1, Columna 0 y 1 ⇒ Box Nombre y Correo
-		gbc.gridy = 1;
-		gbc.gridx = 0;
-		panelActualizarDatos.add(boxNombreCompleto, gbc);
-		gbc.gridx = 1;
-		panelActualizarDatos.add(boxCorreo, gbc);
+			panelDatos.add(label, BorderLayout.WEST);
+			panelDatos.add(textField, BorderLayout.CENTER);
+			add(panelDatos);
+		}
+	}
 
-		//Fila 2, Columna 0 y 1 => Labels Direccion y Teléfono
-		gbc.gridy = 2;
-		gbc.gridx = 0;
-		panelActualizarDatos.add(labelDireccion, gbc);
-		gbc.gridx = 1;
-		panelActualizarDatos.add(labelTelefono, gbc);
-
-		//Fila 3, Columna 0 y 1 => Box Direccion y Teléfono
-		gbc.gridy = 3;
-		gbc.gridx = 0;
-		panelActualizarDatos.add(boxDireccion, gbc);
-		gbc.gridx = 1;
-		panelActualizarDatos.add(boxTelefono, gbc);
-
-		//Fila 4, Columna 0 y 1 => Labels Tipo de Usuario y Contraseña
-		gbc.gridy = 4;
-		gbc.gridx = 0;
-		panelActualizarDatos.add(labelTipoUsuario, gbc);
-		gbc.gridx = 1;
-		panelActualizarDatos.add(labelContrasena, gbc);
-
-		//Fila 5, Columna 0 y 1 => Box Tipo de Usuario y Contraseña
-		gbc.gridy = 5;
-		gbc.gridx = 0;
-		panelActualizarDatos.add(comboBoxTipoUsuario, gbc);
-		gbc.gridx = 1;
-		panelActualizarDatos.add(boxContrasena, gbc);
-
-		gbc.gridy = 6;
-		gbc.gridx = 0;
-		panelActualizarDatos.add(Box.createGlue(), gbc);
-		gbc.gridx = 1;
-		panelActualizarDatos.add(checkBoxMostrarContrasena, gbc);
-
-		add(panelActualizarDatos, BorderLayout.CENTER);
+	private void inicializarPanelFooter (){
+		JPanel panelFooter = new JPanel(new BorderLayout(20, 5));
 
 		JButton botonGuardar = new JButton("Guardar");
 		botonGuardar.setActionCommand("actualizarDatosCliente");
-		botonGuardar.addActionListener(eventos);
+		botonGuardar.addActionListener(eventosUsuario);
+		botonGuardar.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
-		add(botonGuardar, BorderLayout.SOUTH);
+		JButton botonCancelar = new JButton("Cancelar");
+		botonCancelar.setActionCommand("cancelarModificacionPerfil");
+		botonCancelar.addActionListener(eventosUsuario);
+		botonCancelar.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+
+		panelFooter.add(botonGuardar, BorderLayout.NORTH);
+		panelFooter.add(botonCancelar, BorderLayout.SOUTH);
+
+		add(Box.createVerticalGlue());
+		add(panelFooter);
+	}
+
+	private void actualizarDatosPerfil (Usuario datosUsuario){
+		refrescarDatosPerfil(datosUsuario);
+	}
+
+	@Override public void onRegistroExitoso (Object[] datosUsuario){
+		Usuario usuario = new Usuario((String) datosUsuario[0],
+		                              (String) datosUsuario[1],
+		                              (String) datosUsuario[2],
+		                              (long) datosUsuario[3],
+		                              (String) datosUsuario[4],
+		                              "REGULAR",
+		                              new HashMap<Long, Integer>()
+		);
+		refrescarDatosPerfil(usuario);
+	}
+
+	@Override public void onSesionIniciada (Object[] datosUsuario){
+		Usuario usuario = eventosUsuario.getDatosUsuario();
+		atributos[0] = usuario.getNombreCompleto();
+		atributos[1] = usuario.getCorreoElectronico();
+		atributos[2] = usuario.getDireccionEnvio();
+		atributos[3] = String.valueOf(usuario.getTelefonoContacto());
+		atributos[4] = usuario.getTipoCliente();
+		refrescarDatosPerfil(usuario);
+	}
+
+	public Object[] getDatosRegistro (){
+		return new Object[]{atributos[0], atributos[1], atributos[2], atributos[3], atributos[4]
+		};
 	}
 }
