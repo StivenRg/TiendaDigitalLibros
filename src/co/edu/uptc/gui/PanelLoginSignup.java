@@ -8,17 +8,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class PanelLoginSignup extends JPanel{
-	private final JTabbedPane       panelPrincipal;
-	private final String[]          tiposUsuario = {"Regular", "Premium", "Admin"};
-	private       JPanel            panelLogin;
-	private       JPanel            panelRegistro;
-	private       JTextField        boxNombreCompleto;
-	private       JTextField        boxCorreo;
-	private       JTextField        boxDireccion;
-	private       JTextField        boxTelefono;
-	private       JComboBox<String> comboBoxTipoUsuario;
-	private       JPasswordField    boxContrasena;
-	private       JPasswordField    passwordFieldContrasena;
+	private final JTabbedPane    panelPrincipal;
+	private       JPanel         panelLogin;
+	private       JPanel         panelRegistro;
+	private       JTextField     boxNombreCompleto;
+	private       JTextField     boxCorreo;
+	private       JTextField     boxDireccion;
+	private       JTextField     boxTelefono;
+	private       JPasswordField boxContrasena;
+	private       JPasswordField passwordFieldContrasena;
 
 	public PanelLoginSignup (FramePrincipal ventana, EventosUsuario eventosUsuario){
 		panelPrincipal = new JTabbedPane();
@@ -34,7 +32,9 @@ public class PanelLoginSignup extends JPanel{
 
 	private void agregarLogin (EventosUsuario eventosUsuario){
 		//Panel de Login
-		panelLogin = new JPanel(new BorderLayout()); //Aunque no se usen las regiones, al agregar al centro, se extiende hacia los lados, lo cual mejora la UX
+		panelLogin
+				= new JPanel(new BorderLayout()); //Aunque no se usen las regiones, al agregar al centro, se extiende hacia los lados, lo cual
+		// mejora la UX
 
 		//Campos de Usuario y Contraseña
 		JPanel panelLoginDatos = new JPanel(new GridBagLayout());
@@ -113,22 +113,18 @@ public class PanelLoginSignup extends JPanel{
 		JLabel labelCorreo         = new JLabel("*Correo Electronico", SwingConstants.CENTER);
 		JLabel labelDireccion      = new JLabel("*Direccion", SwingConstants.CENTER);
 		JLabel labelTelefono       = new JLabel("*Teléfono", SwingConstants.CENTER);
-		JLabel labelTipoUsuario    = new JLabel("*Tipo de Usuario", SwingConstants.CENTER);
 		JLabel labelContrasena     = new JLabel("*Contraseña", SwingConstants.CENTER);
 
 		//Text Fields
-		boxNombreCompleto   = new JTextField("");
-		boxCorreo           = new JTextField("admin1@example.com");
-		boxDireccion        = new JTextField("");
-		boxTelefono         = new JTextField("");
-		comboBoxTipoUsuario = new JComboBox<>(tiposUsuario);
-		boxContrasena       = new JPasswordField("admin");
+		boxNombreCompleto = new JTextField("");
+		boxCorreo         = new JTextField("admin1@example.com");
+		boxDireccion      = new JTextField("");
+		boxTelefono       = new JTextField("");
+		boxContrasena     = new JPasswordField("admin");
 		boxNombreCompleto.setHorizontalAlignment(JTextField.CENTER);
 		boxCorreo.setHorizontalAlignment(JTextField.CENTER);
 		boxDireccion.setHorizontalAlignment(JTextField.CENTER);
 		boxTelefono.setHorizontalAlignment(JTextField.CENTER);
-		comboBoxTipoUsuario.setAlignmentX(JComboBox.CENTER_ALIGNMENT);
-		comboBoxTipoUsuario.setSelectedItem("Regular");
 		boxContrasena.setHorizontalAlignment(JPasswordField.CENTER);
 
 		//Botones y otros elementos
@@ -183,21 +179,13 @@ public class PanelLoginSignup extends JPanel{
 		//Fila 4, Columna 0 y 1 => Labels Tipo de Usuario y Contraseña
 		gbc.gridy = 4;
 		gbc.gridx = 0;
-		panelRegistroDatos.add(labelTipoUsuario, gbc);
-		gbc.gridx = 1;
 		panelRegistroDatos.add(labelContrasena, gbc);
+
 
 		//Fila 5, Columna 0 y 1 => Box Tipo de Usuario y Contraseña
 		gbc.gridy = 5;
 		gbc.gridx = 0;
-		panelRegistroDatos.add(comboBoxTipoUsuario, gbc);
-		gbc.gridx = 1;
 		panelRegistroDatos.add(boxContrasena, gbc);
-
-		//Fila 6, columna 0 y 1 => Boton Registrarse
-		gbc.gridy = 6;
-		gbc.gridx = 0;
-		panelRegistroDatos.add(Box.createGlue(), gbc);
 		gbc.gridx = 1;
 		panelRegistroDatos.add(checkBoxMostrarContrasena, gbc);
 
@@ -232,7 +220,10 @@ public class PanelLoginSignup extends JPanel{
 	}
 
 	public Object getDatosRegistro (){
-		return new Object[]{boxNombreCompleto.getText(), boxCorreo.getText(), boxDireccion.getText(), boxTelefono.getText(), comboBoxTipoUsuario.getSelectedItem().toString(),
+		return new Object[]{boxNombreCompleto.getText(),
+		                    boxCorreo.getText(),
+		                    boxDireccion.getText(),
+		                    boxTelefono.getText(),
 		                    boxContrasena.getPassword()
 		};
 	}
