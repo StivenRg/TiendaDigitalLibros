@@ -232,7 +232,7 @@ public class DialogLoginSignup extends JDialog{
 		for (int i = 0; i < boxContrasena.getPassword().length; i++){
 			contrasena.append(boxContrasena.getPassword()[i]);
 		}
-		return new Object[]{boxNombreCompleto.getText(), boxCorreo.getText(), boxDireccion.getText(), boxTelefono.getText(), contrasena.toString()};
+		return new Object[]{boxNombreCompleto.getText(), boxCorreo.getText(), boxDireccion.getText(), boxTelefono.getText(), contrasena.toString(), };
 	}
 
 	public Object[] getDatosLogin (){

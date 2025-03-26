@@ -16,15 +16,31 @@ public class Usuario{
 
 	public Usuario (){}
 
-	public Usuario (String nombreCompleto, String correoElectronico, String direccionEnvio, long telefonoContacto, String claveAcceso, String tipoCliente, HashMap<Long, Integer> carritoDeCompras){
+	public Usuario (
+			String nombreCompleto,
+			String correoElectronico,
+			String direccionEnvio,
+			long telefonoContacto,
+			String claveAcceso,
+			HashMap<Long, Integer> carritoDeCompras
+	){
 		this.nombreCompleto    = nombreCompleto;
 		this.correoElectronico = correoElectronico.toUpperCase();
 		this.direccionEnvio    = direccionEnvio;
 		this.telefonoContacto  = telefonoContacto;
 		this.claveAcceso       = claveAcceso;
-		this.tipoCliente       = tipoCliente.toUpperCase();
+		this.tipoCliente       = validarTipoDeCliente(correoElectronico);
 		this.CID               = getCID_Index();
 		this.carritoDeCompras  = carritoDeCompras;
+	}
+
+	private String validarTipoDeCliente (String correoElectronico){
+		if (correoElectronico.matches("^(?i)admin.*$")){
+			return "ADMIN";
+		}else if (correoElectronico.matches("^(?i)vip.*$")){
+			return "PREMIUM";
+		}
+		return "REGULAR";
 	}
 
 	public void actualizarDatos (String nombreCompleto, String correoElectronico, String direccionEnvio, long telefonoContacto){

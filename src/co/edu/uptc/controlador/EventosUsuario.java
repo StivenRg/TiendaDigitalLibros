@@ -17,14 +17,32 @@ import java.util.HashMap;
 public class EventosUsuario implements ActionListener{
 	private static final String            RUTA_USUARIOS  = "persistencia/USUARIOS.json";
 	private static       boolean           LOGIN_CORRECTO = false;
-	private              Usuario           usuario;
 	private static       String            ROL            = "REGULAR";
 	private static       int               CID_Index;
+	private              Usuario           usuario;
 	private              DialogLoginSignup dialogLoginSignup;
 	private              PanelPerfil       panelPerfil;
 
 	public EventosUsuario (FramePrincipal framePrincipal){
 		EventosBotones eventosBotones = new EventosBotones(framePrincipal);
+	}
+
+	public static int getCID_Index (){
+		try (InputStream inputStream = new FileInputStream(RUTA_USUARIOS); JsonReader reader = Json.createReader(inputStream)){
+			JsonObject jsonObject = reader.readObject();
+			for (String locRol : jsonObject.keySet()){
+				JsonArray usuarios = jsonObject.getJsonArray(locRol);
+				for (JsonObject usuario : usuarios.getValuesAs(JsonObject.class)){
+					if (usuario.getInt("CID") > CID_Index){
+						CID_Index = usuario.getInt("CID");
+					}
+				}
+			}
+		}catch (Exception e){
+			System.err.println(e.getMessage());
+			return - 1;
+		}
+		return ++ CID_Index;
 	}
 
 	public boolean validarLogin (Object[] datosUsuario){
@@ -67,14 +85,12 @@ public class EventosUsuario implements ActionListener{
 			JsonArray usuariosDelRol = jsonObject.getJsonArray(ROL);
 			for (JsonObject usuario : usuariosDelRol.getValuesAs(JsonObject.class)){
 				if (usuario.getString("usuario").equalsIgnoreCase(nombreUsuario)){
-					//HashMap<Long, Integer> carritoDeCompras = getCarritoDeCompras(usuario.getInt("CID"));
 					return new Usuario(usuario.getString("nombreCompleto"),
 					                   usuario.getString("usuario"),
 					                   usuario.getString("direccionEnvio"),
-					                   usuario.getInt("telefonoContacto"),
+					                   usuario.getJsonNumber("telefonoContacto").longValue(),
 					                   usuario.getString("claveAcceso"),
-					                   ROL,
-					                   new HashMap<Long, Integer>()
+					                   getCarritoDeCompras(usuario.getInt("CID"))
 					);
 				}
 			}
@@ -85,10 +101,9 @@ public class EventosUsuario implements ActionListener{
 		return null;
 	}
 
-//	private HashMap<Long, Integer> getCarritoDeCompras (int CID){
-//		//TODO
-//		return getCarritoDeCompras(CID);
-//	}
+	private HashMap<Long, Integer> getCarritoDeCompras (int CID){
+		return EventosCarrito.getCarritoDeCompras(CID);
+	}
 
 	private Usuario validarDatosRegistro (Object[] datosRegistro, HashMap<Long, Integer> carritoDeCompras){
 		String nombreCompleto    = (String) datosRegistro[0];
@@ -102,7 +117,7 @@ public class EventosUsuario implements ActionListener{
 			JOptionPane.showMessageDialog(dialogLoginSignup, "Usuario ya registrado");
 			return null;
 		}
-		return new Usuario(nombreCompleto, correoElectronico, direccion, telefono, claveAcceso, getRol(), carritoDeCompras);
+		return new Usuario(nombreCompleto, correoElectronico, direccion, telefono, claveAcceso, carritoDeCompras);
 	}
 
 	public boolean isLoginCorrecto (){
@@ -116,18 +131,18 @@ public class EventosUsuario implements ActionListener{
 	@Override public void actionPerformed (ActionEvent e){
 		switch (e.getActionCommand()){
 			case "validarLogin" -> validarUsusarioLogin(dialogLoginSignup.getDatosLogin());
-			case "validarRegistro" -> validarDatosRegistro(dialogLoginSignup.getDatosRegistro(), PanelCarrito.getCarritoDeCompras());
-			case "actualizarDatosCliente" -> actualizarDatosCliente(panelPerfil.getDatosRegistro());
-			case "cancelarModificacionPerfil" -> cancelarModificacionPerfil(dialogLoginSignup);
+			case "validarRegistro" -> validarDatosRegistro(dialogLoginSignup.getDatosRegistro(), PanelCarrito.getCarritoDeComprasTemporal());
+			case "actualizarDatosCliente" -> actualizarDatosCliente(panelPerfil.getDatosActualizados());
+			case "cambiarContraseña" -> cambiarContrasena(dialogLoginSignup);
 			default -> JOptionPane.showMessageDialog(dialogLoginSignup, "Boton no encontrado");
 		}
 	}
 
-	private void cancelarModificacionPerfil (DialogLoginSignup dialogLoginSignup){
+	private void cambiarContrasena (DialogLoginSignup dialogLoginSignup){
 
 	}
 
-	private void actualizarDatosCliente (Object[] datosRegistro){
+	private void actualizarDatosCliente (Object[] datosActualizados){
 
 	}
 
@@ -137,23 +152,5 @@ public class EventosUsuario implements ActionListener{
 
 	public void setPanelPerfil (PanelPerfil panelPerfil){
 		this.panelPerfil = panelPerfil;
-	}
-
-	public static int getCID_Index (){
-		try (InputStream inputStream = new FileInputStream(RUTA_USUARIOS); JsonReader reader = Json.createReader(inputStream)){
-			JsonObject jsonObject = reader.readObject();
-			for (String locRol : jsonObject.keySet()){
-				JsonArray usuarios = jsonObject.getJsonArray(locRol);
-				for (JsonObject usuario : usuarios.getValuesAs(JsonObject.class)){
-					if (usuario.getInt("CID") > CID_Index){
-						CID_Index = usuario.getInt("CID");
-					}
-				}
-			}
-		}catch (Exception e){
-			System.err.println(e.getMessage());
-			return - 1;
-		}
-		return ++ CID_Index;
 	}
 }

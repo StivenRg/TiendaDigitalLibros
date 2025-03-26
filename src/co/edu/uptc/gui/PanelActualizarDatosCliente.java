@@ -6,5 +6,6 @@ import javax.swing.*;
 
 public class PanelActualizarDatosCliente extends JPanel{
 	public PanelActualizarDatosCliente (FramePrincipal ventana, EventosUsuario eventos){
+
 	}
 }

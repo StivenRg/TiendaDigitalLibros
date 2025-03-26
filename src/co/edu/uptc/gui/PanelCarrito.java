@@ -11,6 +11,7 @@ public class PanelCarrito extends JPanel{
 	private final  JLabel                 labelTotal = new JLabel("Total: $0.00");
 	private final  EventosCarrito         eventos;
 	private static HashMap<Long, Integer> carritoDeCompras;
+	private        DefaultTableModel      model;
 
 	public PanelCarrito (EventosCarrito eventos){
 		this.eventos = eventos;
@@ -34,14 +35,14 @@ public class PanelCarrito extends JPanel{
 		return model;
 	}
 
-	public static HashMap<Long, Integer> getCarritoDeCompras (){
+	public static HashMap<Long, Integer> getCarritoDeComprasTemporal (){
 		return carritoDeCompras;
 	}
 
 	private void inicializarPanelCarrito (){
 		setLayout(new BorderLayout());
-		DefaultTableModel model = getDefaultTableModel();
-		eventosCarrito(model);
+		model = getDefaultTableModel();
+		modificacionesCarrito(model);
 		JTable      locTableCarrito = new JTable(model);
 		JScrollPane scrollPane      = new JScrollPane(locTableCarrito);
 		this.add(scrollPane, BorderLayout.CENTER);
@@ -80,7 +81,7 @@ public class PanelCarrito extends JPanel{
 		this.add(footer, BorderLayout.SOUTH);
 	}
 
-	private void eventosCarrito (DefaultTableModel model){
+	private void modificacionesCarrito (DefaultTableModel model){
 		model.addTableModelListener(event -> {
 			// Obtenemos la fila y columna que cambiaron
 			int fila    = event.getFirstRow();

@@ -8,10 +8,18 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class PanelPerfil extends JPanel implements InterfacePerfilListener{
-	private final EventosUsuario eventosUsuario;
-	private       Usuario        usuario;
-	private       String[]       nombreAtributos = {"Nombre Completo", "Correo Electronico", "Direccion", "Teléfono", "Tipo de Usuario", "Contraseña"};
-	private       String[]       atributos       = {"", "", "", "", "REGULAR", "************"}; //TODO
+	private final EventosUsuario         eventosUsuario;
+	private       Usuario                usuario;
+	private       String[]               rolesDeUsuario    = {"REGULAR", "PREMIUM", "ADMIN"};
+	private       String[]               nombreAtributos   = {"Nombre Completo", "Correo Electronico", "Direccion", "Teléfono", "Tipo de Usuario", "Contraseña"
+	};
+	private       String                 nombreCompleto    = "";
+	private       String                 correoElectronico = "";
+	private       String                 direccion         = "";
+	private       long                   telefono          = 3000000000L;
+	private       String                 tipoUsuario       = "REGULAR";
+	private       HashMap<Long, Integer> carritoDeCompras;
+	private       char[]                 claveAcceso;
 
 	public PanelPerfil (EventosUsuario eventosUsuario){
 		this.eventosUsuario = eventosUsuario;
@@ -21,13 +29,12 @@ public class PanelPerfil extends JPanel implements InterfacePerfilListener{
 
 	private void refrescarDatosPerfil (Usuario datosUsuario){
 		//Datos de Usuario
-		usuario      = datosUsuario;
-		atributos[0] = usuario.getNombreCompleto();
-		atributos[1] = usuario.getCorreoElectronico();
-		atributos[2] = usuario.getDireccionEnvio();
-		atributos[3] = String.valueOf(usuario.getTelefonoContacto());
-		atributos[4] = usuario.getTipoCliente().toUpperCase();
-		inicializarPanelDatosUsuario();
+		usuario           = datosUsuario;
+		nombreCompleto    = usuario.getNombreCompleto();
+		correoElectronico = usuario.getCorreoElectronico();
+		direccion         = usuario.getDireccionEnvio();
+		telefono          = usuario.getTelefonoContacto();
+		tipoUsuario       = usuario.getTipoCliente();
 		inicializarPanelDatosUsuario();
 		inicializarPanelFooter();
 
@@ -53,51 +60,96 @@ public class PanelPerfil extends JPanel implements InterfacePerfilListener{
 	}
 
 	private void inicializarPanelDatosUsuario (){
-		for (int i = 0; i < nombreAtributos.length; i++){
-			JPanel panelDatos = new JPanel(new BorderLayout(10, 5));
-			panelDatos.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		//Banners de Datos
+		//Banner de Nombre Completo
+		JPanel panelNombreCompleto = new JPanel(new GridLayout(1, 2));
+		panelNombreCompleto.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		JLabel labelNombreCompleto = new JLabel(nombreAtributos[0]);
+		labelNombreCompleto.setHorizontalAlignment(JLabel.CENTER);
+		labelNombreCompleto.setPreferredSize(new Dimension(100, 25));
+		JTextField txNombreCompleto = new JTextField("");
+		txNombreCompleto.setPreferredSize(new Dimension(160, 25));
+		panelNombreCompleto.add(labelNombreCompleto);
+		panelNombreCompleto.add(txNombreCompleto);
+		add(panelNombreCompleto);
 
-			JLabel label = new JLabel(nombreAtributos[i] + ": ");
-			label.setPreferredSize(new Dimension(100, 25));
-			if (i == 5){
-				JPasswordField textField = new JPasswordField(atributos[i]);
-				textField.setPreferredSize(new Dimension(200, 25));
-				panelDatos.add(label, BorderLayout.WEST);
-				panelDatos.add(textField, BorderLayout.CENTER);
-				add(panelDatos);
-				return;
-			}
-			JTextField textField = new JTextField(atributos[i]);
-			textField.setPreferredSize(new Dimension(200, 25));
+		//Banner de Correo Electronico
+		JPanel panelCorreoElectronico = new JPanel(new GridLayout(1, 2));
+		panelCorreoElectronico.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		JLabel labelCorreoElectronico = new JLabel(nombreAtributos[1]);
+		labelCorreoElectronico.setPreferredSize(new Dimension(100, 25));
+		labelCorreoElectronico.setHorizontalAlignment(JLabel.CENTER);
+		JTextField txCorreoElectronico = new JTextField("");
+		txCorreoElectronico.setPreferredSize(new Dimension(160, 25));
+		panelCorreoElectronico.add(labelCorreoElectronico);
+		panelCorreoElectronico.add(txCorreoElectronico);
+		add(panelCorreoElectronico);
 
-			panelDatos.add(label, BorderLayout.WEST);
-			panelDatos.add(textField, BorderLayout.CENTER);
-			add(panelDatos);
-		}
+		//Banner de Direccion
+		JPanel panelDireccion = new JPanel(new GridLayout(1, 2));
+		panelDireccion.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		JLabel labelDireccion = new JLabel(nombreAtributos[2]);
+		labelDireccion.setPreferredSize(new Dimension(100, 25));
+		labelDireccion.setHorizontalAlignment(JLabel.CENTER);
+		JTextField txDireccion = new JTextField("");
+		txDireccion.setPreferredSize(new Dimension(160, 25));
+		panelDireccion.add(labelDireccion);
+		panelDireccion.add(txDireccion);
+		add(panelDireccion);
+
+		//Banner de Teléfono
+		JPanel panelTelefono = new JPanel(new GridLayout(1, 2));
+		panelTelefono.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		JLabel labelTelefono = new JLabel(nombreAtributos[3]);
+		labelTelefono.setPreferredSize(new Dimension(100, 25));
+		labelTelefono.setHorizontalAlignment(JLabel.CENTER);
+		JTextField txTelefono = new JTextField("");
+		txTelefono.setPreferredSize(new Dimension(160, 25));
+		panelTelefono.add(labelTelefono);
+		panelTelefono.add(txTelefono);
+		add(panelTelefono);
+
+		//Banner de Tipo de Usuario
+		JPanel panelTipoUsuario = new JPanel(new GridLayout(1, 2));
+		panelTipoUsuario.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		JLabel labelTipoUsuario = new JLabel(nombreAtributos[4]);
+		labelTipoUsuario.setPreferredSize(new Dimension(100, 25));
+		labelTipoUsuario.setHorizontalAlignment(JLabel.CENTER);
+		JComboBox<String> comboBoxTipoUsuario = new JComboBox<>(rolesDeUsuario);
+		comboBoxTipoUsuario.setSelectedItem("");
+		panelTipoUsuario.add(labelTipoUsuario);
+		panelTipoUsuario.add(comboBoxTipoUsuario);
+		add(panelTipoUsuario);
+
+		//Banner de Contraseña
+		JPanel panelContrasena = new JPanel(new GridLayout(1, 2));
+		panelContrasena.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		JLabel labelContrasena = new JLabel("*" + nombreAtributos[5]);
+		labelContrasena.setPreferredSize(new Dimension(100, 25));
+		labelContrasena.setHorizontalAlignment(JLabel.CENTER);
+		JPasswordField pswdField = new JPasswordField("");
+		pswdField.setPreferredSize(new Dimension(160, 25));
+		panelContrasena.add(labelContrasena);
+		panelContrasena.add(pswdField);
+		add(panelContrasena);
 	}
 
 	private void inicializarPanelFooter (){
-		JPanel panelFooter = new JPanel(new BorderLayout(20, 5));
+		JPanel panelFooter = new JPanel(new GridLayout(2, 1));
 
 		JButton botonGuardar = new JButton("Guardar");
 		botonGuardar.setActionCommand("actualizarDatosCliente");
 		botonGuardar.addActionListener(eventosUsuario);
 		botonGuardar.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
-		JButton botonCancelar = new JButton("Cancelar");
-		botonCancelar.setActionCommand("cancelarModificacionPerfil");
-		botonCancelar.addActionListener(eventosUsuario);
-		botonCancelar.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+		JButton botonCambiarContrasena = new JButton("Cambiar Contraseña");
+		botonCambiarContrasena.setActionCommand("cambiarContraseña");
+		botonCambiarContrasena.addActionListener(eventosUsuario);
+		botonCambiarContrasena.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
-		panelFooter.add(botonGuardar, BorderLayout.NORTH);
-		panelFooter.add(botonCancelar, BorderLayout.SOUTH);
-
-		add(Box.createVerticalGlue());
+		panelFooter.add(botonGuardar);
+		panelFooter.add(botonCambiarContrasena);
 		add(panelFooter);
-	}
-
-	private void actualizarDatosPerfil (Usuario datosUsuario){
-		refrescarDatosPerfil(datosUsuario);
 	}
 
 	@Override public void onRegistroExitoso (Object[] datosUsuario){
@@ -106,24 +158,24 @@ public class PanelPerfil extends JPanel implements InterfacePerfilListener{
 		                              (String) datosUsuario[2],
 		                              (long) datosUsuario[3],
 		                              (String) datosUsuario[4],
-		                              "REGULAR",
-		                              new HashMap<Long, Integer>()
+		                              PanelCarrito.getCarritoDeComprasTemporal()
 		);
 		refrescarDatosPerfil(usuario);
 	}
 
 	@Override public void onSesionIniciada (Object[] datosUsuario){
 		Usuario usuario = eventosUsuario.getDatosUsuario();
-		atributos[0] = usuario.getNombreCompleto();
-		atributos[1] = usuario.getCorreoElectronico();
-		atributos[2] = usuario.getDireccionEnvio();
-		atributos[3] = String.valueOf(usuario.getTelefonoContacto());
-		atributos[4] = usuario.getTipoCliente();
+		nombreCompleto    = usuario.getNombreCompleto();
+		correoElectronico = usuario.getCorreoElectronico();
+		direccion         = usuario.getDireccionEnvio();
+		telefono          = usuario.getTelefonoContacto();
+		tipoUsuario       = usuario.getTipoCliente();
+		carritoDeCompras  = usuario.getCarritoDeCompras();
 		refrescarDatosPerfil(usuario);
 	}
 
-	public Object[] getDatosRegistro (){
-		return new Object[]{atributos[0], atributos[1], atributos[2], atributos[3], atributos[4]
+	public Object[] getDatosActualizados (){
+		return new Object[]{nombreCompleto, correoElectronico, direccion, telefono, claveAcceso
 		};
 	}
 }

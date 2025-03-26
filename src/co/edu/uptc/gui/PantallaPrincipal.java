@@ -7,7 +7,7 @@ import co.edu.uptc.controlador.EventosUsuario;
 import javax.swing.*;
 import java.awt.*;
 
-public class PantallaPrincipal extends JPanel{
+public class PantallaPrincipal extends JPanel implements InterfacePerfilListener{
 	private       EventosCarrito eventosCarrito;
 	private       EventosLibros  eventosLibros;
 	private       EventosUsuario eventosUsuario;
@@ -94,5 +94,13 @@ public class PantallaPrincipal extends JPanel{
 	private void inicializarPanelHistorialCompras (EventosUsuario eventos){
 		eventosUsuario        = eventos;
 		panelHistorialCompras = new PanelHistorialCompras(eventos);
+	}
+
+	@Override public void onSesionIniciada (Object[] datosUsuario){
+
+	}
+
+	@Override public void onRegistroExitoso (Object[] datosUsuario){
+
 	}
 }
