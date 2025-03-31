@@ -1,31 +1,31 @@
 package co.edu.uptc.gui;
 
-import co.edu.uptc.controlador.EventosLibros;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class PanelLibros extends JPanel{
-	private final String[]          nombreColumnas = {"ISBN",
-	                                                  "Titulo",
-	                                                  "Autor",
-	                                                  "Genero",
-	                                                  "# Paginas",
-	                                                  "Editorial",
-	                                                  "Año",
-	                                                  "Formato",
-	                                                  "Precio",
-	                                                  "Cantidad Disponible",
-	                                                  "Agregar"
+	private final       String[]          nombreColumnas = {"ISBN",
+	                                                        "Titulo",
+	                                                        "Autor",
+	                                                        "Genero",
+	                                                        "# Paginas",
+	                                                        "Editorial",
+	                                                        "Año",
+	                                                        "Formato",
+	                                                        "Precio",
+	                                                        "Cantidad Disponible",
+	                                                        "Agregar"
 	};
-	private       DefaultTableModel model;
-	private       JTable            tableLibros;
-	private       EventosLibros     eventosLibros;
-	private final JButton           botonAgregar   = new JButton("Agregar Libro");
+	private             DefaultTableModel model;
+	private             JTable            tableLibros;
+	private             VentanaPrincipal  ventana;
+	private final       Evento            evento;
+	public static final String[]          FORMATOS       = {"DIGITAL", "IMPRESO"};
 
-	public PanelLibros (EventosLibros eventosLibros){
-		this.eventosLibros = eventosLibros;
+	public PanelLibros (VentanaPrincipal ventana, Evento evento){
+		this.ventana = ventana;
+		this.evento  = evento;
 		inicializarPanelLibros();
 	}
 
@@ -46,29 +46,32 @@ public class PanelLibros extends JPanel{
 	private void inicializarPanelLibros (){
 		setLayout(new BorderLayout());
 		model = getDefaultTableModel();
-		rellenarLista();
+		actualizarTabla();
 		tableLibros = new JTable(model);
 		tableLibros.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		JScrollPane scrollPane = new JScrollPane(tableLibros);
 		add(scrollPane, BorderLayout.CENTER);
 
-		botonAgregar.setActionCommand("agregarLibro");
-		botonAgregar.addActionListener(eventosLibros);
+		JButton botonAgregar = new JButton("Agregar Libro");
+		botonAgregar.setActionCommand(Evento.EVENTO.AGREGAR_LIBRO_AL_CARRITO.name());
+		botonAgregar.addActionListener(evento);
 		add(botonAgregar, BorderLayout.SOUTH);
-		actualizarTabla();
 	}
 
 	private void rellenarLista (){
-		model.setDataVector(eventosLibros.obtenerListaDeLibros(), nombreColumnas);
+		model.setDataVector(ventana.obtenerListaLibros(), nombreColumnas);
 	}
 
 	private void actualizarTabla (){
 		model.addTableModelListener(e -> {
 			int columnaCambio = e.getColumn();
 			if (columnaCambio == 10){
-				return;
+				rellenarLista();
 			}
-			rellenarLista();
 		});
+	}
+
+	public DefaultTableModel getTableModel (){
+		return model;
 	}
 }

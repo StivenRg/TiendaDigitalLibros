@@ -1,7 +1,5 @@
 package co.edu.uptc.modelo;
 
-import co.edu.uptc.controlador.EventosUsuario;
-
 import java.util.HashMap;
 
 public class Usuario{
@@ -9,10 +7,13 @@ public class Usuario{
 	private String                 correoElectronico;
 	private String                 direccionEnvio;
 	private long                   telefonoContacto;
-	private String                 claveAcceso;
-	private String                 tipoCliente;
+	private char[]                 claveAcceso;
+	private ROLES                  rolUsuario;
 	private HashMap<Long, Integer> carritoDeCompras;
 	private int                    CID; //Carrito ID
+	public enum ROLES{
+		REGULAR, PREMIUM, ADMIN
+	}
 
 	public Usuario (){}
 
@@ -21,7 +22,8 @@ public class Usuario{
 			String correoElectronico,
 			String direccionEnvio,
 			long telefonoContacto,
-			String claveAcceso,
+			char[] claveAcceso,
+			int CID,
 			HashMap<Long, Integer> carritoDeCompras
 	){
 		this.nombreCompleto    = nombreCompleto;
@@ -29,88 +31,81 @@ public class Usuario{
 		this.direccionEnvio    = direccionEnvio;
 		this.telefonoContacto  = telefonoContacto;
 		this.claveAcceso       = claveAcceso;
-		this.tipoCliente       = validarTipoDeCliente(correoElectronico);
-		this.CID               = getCID_Index();
+		this.rolUsuario        = validarRolUsuario(correoElectronico);
+		this.CID               = CID;
 		this.carritoDeCompras  = carritoDeCompras;
 	}
 
-	private String validarTipoDeCliente (String correoElectronico){
+	static ROLES validarRolUsuario (String correoElectronico){
 		if (correoElectronico.matches("^(?i)admin.*$")){
-			return "ADMIN";
+			return ROLES.ADMIN;
 		}else if (correoElectronico.matches("^(?i)vip.*$")){
-			return "PREMIUM";
+			return ROLES.PREMIUM;
 		}
-		return "REGULAR";
+		return ROLES.REGULAR;
 	}
 
-	public void actualizarDatos (String nombreCompleto, String correoElectronico, String direccionEnvio, long telefonoContacto){
-		this.nombreCompleto    = nombreCompleto;
-		this.correoElectronico = correoElectronico;
-		this.direccionEnvio    = direccionEnvio;
-		this.telefonoContacto  = telefonoContacto;
-	}
-
-	public String getNombreCompleto (){
+	String getNombreCompleto (){
 		return nombreCompleto;
 	}
 
-	public void setNombreCompleto (String paramNombreCompleto){
+	void setNombreCompleto (String paramNombreCompleto){
 		nombreCompleto = paramNombreCompleto;
 	}
 
-	public String getCorreoElectronico (){
+	String getCorreoElectronico (){
 		return correoElectronico;
 	}
 
-	public void setCorreoElectronico (String paramCorreoElectronico){
+	void setCorreoElectronico (String paramCorreoElectronico){
 		correoElectronico = paramCorreoElectronico;
 	}
 
-	public String getDireccionEnvio (){
+	String getDireccionEnvio (){
 		return direccionEnvio;
 	}
 
-	public void setDireccionEnvio (String paramDireccionEnvio){
+	void setDireccionEnvio (String paramDireccionEnvio){
 		direccionEnvio = paramDireccionEnvio;
 	}
 
-	public long getTelefonoContacto (){
+	long getTelefonoContacto (){
 		return telefonoContacto;
 	}
 
-	public void setTelefonoContacto (long paramTelefonoContacto){
+	void setTelefonoContacto (long paramTelefonoContacto){
 		telefonoContacto = paramTelefonoContacto;
 	}
 
-	public String getClaveAcceso (){
+	char[] getClaveAcceso (){
 		return claveAcceso;
 	}
 
-	public void setClaveAcceso (String paramClaveAcceso){
+	public void setClaveAcceso (char[] paramClaveAcceso){
 		claveAcceso = paramClaveAcceso;
 	}
 
-	public String getTipoCliente (){
-		return tipoCliente;
+	public ROLES getRolUsuario (){
+		return rolUsuario;
 	}
 
-	public void setTipoCliente (String paramTipoCliente){
-		tipoCliente = paramTipoCliente;
+	public void setRolUsuario (ROLES rolUsuario){
+		this.rolUsuario = rolUsuario;
 	}
 
 	public HashMap<Long, Integer> getCarritoDeCompras (){
 		return carritoDeCompras;
 	}
 
-	public void setCarritoDeCompras (HashMap<Long, Integer> paramCarritoDeCompras){
-		carritoDeCompras = paramCarritoDeCompras;
+	public void setCarritoDeCompras (HashMap<Long, Integer> carritoDeCompras){
+		this.carritoDeCompras = carritoDeCompras;
 	}
 
 	public int getCID (){
 		return CID;
 	}
 
-	private static int getCID_Index (){
-		return EventosUsuario.getCID_Index();
+	public void setCID (int CID){
+		this.CID = CID;
 	}
 }

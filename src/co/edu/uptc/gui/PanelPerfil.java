@@ -1,46 +1,46 @@
 package co.edu.uptc.gui;
 
-import co.edu.uptc.controlador.EventosUsuario;
-import co.edu.uptc.modelo.Usuario;
+import co.edu.uptc.modelo.Libro;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.util.ArrayList;
 
-public class PanelPerfil extends JPanel implements InterfacePerfilListener{
-	private final EventosUsuario         eventosUsuario;
-	private       Usuario                usuario;
-	private       String[]               rolesDeUsuario    = {"REGULAR", "PREMIUM", "ADMIN"};
-	private       String[]               nombreAtributos   = {"Nombre Completo", "Correo Electronico", "Direccion", "Teléfono", "Tipo de Usuario", "Contraseña"
+public class PanelPerfil extends JPanel{
+	private final Evento           evento;
+	private       String[]         rolesDeUsuario    = {"REGULAR", "PREMIUM", "ADMIN"};
+	private       String[]         nombreAtributos   = {"Nombre Completo", "Correo Electronico", "Direccion", "Teléfono", "Tipo de Usuario", "Contraseña"
 	};
-	private       String                 nombreCompleto    = "";
-	private       String                 correoElectronico = "";
-	private       String                 direccion         = "";
-	private       long                   telefono          = 3000000000L;
-	private       String                 tipoUsuario       = "REGULAR";
-	private       HashMap<Long, Integer> carritoDeCompras;
-	private       char[]                 claveAcceso;
+	private       String           nombreCompleto    = "";
+	private       String           correoElectronico = "";
+	private       String           direccion         = "";
+	private       long             telefono          = 3000000000L;
+	private       String           tipoUsuario       = "REGULAR";
+	private       int              CID               = 0;
+	private       ArrayList<Libro> carritoDeCompras;
+	private       char[]           claveAcceso;
 
-	public PanelPerfil (EventosUsuario eventosUsuario){
-		this.eventosUsuario = eventosUsuario;
-		eventosUsuario.setPanelPerfil(this);
+	public PanelPerfil (Evento evento){
+		this.evento = evento;
+		evento.setPanelPerfil(this);
 		inicializarPanelPerfil();
 	}
 
-	private void refrescarDatosPerfil (Usuario datosUsuario){
+	private void refrescarDatosPerfil (String[] datosUsuario){
 		//Datos de Usuario
-		usuario           = datosUsuario;
-		nombreCompleto    = usuario.getNombreCompleto();
-		correoElectronico = usuario.getCorreoElectronico();
-		direccion         = usuario.getDireccionEnvio();
-		telefono          = usuario.getTelefonoContacto();
-		tipoUsuario       = usuario.getTipoCliente();
+		nombreCompleto    = datosUsuario[0];
+		correoElectronico = datosUsuario[1];
+		direccion         = datosUsuario[2];
+		telefono          = Long.parseLong(datosUsuario[3]);
+		tipoUsuario       = datosUsuario[4];
+		claveAcceso       = datosUsuario[5].toCharArray();
+		CID               = Integer.parseInt(datosUsuario[6]);
 		inicializarPanelDatosUsuario();
 		inicializarPanelFooter();
 
 		String[]          tiposUsuario        = {"REGULAR", "PREMIUM", "ADMIN"};
 		JComboBox<String> comboBoxTipoUsuario = new JComboBox<>(tiposUsuario);
-		comboBoxTipoUsuario.setSelectedItem(usuario.getTipoCliente());
+		comboBoxTipoUsuario.setSelectedItem(datosUsuario.getTipoCliente());
 		JPasswordField boxContrasena = new JPasswordField();
 
 		JCheckBox checkBoxMostrarContrasena = new JCheckBox("Mostrar Contraseña");
@@ -139,12 +139,12 @@ public class PanelPerfil extends JPanel implements InterfacePerfilListener{
 
 		JButton botonGuardar = new JButton("Guardar");
 		botonGuardar.setActionCommand("actualizarDatosCliente");
-		botonGuardar.addActionListener(eventosUsuario);
+		botonGuardar.addActionListener(evento);
 		botonGuardar.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
 		JButton botonCambiarContrasena = new JButton("Cambiar Contraseña");
 		botonCambiarContrasena.setActionCommand("cambiarContraseña");
-		botonCambiarContrasena.addActionListener(eventosUsuario);
+		botonCambiarContrasena.addActionListener(evento);
 		botonCambiarContrasena.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
 		panelFooter.add(botonGuardar);
@@ -152,30 +152,19 @@ public class PanelPerfil extends JPanel implements InterfacePerfilListener{
 		add(panelFooter);
 	}
 
-	@Override public void onRegistroExitoso (Object[] datosUsuario){
-		Usuario usuario = new Usuario((String) datosUsuario[0],
-		                              (String) datosUsuario[1],
-		                              (String) datosUsuario[2],
-		                              (long) datosUsuario[3],
-		                              (String) datosUsuario[4],
-		                              PanelCarrito.getCarritoDeComprasTemporal()
-		);
-		refrescarDatosPerfil(usuario);
+	public void iniciarSesion (Object[] datosUsuario){
+		rellenarPanelPerfil(datosUsuario);
 	}
 
-	@Override public void onSesionIniciada (Object[] datosUsuario){
-		Usuario usuario = eventosUsuario.getDatosUsuario();
-		nombreCompleto    = usuario.getNombreCompleto();
-		correoElectronico = usuario.getCorreoElectronico();
-		direccion         = usuario.getDireccionEnvio();
-		telefono          = usuario.getTelefonoContacto();
-		tipoUsuario       = usuario.getTipoCliente();
-		carritoDeCompras  = usuario.getCarritoDeCompras();
-		refrescarDatosPerfil(usuario);
-	}
+	private void rellenarPanelPerfil (Object[] paramDatosUsuario){
+		this.datosUsuario = paramDatosUsuario;
+		nombreCompleto    = (String) datosUsuario[0];
+		correoElectronico = (String) datosUsuario[1];
+		direccion         = (String) datosUsuario[2];
+		telefono          = (long) datosUsuario[3];
+		//Se omite el campo claveAcceso
+		CID = (int) datosUsuario[5];
+		//Se omite el campo carritoDeCompras
 
-	public Object[] getDatosActualizados (){
-		return new Object[]{nombreCompleto, correoElectronico, direccion, telefono, claveAcceso
-		};
 	}
 }

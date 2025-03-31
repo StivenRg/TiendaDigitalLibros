@@ -1,34 +1,42 @@
 package co.edu.uptc.modelo;
 
 public class Libro{
-	private long   isbn;
-	private String titulo;
-	private String autores;
-	private int    anioPublicacion;
-	private String categoria;
-	private String editorial;
-	private int    numeroPaginas;
-	private double precioVenta;
-	private int    cantidadDisponible;
-	private String formato;
+	private             long     isbn;
+	private             String   titulo;
+	private             String   autores;
+	private             int      anioPublicacion;
+	private             String   categoria;
+	private             String   editorial;
+	private             int      numeroPaginas;
+	private             double   precioVenta;
+	private             int      cantidadDisponible;
+	private             String   formato;
 
 	public Libro (){
 	}
 
-	public Libro (String isbn, String titulo, String autores, int anioPublicacion, String categoria, String editorial, int numeroPaginas, double precioVenta, int cantidadDisponible, String formato){
-	}
-
-	public void actualizarDatosLibro (String isbn,
-	                                  String titulo,
-	                                  String autores,
-	                                  int anioPublicacion,
-	                                  String categoria,
-	                                  String editorial,
-	                                  int numeroPaginas,
-	                                  double precioVenta,
-	                                  int cantidadDisponible,
-	                                  String formato
+	public Libro (
+			long isbn,
+			String titulo,
+			String autores,
+			int anioPublicacion,
+			String categoria,
+			String editorial,
+			int numeroPaginas,
+			double precioVenta,
+			int cantidadDisponible,
+			String formato
 	){
+		this.isbn               = isbn;
+		this.titulo             = titulo;
+		this.autores            = autores;
+		this.anioPublicacion    = anioPublicacion;
+		this.categoria          = categoria;
+		this.editorial          = editorial;
+		this.numeroPaginas      = numeroPaginas;
+		this.precioVenta        = precioVenta;
+		this.cantidadDisponible = cantidadDisponible;
+		this.formato            = formato.toUpperCase();
 	}
 
 	public long getIsbn (){
@@ -104,10 +112,10 @@ public class Libro{
 	}
 
 	public String getFormato (){
-		return formato;
+		return formato.toUpperCase();
 	}
 
 	public void setFormato (String paramFormato){
-		formato = paramFormato;
+		formato = paramFormato.toUpperCase();
 	}
 }

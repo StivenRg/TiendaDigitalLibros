@@ -1,49 +1,41 @@
 package co.edu.uptc.gui;
 
-import co.edu.uptc.controlador.EventosUsuario;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+//REVISADO Y APROBADO
 public class DialogLoginSignup extends JDialog{
-	private JTabbedPane             panelContenedor;
-	private JPanel                  panelLogin;
-	private JPanel                  panelRegistro;
-	private JTextField              boxNombreCompleto;
-	private JTextField              boxCorreo;
-	private JTextField              boxDireccion;
-	private JTextField              boxTelefono;
-	private JPasswordField          boxContrasena;
-	private JPasswordField          passwordFieldContrasena;
-	private InterfacePerfilListener listenerPerfil;
+	private final JTabbedPane    panelContenedor;
+	private       JPanel         panelLogin;
+	private       JPanel         panelRegistro;
+	private       JTextField     boxNombreCompleto;
+	private       JTextField     boxCorreo;
+	private       JTextField     boxDireccion;
+	private       JTextField     boxTelefono;
+	private       JPasswordField boxContrasena;
+	private       JPasswordField passwordFieldContrasena;
+	private final Evento         evento;
 
-	public DialogLoginSignup (PanelPerfil panelPerfil, EventosUsuario eventosUsuario){
+	public DialogLoginSignup (Evento evento, VentanaPrincipal ventanaPrincipal){
 		super(new JFrame(), "Login - SingUp", true);
-		this.listenerPerfil = panelPerfil;
-		panelContenedor     = new JTabbedPane();
+		panelContenedor = new JTabbedPane();
 		agregarLogin();
 		agregarRegistro();
-		eventosUsuario.setDialogLoginSignup(this);
+		this.evento = evento;
 		panelContenedor.addTab("Login", panelLogin);
 		panelContenedor.addTab("SingUp", panelRegistro);
 		add(panelContenedor);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.getContentPane().add(panelContenedor);
 		this.pack();
-		this.setLocationRelativeTo(panelPerfil);
 		this.setVisible(true);
-	}
-
-	public String getBoxCorreo (){
-		return boxCorreo.getText();
 	}
 
 	private void agregarLogin (){
 		//Panel de Login
-		panelLogin = new JPanel(new BorderLayout()); //Aunque no se usen las regiones, al agregar al centro, se extiende hacia los lados, lo cual mejora la UX
+		panelLogin = new JPanel(new BorderLayout());
 
 		//Campos de Usuario y Contraseña
 		JPanel panelLoginDatos = new JPanel(new GridBagLayout());
@@ -92,13 +84,8 @@ public class DialogLoginSignup extends JDialog{
 		//Botones
 		JPanel  botones            = new JPanel(new GridLayout(2, 1));
 		JButton botonIniciarSesion = new JButton("Iniciar Sesión");
-		botonIniciarSesion.addActionListener((ActionEvent e) -> {
-			if (listenerPerfil != null){
-				listenerPerfil.onSesionIniciada(getDatosLogin());
-			}
-			dispose();
-		});
-
+		botonIniciarSesion.setActionCommand(Evento.EVENTO.INICIAR_SESION.name());
+		botonIniciarSesion.addActionListener(evento);
 		botones.add(botonIniciarSesion, gbc);
 
 		JLabel linkRegistrarse = new JLabel("Registrarse");
@@ -203,12 +190,8 @@ public class DialogLoginSignup extends JDialog{
 
 		JPanel  panelBotones   = new JPanel(new GridLayout(2, 1));
 		JButton botonRegistrar = new JButton("Crear Cuenta");
-		botonRegistrar.addActionListener(e -> {
-			if (listenerPerfil != null){
-				listenerPerfil.onRegistroExitoso(getDatosRegistro());
-			}
-			dispose();
-		});
+		botonRegistrar.setActionCommand(Evento.EVENTO.REGISTRAR.name());
+		botonRegistrar.addActionListener(evento);
 		panelBotones.add(botonRegistrar, gbc);
 
 		JLabel linkIniciarSesion = new JLabel("Iniciar Sesión");
@@ -227,15 +210,19 @@ public class DialogLoginSignup extends JDialog{
 		panelRegistro.add(panelBotones, BorderLayout.SOUTH);
 	}
 
-	public Object[] getDatosRegistro (){
-		StringBuilder contrasena = new StringBuilder();
-		for (int i = 0; i < boxContrasena.getPassword().length; i++){
-			contrasena.append(boxContrasena.getPassword()[i]);
+	public String[] getDatosRegistro (){
+		StringBuilder pswd = new StringBuilder();
+		for (char c : passwordFieldContrasena.getPassword()){
+			pswd.append(c);
 		}
-		return new Object[]{boxNombreCompleto.getText(), boxCorreo.getText(), boxDireccion.getText(), boxTelefono.getText(), contrasena.toString(), };
+		return new String[]{boxNombreCompleto.getText(), boxCorreo.getText(), boxDireccion.getText(), boxTelefono.getText(), pswd.toString()};
 	}
 
-	public Object[] getDatosLogin (){
-		return new Object[]{boxCorreo.getText(), passwordFieldContrasena.getPassword()};
+	public String[] getDatosLogin (){
+		StringBuilder pswd = new StringBuilder();
+		for (char c : passwordFieldContrasena.getPassword()){
+			pswd.append(c);
+		}
+		return new String[]{boxCorreo.getText(), pswd.toString()};
 	}
 }

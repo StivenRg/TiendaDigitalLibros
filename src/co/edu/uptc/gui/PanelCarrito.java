@@ -1,20 +1,21 @@
 package co.edu.uptc.gui;
 
-import co.edu.uptc.controlador.EventosCarrito;
+import co.edu.uptc.modelo.Libro;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PanelCarrito extends JPanel{
-	private final  JLabel                 labelTotal = new JLabel("Total: $0.00");
-	private final  EventosCarrito         eventos;
-	private static HashMap<Long, Integer> carritoDeCompras;
-	private        DefaultTableModel      model;
+	private final JLabel                 labelTotal = new JLabel("Total: $0.00");
+	public static HashMap<Long, Integer> carritoDeCompras;
+	private       DefaultTableModel      model;
+	private       Evento                 evento;
 
-	public PanelCarrito (EventosCarrito eventos){
-		this.eventos = eventos;
+	public PanelCarrito (Evento evento){
+		this.evento = evento;
 		inicializarPanelCarrito();
 		carritoDeCompras = new HashMap<>();
 		inicializarPanelFooter();
@@ -52,11 +53,11 @@ public class PanelCarrito extends JPanel{
 		//Footer (incluye el label de precio total)
 		JButton botonPagarEfectivo = new JButton("Pagar en Efectivo");
 		botonPagarEfectivo.setActionCommand("pagarEfectivo");
-		botonPagarEfectivo.addActionListener(eventos);
+		botonPagarEfectivo.addActionListener(evento);
 
 		JButton botonPagarTarjeta = new JButton("Pagar con Tarjeta");
 		botonPagarTarjeta.setActionCommand("pagarTarjeta");
-		botonPagarTarjeta.addActionListener(eventos);
+		botonPagarTarjeta.addActionListener(evento);
 
 		labelTotal.setHorizontalAlignment(JLabel.CENTER);
 		labelTotal.setFont(new Font("Lucida Sans Typewriter", Font.BOLD, 20));
@@ -153,7 +154,7 @@ public class PanelCarrito extends JPanel{
 		actualizarCarrito(carritoDeCompras, model);
 	}
 
-	private void actualizarCarrito (HashMap<Long, Integer> carritoDeCompras, DefaultTableModel model){
+	private void actualizarCarrito (ArrayList<Libro> carritoDeCompras, DefaultTableModel model){
 		for (int fila = 0; fila < model.getRowCount(); fila++){
 			long ISBN     = Long.parseLong(model.getValueAt(fila, 0).toString());
 			int  cantidad = Integer.parseInt(model.getValueAt(fila, 5).toString());

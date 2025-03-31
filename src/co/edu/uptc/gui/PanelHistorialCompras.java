@@ -1,15 +1,12 @@
 package co.edu.uptc.gui;
 
-import co.edu.uptc.controlador.EventosUsuario;
-import co.edu.uptc.modelo.Usuario;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class PanelHistorialCompras extends JPanel{
-	private Usuario usuario;
+	private Evento evento;
 
-	public PanelHistorialCompras (EventosUsuario eventosUsuario){
+	public PanelHistorialCompras (Evento evento){
 		//TODO
 		setLayout(new GridLayout(0, 3));
 	}

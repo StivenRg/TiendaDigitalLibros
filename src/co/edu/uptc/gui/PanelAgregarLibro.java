@@ -1,28 +1,26 @@
 package co.edu.uptc.gui;
 
-import co.edu.uptc.controlador.EventosLibros;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class PanelAgregarLibro extends JPanel{
-	private EventosLibros eventosLibros;
-	private JPanel        panelCampos;
-	private JPanel        panelFooter;
-	private JTextField    boxISBN;
-	private JTextField    boxTitulo;
-	private JTextField    boxAutor;
-	private JTextField    boxAnioPublicacion;
-	private JTextField    boxGenero;
-	private JTextField    boxEditorial;
-	private JTextField    boxNumPaginas;
-	private JTextField    boxPrecioVenta;
-	private JTextField    boxCantidadInventario;
+	private Evento     evento;
+	private JPanel     panelCampos;
+	private JPanel     panelFooter;
+	private JTextField boxISBN;
+	private JTextField boxTitulo;
+	private JTextField boxAutor;
+	private JTextField boxAnioPublicacion;
+	private JTextField boxGenero;
+	private JTextField boxEditorial;
+	private JTextField boxNumPaginas;
+	private JTextField boxPrecioVenta;
+	private JTextField boxCantidadInventario;
 	JComboBox<String> comboBoxFormato = new JComboBox<>(new String[]{"Digital", "Impreso"});
 	private JLabel mensajeDeError = new JLabel();
 
-	public PanelAgregarLibro (EventosLibros eventosLibros){
-		this.eventosLibros = eventosLibros;
+	public PanelAgregarLibro (Evento evento){
+		this.evento = evento;
 		setLayout(new BorderLayout());
 		inicializarPanel();
 	}
@@ -159,16 +157,16 @@ public class PanelAgregarLibro extends JPanel{
 		botonGuardar.addActionListener(e -> {
 			mensajeDeError.setText(obtenerMensajeDeError());
 			if (mensajeDeError.getText() == null){
-				eventosLibros.agregarLibro(Long.parseLong(boxISBN.getText()),
-				                           boxTitulo.getText(),
-				                           boxAutor.getText(),
-				                           Integer.parseInt(boxAnioPublicacion.getText()),
-				                           boxGenero.getText(),
-				                           boxEditorial.getText(),
-				                           Integer.parseInt(boxNumPaginas.getText()),
-				                           Double.parseDouble(boxPrecioVenta.getText()),
-				                           Integer.parseInt(boxCantidadInventario.getText()),
-				                           comboBoxFormato.getSelectedItem().toString()
+				evento.agregarLibro(Long.parseLong(boxISBN.getText()),
+				                    boxTitulo.getText(),
+				                    boxAutor.getText(),
+				                    Integer.parseInt(boxAnioPublicacion.getText()),
+				                    boxGenero.getText(),
+				                    boxEditorial.getText(),
+				                    Integer.parseInt(boxNumPaginas.getText()),
+				                    Double.parseDouble(boxPrecioVenta.getText()),
+				                    Integer.parseInt(boxCantidadInventario.getText()),
+				                    comboBoxFormato.getSelectedItem().toString()
 				);
 			}
 		});

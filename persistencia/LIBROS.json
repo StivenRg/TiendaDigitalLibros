@@ -10,7 +10,7 @@
       "numPaginas": 320,
       "precioVenta": 29.90,
       "cantidadInventario": 50,
-      "formato": "Fisico"
+      "formato": "IMPRESO"
     },
     {
       "ISBN": 9783161484101,
@@ -22,7 +22,7 @@
       "numPaginas": 280,
       "precioVenta": 35.50,
       "cantidadInventario": 30,
-      "formato": "Digital"
+      "formato": "DIGITAL"
     },
     {
       "ISBN": 9783161484102,
@@ -34,7 +34,7 @@
       "numPaginas": 300,
       "precioVenta": 27.75,
       "cantidadInventario": 40,
-      "formato": "Fisico"
+      "formato": "IMPRESO"
     },
     {
       "ISBN": 9783161484103,
@@ -46,7 +46,7 @@
       "numPaginas": 240,
       "precioVenta": 31.20,
       "cantidadInventario": 25,
-      "formato": "Digital"
+      "formato": "DIGITAL"
     },
     {
       "ISBN": 9783161484104,
@@ -58,7 +58,7 @@
       "numPaginas": 210,
       "precioVenta": 22.00,
       "cantidadInventario": 10,
-      "formato": "Fisico"
+      "formato": "IMPRESO"
     },
     {
       "ISBN": 9783161484110,
@@ -70,7 +70,7 @@
       "numPaginas": 450,
       "precioVenta": 40.00,
       "cantidadInventario": 15,
-      "formato": "Fisico"
+      "formato": "IMPRESO"
     },
     {
       "ISBN": 9783161484111,
@@ -82,7 +82,7 @@
       "numPaginas": 380,
       "precioVenta": 37.50,
       "cantidadInventario": 20,
-      "formato": "Digital"
+      "formato": "DIGITAL"
     },
     {
       "ISBN": 9783161484112,
@@ -94,7 +94,7 @@
       "numPaginas": 500,
       "precioVenta": 42.75,
       "cantidadInventario": 12,
-      "formato": "Fisico"
+      "formato": "IMPRESO"
     },
     {
       "ISBN": 9783161484113,
@@ -106,7 +106,7 @@
       "numPaginas": 320,
       "precioVenta": 33.40,
       "cantidadInventario": 8,
-      "formato": "Digital"
+      "formato": "DIGITAL"
     },
     {
       "ISBN": 9783161484114,
@@ -118,7 +118,7 @@
       "numPaginas": 600,
       "precioVenta": 45.99,
       "cantidadInventario": 5,
-      "formato": "Fisico"
+      "formato": "IMPRESO"
     },
     {
       "ISBN": 9783161484120,
@@ -130,7 +130,7 @@
       "numPaginas": 550,
       "precioVenta": 50.00,
       "cantidadInventario": 30,
-      "formato": "Fisico"
+      "formato": "IMPRESO"
     },
     {
       "ISBN": 9783161484121,
@@ -142,7 +142,7 @@
       "numPaginas": 480,
       "precioVenta": 55.25,
       "cantidadInventario": 22,
-      "formato": "Digital"
+      "formato": "DIGITAL"
     },
     {
       "ISBN": 9783161484122,
@@ -154,7 +154,7 @@
       "numPaginas": 650,
       "precioVenta": 60.75,
       "cantidadInventario": 18,
-      "formato": "Fisico"
+      "formato": "IMPRESO"
     },
     {
       "ISBN": 9783161484123,
@@ -166,7 +166,7 @@
       "numPaginas": 700,
       "precioVenta": 65.99,
       "cantidadInventario": 10,
-      "formato": "Digital"
+      "formato": "DIGITAL"
     },
     {
       "ISBN": 9783161484124,
@@ -178,7 +178,7 @@
       "numPaginas": 350,
       "precioVenta": 48.50,
       "cantidadInventario": 2,
-      "formato": "Fisico"
+      "formato": "IMPRESO"
     },
     {
       "ISBN": 1234567890,
@@ -190,7 +190,7 @@
       "numeroPaginas": 1,
       "precioVenta": 1.0,
       "cantidadDisponible": 1,
-      "Formato": "Digital"
+      "Formato": "DIGITAL"
     }
   ]
 }
