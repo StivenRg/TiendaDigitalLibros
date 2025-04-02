@@ -386,10 +386,12 @@ public class Tienda{
 	}
 
 	public double calcularSubTotalVenta (DefaultTableModel model){
-		double totalVentaNeto = 0;
+		double    totalVentaNeto       = 0;
+		final int columnaValorUnitario = 3;
+		final int columnaCantidad      = 5;
 		for (int fila = 0; fila < model.getRowCount(); fila++){
-			double valorUnitario = (Double) model.getValueAt(fila, 2);
-			int    cantidad      = (int) model.getValueAt(fila, 4);
+			double valorUnitario = (double) model.getValueAt(fila, columnaValorUnitario);
+			int    cantidad      = (int) model.getValueAt(fila, columnaCantidad);
 			totalVentaNeto += calcularPrecioVenta(valorUnitario, cantidad);
 		}
 		return totalVentaNeto;
@@ -401,11 +403,11 @@ public class Tienda{
 
 	public double calcularPrecioVenta (double valorUnitario, int cantidad){
 		double valorImpuesto = calcularValorImpuesto(valorUnitario);
-		return valorUnitario * (1 + valorImpuesto) * cantidad;
+		return (valorUnitario + valorImpuesto) * cantidad;
 	}
 
 	public double calcularValorImpuesto (double precioUnidad){
-		if (precioUnidad >= 50){
+		if (precioUnidad >= 50000){
 			return precioUnidad * 0.19;
 		}else{
 			return precioUnidad * 0.05;

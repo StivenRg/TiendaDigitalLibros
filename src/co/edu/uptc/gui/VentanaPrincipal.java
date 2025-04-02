@@ -27,11 +27,9 @@ public class VentanaPrincipal extends JFrame{
 		String   titulo         = (String) datosObtenidos[1];
 		String   autores        = (String) datosObtenidos[2];
 		double   precioUnitario = (double) datosObtenidos[7];
-		double   precioImpuesto = tienda.calcularValorImpuesto(precioUnitario);
 		int      cantidad       = 1;
-		double   precioTotal    = (precioUnitario * (1 + precioImpuesto)) * cantidad;
 
-		return new Object[]{ISBN, titulo, autores, precioUnitario, precioImpuesto, cantidad, precioTotal};
+		return new Object[]{ISBN, titulo, autores, precioUnitario, cantidad};
 	}
 
 	private void inicializarFrame (){
@@ -113,11 +111,13 @@ public class VentanaPrincipal extends JFrame{
 				Long ISBN = Long.parseLong(tablaLibros.getValueAt(fila, 0).toString());
 				if (! carritoDeCompras.containsKey(ISBN)){
 					carritoDeCompras.put(ISBN, 1);
+					pantallaPrincipal.getPanelCarrito().agregarArticulo(ISBN);
+				} else{
+					pantallaPrincipal.getPanelCarrito().incrementarCantidad(ISBN);
 				}
 				tablaLibros.setValueAt(false, fila, columnaAgregar);
 			}
 		}
-		pantallaPrincipal.getPanelCarrito().actualizarCarritoLocal();
 	}
 
 	public static void guardarCarritoDeCompras (int CID, HashMap<Long, Integer> carritoDeCompras){
@@ -163,7 +163,7 @@ public class VentanaPrincipal extends JFrame{
 		}
 	}
 
-	double obtenerrPrecioVentaTotal (DefaultTableModel model){
+	double obtenerPrecioVentaTotal (DefaultTableModel model){
 		return tienda.calcularSubTotalVenta(model);
 	}
 

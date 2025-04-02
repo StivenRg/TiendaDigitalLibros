@@ -1,6 +1,7 @@
 package co.edu.uptc.gui;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.HashMap;
@@ -48,13 +49,16 @@ public class PanelCarrito extends JPanel{
 					default -> String.class;
 				};
 			}
+		};
+	}
 
-			@Override public Object getValueAt (int row, int column){
-				Object value = super.getValueAt(row, column); // Obtiene el valor original
-				if ((column == 3 || column == 4 || column == 6)){
-					return String.format("$%.2f", (double) value);
+	private DefaultTableCellRenderer celdasDoubleFormateadas (){
+		return new DefaultTableCellRenderer(){
+			@Override public Component getTableCellRendererComponent (JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+				if (column == 3 || column == 4 || column == 6){
+					value = String.format("$%.2f", (double) value);
 				}
-				return value; // Para otras columnas, se devuelve el valor normal
+				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			}
 		};
 	}
@@ -67,9 +71,16 @@ public class PanelCarrito extends JPanel{
 		setLayout(new BorderLayout());
 		model = getDefaultTableModel();
 		modificacionesCarrito(model);
-		JTable      tableCarrito = new JTable(model);
-		JScrollPane scrollPane   = new JScrollPane(tableCarrito);
+		JTable tableCarrito = new JTable(model);
+		formatearColumnas(tableCarrito);
+		JScrollPane scrollPane = new JScrollPane(tableCarrito);
 		add(scrollPane, BorderLayout.CENTER);
+	}
+
+	private void formatearColumnas (JTable tableCarrito){
+		tableCarrito.getColumnModel().getColumn(3).setCellRenderer(celdasDoubleFormateadas());
+		tableCarrito.getColumnModel().getColumn(4).setCellRenderer(celdasDoubleFormateadas());
+		tableCarrito.getColumnModel().getColumn(6).setCellRenderer(celdasDoubleFormateadas());
 	}
 
 	private void inicializarPanelFooter (){
@@ -116,13 +127,8 @@ public class PanelCarrito extends JPanel{
 				case 7 -> sumarAlCarrito(model, fila);
 				case 8 -> quitarAlCarrito(model, fila);
 				case 9 -> descartarDelCarrito(model, fila);
-				default -> {
-					return;
-				}
+				default -> actualizarPrecioTotal();
 			}
-			actualizarPrecioVenta();
-			actualizarPrecioImpuesto();
-			actualizarPrecioTotal();
 			if (VentanaPrincipal.LOGIN_CORRECTO){
 				actualizarCarritoArchivo();
 			}
@@ -195,32 +201,48 @@ public class PanelCarrito extends JPanel{
 		identificadorCarrito = paramIdentificadorCarrito;
 	}
 
-	public void actualizarCarritoLocal (){
-		for (long ISBN : carritoDeCompras.keySet()){
-			model.addRow(ventanaPrincipal.obtenerDatosLibroCarrito(ISBN));
-		}
+	void agregarArticulo (long ISBN){
+		model.addRow(formatearArticulo(ISBN));
 	}
 
-	private void actualizarPrecioVenta (){
-		final int columnaPrecioVenta = 6;
-		for (int fila = 0; fila < model.getRowCount(); fila++){
-			double valorUnitario = (Double) model.getValueAt(fila, 2);
-			int    cantidad      = (int) model.getValueAt(fila, 4);
-			model.setValueAt(ventanaPrincipal.obtenerPrecioTotalProducto(valorUnitario, cantidad), fila, columnaPrecioVenta);
-		}
+	private Object[] formatearArticulo (long ISBN){
+		Object[] datosImportados = ventanaPrincipal.obtenerDatosLibroCarrito(ISBN);
+		String   titulo          = (String) datosImportados[1];
+		String   autores         = (String) datosImportados[2];
+		double   precioUnitario  = (double) datosImportados[3];
+		double   precioImpuesto  = obtenerPrecioImpuesto(precioUnitario);
+		int      cantidad        = 1;
+		double   precioTotal     = obtenerPrecioVenta(precioUnitario, cantidad);
+		boolean  agregar         = false;
+		boolean  quitar          = false;
+		boolean  descartar       = false;
+		return new Object[]{ISBN, titulo, autores, precioUnitario, precioImpuesto, cantidad, precioTotal, agregar, quitar, descartar};
 	}
 
-	private void actualizarPrecioImpuesto (){
-		final int columnaValorImpuesto = 4;
-		for (int fila = 0; fila < model.getRowCount(); fila++){
-			double valorUnitario = (Double) model.getValueAt(fila, 2);
-			model.setValueAt(ventanaPrincipal.obtenerPrecioImpuesto(valorUnitario), fila, columnaValorImpuesto);
-		}
+	private double obtenerPrecioVenta (double valorUnitario, int cantidad){
+		return ventanaPrincipal.obtenerPrecioTotalProducto(valorUnitario, cantidad);
+	}
+
+	private double obtenerPrecioImpuesto (double valorUnitario){
+		return ventanaPrincipal.obtenerPrecioImpuesto(valorUnitario);
 	}
 
 	private void actualizarPrecioTotal (){
-		for (int fila = 0; fila < model.getRowCount(); fila++){
-			model.setValueAt(ventanaPrincipal.obtenerrPrecioVentaTotal(model), fila, 6);
+		double precioTotal = ventanaPrincipal.obtenerPrecioVentaTotal(model);
+		labelTotal.setText(String.format("$%.2f", precioTotal));
+	}
+
+	void incrementarCantidad (Long ISBN){
+		int fila = 0;
+		for (int i = 0; i < model.getRowCount(); i++){
+			if (model.getValueAt(i, 0).equals(ISBN)){
+				fila = i;
+				break;
+			}
 		}
+		final int columnaCantidad = 5;
+		int       cantidad        = ((int) model.getValueAt(fila, columnaCantidad)) + 1;
+		model.setValueAt(cantidad, fila, columnaCantidad);
+		actualizarPrecioTotal();
 	}
 }
