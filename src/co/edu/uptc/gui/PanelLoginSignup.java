@@ -4,9 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 
 //REVISADO Y APROBADO
-public class DialogLoginSignup extends JDialog{
+public class PanelLoginSignup extends JPanel{
 	private final JTabbedPane    panelContenedor;
 	private       JPanel         panelLogin;
 	private       JPanel         panelRegistro;
@@ -16,10 +17,16 @@ public class DialogLoginSignup extends JDialog{
 	private       JTextField     boxTelefono;
 	private       JPasswordField boxContrasena;
 	private       JPasswordField passwordFieldContrasena;
+	private final JLabel         mensajeDeError = new JLabel();
 	private final Evento         evento;
 
-	public DialogLoginSignup (Evento evento, VentanaPrincipal ventanaPrincipal){
-		super(new JFrame(), "Login - SingUp", true);
+	public PanelLoginSignup (Evento evento){
+		JFrame frameTemporal = new JFrame("Inicio de Sesión / Registro");
+		frameTemporal.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frameTemporal.setSize(500, 400);
+		frameTemporal.setLocationRelativeTo(null);
+
+		VentanaPrincipal.setPanelgLoginSignup(this);
 		panelContenedor = new JTabbedPane();
 		agregarLogin();
 		agregarRegistro();
@@ -27,10 +34,8 @@ public class DialogLoginSignup extends JDialog{
 		panelContenedor.addTab("Login", panelLogin);
 		panelContenedor.addTab("SingUp", panelRegistro);
 		add(panelContenedor);
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.getContentPane().add(panelContenedor);
-		this.pack();
-		this.setVisible(true);
+		frameTemporal.add(this);
+		frameTemporal.setVisible(true);
 	}
 
 	private void agregarLogin (){
@@ -41,7 +46,9 @@ public class DialogLoginSignup extends JDialog{
 		JPanel panelLoginDatos = new JPanel(new GridBagLayout());
 		JLabel labelUsuario    = new JLabel("Correo Electronico", SwingConstants.CENTER);
 		JLabel labelContrasena = new JLabel("Contraseña", SwingConstants.CENTER);
-		boxCorreo               = new JTextField("admin1@example.com");
+		boxCorreo = new JTextField("admin1@example.com");
+		//Validacion en tiempo real del campo de correo electronico
+		validarCampoCorreo(boxCorreo);
 		passwordFieldContrasena = new JPasswordField("admin");
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -118,9 +125,10 @@ public class DialogLoginSignup extends JDialog{
 		//Text Fields
 		boxNombreCompleto = new JTextField("");
 		boxCorreo         = new JTextField("admin1@example.com");
-		boxDireccion      = new JTextField("");
-		boxTelefono       = new JTextField("");
-		boxContrasena     = new JPasswordField("admin");
+		validarCampoCorreo(boxCorreo);
+		boxDireccion  = new JTextField("");
+		boxTelefono   = new JTextField("");
+		boxContrasena = new JPasswordField("admin");
 		boxNombreCompleto.setHorizontalAlignment(JTextField.CENTER);
 		boxCorreo.setHorizontalAlignment(JTextField.CENTER);
 		boxDireccion.setHorizontalAlignment(JTextField.CENTER);
@@ -190,8 +198,14 @@ public class DialogLoginSignup extends JDialog{
 
 		JPanel  panelBotones   = new JPanel(new GridLayout(2, 1));
 		JButton botonRegistrar = new JButton("Crear Cuenta");
-		botonRegistrar.setActionCommand(Evento.EVENTO.REGISTRAR.name());
-		botonRegistrar.addActionListener(evento);
+		botonRegistrar.addActionListener(e -> {
+			mensajeDeError.setText(obtenerMensajeDeError());
+			if (mensajeDeError.getText().isEmpty()){
+				botonRegistrar.setActionCommand(Evento.EVENTO.REGISTRAR.name());
+				botonRegistrar.addActionListener(evento);
+			}
+		});
+
 		panelBotones.add(botonRegistrar, gbc);
 
 		JLabel linkIniciarSesion = new JLabel("Iniciar Sesión");
@@ -204,18 +218,57 @@ public class DialogLoginSignup extends JDialog{
 			}
 		});
 		panelBotones.add(linkIniciarSesion, gbc);
+		panelBotones.add(mensajeDeError);
 
-		//Se agrega el panel de persistencia y de botones
+		//Se agrega el panel de datos y de botones
 		panelRegistro.add(panelRegistroDatos, BorderLayout.CENTER);
 		panelRegistro.add(panelBotones, BorderLayout.SOUTH);
 	}
 
-	public String[] getDatosRegistro (){
-		StringBuilder pswd = new StringBuilder();
-		for (char c : passwordFieldContrasena.getPassword()){
-			pswd.append(c);
+	private String obtenerMensajeDeError (){
+		//Validacion de Campos Vacios
+		{
+			if (boxNombreCompleto.getText().isEmpty()){
+				return "Debe rellenar el campo Nombre Completo";
+			}
+			if (boxCorreo.getText().isEmpty()){
+				return "Debe rellenar el campo Correo Electronico";
+			}
+			if (boxDireccion.getText().isEmpty()){
+				return "Debe rellenar el campo Direccion";
+			}
+			if (boxTelefono.getText().isEmpty()){
+				return "Debe rellenar el campo Teléfono";
+			}
+			if (Arrays.toString(boxContrasena.getPassword()).isEmpty()){
+				return "Debe rellenar el campo Contraseña";
+			}
 		}
-		return new String[]{boxNombreCompleto.getText(), boxCorreo.getText(), boxDireccion.getText(), boxTelefono.getText(), pswd.toString()};
+
+		//Validar tamaño y formato de los campos
+		if (boxTelefono.getText().length() != 10){
+			return "El campo Teléfono debe tener 10 caracteres";
+		}
+
+		if (! boxTelefono.getText().matches("[0-9]{10}")){
+			return "El campo Teléfono debe tener 10 caracteres numéricos";
+		}
+
+		final String regexDireccion = "^(Calle|Carrera|Avenida|Diagonal|Transversal|Circunvalar)\\s\\d+\\s*(#|No\\.)\\s*\\d+(-\\d+)?(\\s*,\\s*[\\w\\s]+)?$\n";
+		if (! boxDireccion.getText().matches(regexDireccion)){
+			return "El campo Dirección debe tener la siguiente forma: (Calle, Carrera, Avenida, Diagonal, Transversal, Circunvalar) número (# No.) número - " +
+			       "numero, Texto Adicional";
+		}
+		return "";
+	}
+
+	public Object[] getDatosRegistro (){
+		return new Object[]{boxNombreCompleto.getText(),
+		                    boxCorreo.getText(),
+		                    boxDireccion.getText(),
+		                    Long.parseLong(boxTelefono.getText()),
+		                    boxContrasena.getPassword()
+		};
 	}
 
 	public String[] getDatosLogin (){
@@ -224,5 +277,19 @@ public class DialogLoginSignup extends JDialog{
 			pswd.append(c);
 		}
 		return new String[]{boxCorreo.getText(), pswd.toString()};
+	}
+
+	private void validarCampoCorreo (JTextField boxCorreo){
+		boxCorreo.setInputVerifier(new InputVerifier(){
+			@Override public boolean verify (JComponent input){
+				String       texto       = ((JTextField) input).getText();
+				final String regexCorreo = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$";
+				if (texto.matches(regexCorreo)){
+					return true;
+				}
+				JOptionPane.showMessageDialog(null, "El correo electronico no es valido", "Error", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+		});
 	}
 }

@@ -183,14 +183,14 @@
     {
       "ISBN": 1234567890,
       "titulo": "Prueba",
-      "autor": "Anonimo",
+      "autores": "Anonimo",
       "añoPublicacion": 2025,
-      "genero": "X",
+      "categoria": "X",
       "editorial": "D",
-      "numeroPaginas": 1,
+      "numPaginas": 1,
       "precioVenta": 1.0,
-      "cantidadDisponible": 1,
-      "Formato": "DIGITAL"
+      "cantidadInventario": 1,
+      "formato": "DIGITAL"
     }
   ]
 }

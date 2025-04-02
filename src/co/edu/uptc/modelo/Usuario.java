@@ -11,9 +11,6 @@ public class Usuario{
 	private ROLES                  rolUsuario;
 	private HashMap<Long, Integer> carritoDeCompras;
 	private int                    CID; //Carrito ID
-	public enum ROLES{
-		REGULAR, PREMIUM, ADMIN
-	}
 
 	public Usuario (){}
 

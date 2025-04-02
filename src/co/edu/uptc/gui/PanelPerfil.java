@@ -1,62 +1,72 @@
 package co.edu.uptc.gui;
 
-import co.edu.uptc.modelo.Libro;
+import co.edu.uptc.modelo.ROLES;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class PanelPerfil extends JPanel{
-	private final Evento           evento;
-	private       String[]         rolesDeUsuario    = {"REGULAR", "PREMIUM", "ADMIN"};
-	private       String[]         nombreAtributos   = {"Nombre Completo", "Correo Electronico", "Direccion", "Teléfono", "Tipo de Usuario", "Contraseña"
+	private final Evento            evento;
+	private final PantallaPrincipal pantallaPrincipal;
+	private       Object[]          datosUsuario           = new Object[7];
+	private       String            nombreCompleto         = "";
+	private final JTextField        boxNombreCompleto      = new JTextField();
+	private       String            correoElectronico      = "";
+	private final JTextField        boxCorreo              = new JTextField();
+	private       String            direccion              = "";
+	private final JTextField        boxDireccion           = new JTextField();
+	private       long              telefono               = 0;
+	private final JTextField        boxTelefono            = new JTextField();
+	private       ROLES             tipoUsuario            = ROLES.REGULAR;
+	private final JLabel            labelTipoUsuarioActual = new JLabel(tipoUsuario.name());
+	private       JPasswordField    boxContrasena          = new JPasswordField();
+	private final JLabel            mensajeDeError         = new JLabel();
+	private final String[]          NOMBRE_ATRIBUTOS       = {"Nombre Completo", "Correo Electronico", "Dirección", "Teléfono", "Tipo de Usuario", "Contraseña"
 	};
-	private       String           nombreCompleto    = "";
-	private       String           correoElectronico = "";
-	private       String           direccion         = "";
-	private       long             telefono          = 3000000000L;
-	private       String           tipoUsuario       = "REGULAR";
-	private       int              CID               = 0;
-	private       ArrayList<Libro> carritoDeCompras;
-	private       char[]           claveAcceso;
 
-	public PanelPerfil (Evento evento){
-		this.evento = evento;
-		evento.setPanelPerfil(this);
+	public PanelPerfil (Evento evento, PantallaPrincipal pantallaPrincipal){
+		this.evento            = evento;
+		this.pantallaPrincipal = pantallaPrincipal;
 		inicializarPanelPerfil();
-	}
-
-	private void refrescarDatosPerfil (String[] datosUsuario){
-		//Datos de Usuario
-		nombreCompleto    = datosUsuario[0];
-		correoElectronico = datosUsuario[1];
-		direccion         = datosUsuario[2];
-		telefono          = Long.parseLong(datosUsuario[3]);
-		tipoUsuario       = datosUsuario[4];
-		claveAcceso       = datosUsuario[5].toCharArray();
-		CID               = Integer.parseInt(datosUsuario[6]);
-		inicializarPanelDatosUsuario();
-		inicializarPanelFooter();
-
-		String[]          tiposUsuario        = {"REGULAR", "PREMIUM", "ADMIN"};
-		JComboBox<String> comboBoxTipoUsuario = new JComboBox<>(tiposUsuario);
-		comboBoxTipoUsuario.setSelectedItem(datosUsuario.getTipoCliente());
-		JPasswordField boxContrasena = new JPasswordField();
-
-		JCheckBox checkBoxMostrarContrasena = new JCheckBox("Mostrar Contraseña");
-		checkBoxMostrarContrasena.setSelected(false);
-		checkBoxMostrarContrasena.setHorizontalAlignment(JCheckBox.CENTER);
-		checkBoxMostrarContrasena.addActionListener(e -> {
-			if (checkBoxMostrarContrasena.isSelected()){
-				boxContrasena.setEchoChar((char) 0);
-			}else{
-				boxContrasena.setEchoChar('•');
-			}
-		});
 	}
 
 	private void inicializarPanelPerfil (){
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		refrescarDatosPerfil(datosUsuario);
+	}
+
+	private void refrescarDatosPerfil (Object[] datosUsuario){
+		inicializarPanelDatosUsuario();
+		inicializarPanelFooter();
+		if (datosUsuario.length < 5 || ! VentanaPrincipal.LOGIN_CORRECTO){
+			rellenarDatosVacios();
+			return;
+		}
+
+		//Datos de Usuario
+		nombreCompleto    = (String) datosUsuario[0];
+		correoElectronico = (String) datosUsuario[1];
+		direccion         = (String) datosUsuario[2];
+		telefono          = (long) datosUsuario[3];
+		tipoUsuario       = VentanaPrincipal.obtenerTipoUsuario(correoElectronico);
+
+		boxNombreCompleto.setText(nombreCompleto);
+		boxCorreo.setText(correoElectronico);
+		boxDireccion.setText(direccion);
+		boxTelefono.setText(String.valueOf(telefono));
+		labelTipoUsuarioActual.setText(tipoUsuario.name());
+
+		add(mensajeDeError);
+		revalidate();
+		repaint();
+	}
+
+	private void rellenarDatosVacios (){
+		boxNombreCompleto.setText("");
+		boxCorreo.setText("");
+		boxDireccion.setText("");
+		boxTelefono.setText("");
+		labelTipoUsuarioActual.setText(tipoUsuario.name());
 	}
 
 	private void inicializarPanelDatosUsuario (){
@@ -64,107 +74,158 @@ public class PanelPerfil extends JPanel{
 		//Banner de Nombre Completo
 		JPanel panelNombreCompleto = new JPanel(new GridLayout(1, 2));
 		panelNombreCompleto.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-		JLabel labelNombreCompleto = new JLabel(nombreAtributos[0]);
+		JLabel labelNombreCompleto = new JLabel(NOMBRE_ATRIBUTOS[0]);
 		labelNombreCompleto.setHorizontalAlignment(JLabel.CENTER);
 		labelNombreCompleto.setPreferredSize(new Dimension(100, 25));
-		JTextField txNombreCompleto = new JTextField("");
-		txNombreCompleto.setPreferredSize(new Dimension(160, 25));
+		boxNombreCompleto.setText(nombreCompleto);
+		boxNombreCompleto.setPreferredSize(new Dimension(160, 25));
 		panelNombreCompleto.add(labelNombreCompleto);
-		panelNombreCompleto.add(txNombreCompleto);
+		panelNombreCompleto.add(boxNombreCompleto);
 		add(panelNombreCompleto);
 
 		//Banner de Correo Electronico
 		JPanel panelCorreoElectronico = new JPanel(new GridLayout(1, 2));
 		panelCorreoElectronico.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-		JLabel labelCorreoElectronico = new JLabel(nombreAtributos[1]);
+		JLabel labelCorreoElectronico = new JLabel(NOMBRE_ATRIBUTOS[1]);
 		labelCorreoElectronico.setPreferredSize(new Dimension(100, 25));
 		labelCorreoElectronico.setHorizontalAlignment(JLabel.CENTER);
-		JTextField txCorreoElectronico = new JTextField("");
-		txCorreoElectronico.setPreferredSize(new Dimension(160, 25));
+		boxCorreo.setText(correoElectronico);
+		boxCorreo.setPreferredSize(new Dimension(160, 25));
 		panelCorreoElectronico.add(labelCorreoElectronico);
-		panelCorreoElectronico.add(txCorreoElectronico);
+		panelCorreoElectronico.add(boxCorreo);
 		add(panelCorreoElectronico);
 
 		//Banner de Direccion
 		JPanel panelDireccion = new JPanel(new GridLayout(1, 2));
 		panelDireccion.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-		JLabel labelDireccion = new JLabel(nombreAtributos[2]);
+		JLabel labelDireccion = new JLabel(NOMBRE_ATRIBUTOS[2]);
 		labelDireccion.setPreferredSize(new Dimension(100, 25));
 		labelDireccion.setHorizontalAlignment(JLabel.CENTER);
-		JTextField txDireccion = new JTextField("");
-		txDireccion.setPreferredSize(new Dimension(160, 25));
+		boxDireccion.setText(direccion);
+		boxDireccion.setPreferredSize(new Dimension(160, 25));
 		panelDireccion.add(labelDireccion);
-		panelDireccion.add(txDireccion);
+		panelDireccion.add(boxDireccion);
 		add(panelDireccion);
 
 		//Banner de Teléfono
 		JPanel panelTelefono = new JPanel(new GridLayout(1, 2));
 		panelTelefono.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-		JLabel labelTelefono = new JLabel(nombreAtributos[3]);
+		JLabel labelTelefono = new JLabel(NOMBRE_ATRIBUTOS[3]);
 		labelTelefono.setPreferredSize(new Dimension(100, 25));
 		labelTelefono.setHorizontalAlignment(JLabel.CENTER);
-		JTextField txTelefono = new JTextField("");
-		txTelefono.setPreferredSize(new Dimension(160, 25));
+		boxTelefono.setText(String.valueOf(telefono));
+		boxTelefono.setPreferredSize(new Dimension(160, 25));
 		panelTelefono.add(labelTelefono);
-		panelTelefono.add(txTelefono);
+		panelTelefono.add(boxTelefono);
 		add(panelTelefono);
 
 		//Banner de Tipo de Usuario
 		JPanel panelTipoUsuario = new JPanel(new GridLayout(1, 2));
 		panelTipoUsuario.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-		JLabel labelTipoUsuario = new JLabel(nombreAtributos[4]);
+		JLabel labelTipoUsuario = new JLabel(NOMBRE_ATRIBUTOS[4]);
 		labelTipoUsuario.setPreferredSize(new Dimension(100, 25));
 		labelTipoUsuario.setHorizontalAlignment(JLabel.CENTER);
-		JComboBox<String> comboBoxTipoUsuario = new JComboBox<>(rolesDeUsuario);
-		comboBoxTipoUsuario.setSelectedItem("");
+		labelTipoUsuarioActual.setText(tipoUsuario.name());
 		panelTipoUsuario.add(labelTipoUsuario);
-		panelTipoUsuario.add(comboBoxTipoUsuario);
+		panelTipoUsuario.add(labelTipoUsuarioActual);
 		add(panelTipoUsuario);
 
 		//Banner de Contraseña
-		JPanel panelContrasena = new JPanel(new GridLayout(1, 2));
+		JPanel panelContrasena = new JPanel(new GridLayout(1, 3));
 		panelContrasena.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-		JLabel labelContrasena = new JLabel("*" + nombreAtributos[5]);
+		JLabel labelContrasena = new JLabel("*" + NOMBRE_ATRIBUTOS[5]);
 		labelContrasena.setPreferredSize(new Dimension(100, 25));
 		labelContrasena.setHorizontalAlignment(JLabel.CENTER);
-		JPasswordField pswdField = new JPasswordField("");
-		pswdField.setPreferredSize(new Dimension(160, 25));
+		boxContrasena = new JPasswordField();
+		boxContrasena.setPreferredSize(new Dimension(160, 25));
+		JCheckBox checkBoxMostrarContrasena = new JCheckBox("Mostrar Contraseña");
+		checkBoxMostrarContrasena.setSelected(false);
+		checkBoxMostrarContrasena.setHorizontalAlignment(JCheckBox.CENTER);
+		checkBoxMostrarContrasena.addActionListener(_ -> {
+			if (checkBoxMostrarContrasena.isSelected()){
+				boxContrasena.setEchoChar((char) 0);
+			}else{
+				boxContrasena.setEchoChar('•');
+			}
+		});
 		panelContrasena.add(labelContrasena);
-		panelContrasena.add(pswdField);
+		panelContrasena.add(boxContrasena);
+		panelContrasena.add(checkBoxMostrarContrasena);
 		add(panelContrasena);
+
+		revalidate();
+		repaint();
 	}
 
 	private void inicializarPanelFooter (){
-		JPanel panelFooter = new JPanel(new GridLayout(2, 1));
-
-		JButton botonGuardar = new JButton("Guardar");
-		botonGuardar.setActionCommand("actualizarDatosCliente");
-		botonGuardar.addActionListener(evento);
-		botonGuardar.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-
-		JButton botonCambiarContrasena = new JButton("Cambiar Contraseña");
-		botonCambiarContrasena.setActionCommand("cambiarContraseña");
-		botonCambiarContrasena.addActionListener(evento);
-		botonCambiarContrasena.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-
-		panelFooter.add(botonGuardar);
-		panelFooter.add(botonCambiarContrasena);
+		JPanel panelFooter = new JPanel(new GridLayout(1, 1));
+		if (VentanaPrincipal.LOGIN_CORRECTO){
+			JButton botonGuardar = new JButton("Guardar");
+			botonGuardar.addActionListener(_ -> {
+				mensajeDeError.setText(obtenerMensajeDeError());
+				if (! mensajeDeError.getText().isBlank()){
+					botonGuardar.setActionCommand(Evento.EVENTO.ACTUALIZAR_DATOS_CLIENTE.name());
+					botonGuardar.addActionListener(evento);
+				}
+			});
+			botonGuardar.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+			panelFooter.add(botonGuardar);
+			pantallaPrincipal.agregarPanelesSegunRol(tipoUsuario.name());
+		}else{
+			JButton botonLoginSignUp = new JButton("Login / SignUp");
+			botonLoginSignUp.setActionCommand(Evento.EVENTO.LOGIN_SIGNUP.name());
+			botonLoginSignUp.addActionListener(evento);
+			botonLoginSignUp.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+			panelFooter.add(botonLoginSignUp);
+		}
 		add(panelFooter);
+		revalidate();
+		repaint();
 	}
 
-	public void iniciarSesion (Object[] datosUsuario){
-		rellenarPanelPerfil(datosUsuario);
+	private String obtenerMensajeDeError (){
+		//Validacion de Campos Vacios
+		{
+			if (boxNombreCompleto.getText().isEmpty()){
+				return "Debe rellenar el campo Nombre Completo";
+			}
+			if (boxCorreo.getText().isEmpty()){
+				return "Debe rellenar el campo Correo Electronico";
+			}
+			if (boxDireccion.getText().isEmpty()){
+				return "Debe rellenar el campo Dirección";
+			}
+			if (boxTelefono.getText().isEmpty()){
+				return "Debe rellenar el campo Teléfono";
+			}
+			if (boxContrasena.getPassword().length < 8){
+				return "El campo contraseña debe tener mínimo 8 digitos";
+			}
+		}
+
+		//Validacion de Formato Valido
+		{
+			final String regexCorreo = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$";
+			if (! boxCorreo.getText().matches(regexCorreo)){
+				return "El campo Correo Electronico tiene un formato inválido";
+			}
+
+			final String regexDireccion = "^(Calle|Carrera|Avenida|Diagonal|Transversal|Circunvalar)\\s\\d+\\s*(#|No\\.)\\s*\\d+(-\\d+)?(\\s*,\\s*[\\w\\s]+)?$\n";
+			if (! boxDireccion.getText().matches(regexDireccion)){
+				return "El campo Dirección debe tener la siguiente forma: (Calle / Carrera / Avenida / Diagonal / Transversal / Circunvalar) número (# / No.) " +
+				       "número - numero, Texto Adicional";
+			}
+
+			final String regexTelefono = "^3[0-9]{9}$";
+			if (! boxTelefono.getText().matches(regexTelefono)){
+				return "El campo Teléfono tiene un formato inválido";
+			}
+		}
+		return "";
 	}
 
-	private void rellenarPanelPerfil (Object[] paramDatosUsuario){
-		this.datosUsuario = paramDatosUsuario;
-		nombreCompleto    = (String) datosUsuario[0];
-		correoElectronico = (String) datosUsuario[1];
-		direccion         = (String) datosUsuario[2];
-		telefono          = (long) datosUsuario[3];
-		//Se omite el campo claveAcceso
-		CID = (int) datosUsuario[5];
-		//Se omite el campo carritoDeCompras
-
+	public void setDatosUsuario (Object[] datosUsuario){
+		this.datosUsuario = datosUsuario;
+		refrescarDatosPerfil(this.datosUsuario);
 	}
 }

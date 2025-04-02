@@ -4,7 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PantallaPrincipal extends JPanel{
-	private       Evento                evento;
+	private final Evento                evento;
+	private final VentanaPrincipal      ventanaPrincipal;
 	private       PanelLibros           panelLibros;
 	private       PanelCarrito          panelCarrito;
 	private       PanelPerfil           panelPerfil;
@@ -16,34 +17,23 @@ public class PantallaPrincipal extends JPanel{
 	private final JTabbedPane           panelPrincipal;
 
 	public PantallaPrincipal (VentanaPrincipal ventana, Evento evento){
-		this.evento = evento;
+		this.evento           = evento;
+		this.ventanaPrincipal = ventana;
 		setLayout(new BorderLayout());
 		panelPrincipal = new JTabbedPane();
 
-		inicializarPanelLibros(ventana, evento);
+		inicializarPanelLibros(ventana);
 		panelPrincipal.addTab("Lista de Libros", panelLibros);
-		inicializarPanelCarrito(evento);
+		inicializarPanelCarrito();
 		panelPrincipal.addTab("PanelCarrito", panelCarrito);
-		inicializarPanelPerfil(evento);
+		inicializarPanelPerfil();
 		panelPrincipal.addTab("Perfil", panelPerfil);
 
-		panelPrincipal.addChangeListener(e -> {
-			if (panelPrincipal.getSelectedIndex() == 2){
-				if (evento.isLoginCorrecto()){
-					inicializarPanelPerfil(evento);
-					agregarPanelesSegunRol(evento.getRol());
-				}else{
-					//Solicitar inicio de sesion
-					new DialogLoginSignup(evento, ventana);
-				}
-			}
-		});
-
 		add(panelPrincipal, BorderLayout.CENTER);
-		this.getRootPane().add(this);
+		ventana.add(this);
 	}
 
-	private void agregarPanelesSegunRol (String rol){
+	public void agregarPanelesSegunRol (String rol){
 		if (rol.equals("ADMIN")){
 			inicalizarPanelesAdministrador();
 			panelPrincipal.addTab("Agregar Libro", panelAgregarLibro);
@@ -51,7 +41,7 @@ public class PantallaPrincipal extends JPanel{
 			panelPrincipal.addTab("Eliminar Libro", panelEliminarLibro);
 			panelPrincipal.addTab("Crear Cuentas", panelCrearCuentas);
 		}
-		inicializarPanelHistorialCompras(evento);
+		inicializarPanelHistorialCompras();
 		panelPrincipal.addTab("Historial de Compras", panelHistorialCompras);
 	}
 
@@ -62,29 +52,39 @@ public class PantallaPrincipal extends JPanel{
 		panelCrearCuentas    = new PanelCrearCuentas(evento);
 	}
 
-	private void inicializarPanelLibros (VentanaPrincipal ventana, Evento evento){
+	private void inicializarPanelLibros (VentanaPrincipal ventana){
 		panelLibros = new PanelLibros(ventana, evento);
 	}
 
-	private void inicializarPanelCarrito (Evento evento){
-		panelCarrito = new PanelCarrito(evento);
+	private void inicializarPanelCarrito (){
+		panelCarrito = new PanelCarrito(ventanaPrincipal, evento);
 	}
 
-	private void inicializarPanelPerfil (Evento evento){
-		this.evento = evento;
-		panelPerfil = new PanelPerfil(this.evento);
+	private void inicializarPanelPerfil (){
+		panelPerfil = new PanelPerfil(evento, this);
 	}
 
-	private void inicializarPanelHistorialCompras (Evento evento){
-		this.evento           = evento;
+	private void inicializarPanelHistorialCompras (){
 		panelHistorialCompras = new PanelHistorialCompras(evento);
-	}
-
-	public void iniciarSesion (Object[] datosUsuario){
-		panelPerfil.iniciarSesion(datosUsuario);
 	}
 
 	public PanelLibros getPanelLibros (){
 		return panelLibros;
+	}
+
+	Object[] getDatosLibroNuevo (){
+		return panelAgregarLibro.getDatosLibro();
+	}
+
+	void iniciarSesion (Object[] datosUsuario){
+		panelPerfil.setDatosUsuario(datosUsuario);
+	}
+
+	PanelActualizarLibro getPanelActualizarLibro (){
+		return panelActualizarLibro;
+	}
+
+	public PanelCarrito getPanelCarrito (){
+		return panelCarrito;
 	}
 }

@@ -16,7 +16,7 @@ public class PanelActualizarLibro extends JPanel{
 	private JTextField boxNumPaginas;
 	private JTextField boxPrecioVenta;
 	private JTextField boxCantidadInventario;
-	JComboBox<String> comboBoxFormato = new JComboBox<>(new String[]{"Digital", "Impreso"});
+	JComboBox<String> comboBoxFormato = new JComboBox<>(new String[]{"DIGITAL", "IMPRESO"});
 	private JLabel mensajeDeError = new JLabel();
 
 	public PanelActualizarLibro (Evento evento){
@@ -68,7 +68,7 @@ public class PanelActualizarLibro extends JPanel{
 		boxNumPaginas.setHorizontalAlignment(JTextField.CENTER);
 		boxPrecioVenta.setHorizontalAlignment(JTextField.CENTER);
 		boxCantidadInventario.setHorizontalAlignment(JTextField.CENTER);
-		comboBoxFormato.setSelectedItem("Digital");
+		comboBoxFormato.setSelectedItem("IMPRESO");
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 5, 10, 5);
@@ -152,8 +152,19 @@ public class PanelActualizarLibro extends JPanel{
 
 	private void inicializarPanelFooter (){
 		panelFooter = new JPanel(new GridLayout(2, 1));
-		JButton botonBuscar  = getJButtonBuscar();
-		JButton botonGuardar = getJButtonGuardar();
+		JButton botonBuscar = new JButton("Buscar");
+		botonBuscar.setActionCommand(Evento.EVENTO.BUSCAR_LIBRO.name());
+		botonBuscar.addActionListener(evento);
+
+		JButton botonGuardar = new JButton("Guardar");
+		botonGuardar.addActionListener(e -> {
+			mensajeDeError.setText(obtenerMensajeDeError());
+			if (mensajeDeError.getText().isBlank()){
+				botonGuardar.setActionCommand(Evento.EVENTO.ACTUALIZAR_LIBRO.name());
+				botonGuardar.addActionListener(evento);
+			}
+		});
+
 		panelFooter.add(botonBuscar);
 		panelFooter.add(botonGuardar);
 
@@ -163,35 +174,6 @@ public class PanelActualizarLibro extends JPanel{
 		panelFooter.add(mensajeDeError);
 
 		add(panelFooter, BorderLayout.SOUTH);
-	}
-
-	private JButton getJButtonGuardar (){
-		JButton botonGuardar = new JButton("Guardar");
-		botonGuardar.addActionListener(e -> {
-			mensajeDeError.setText(obtenerMensajeDeError());
-			if (mensajeDeError.getText() == null){
-				evento.agregarLibro(Long.parseLong(boxISBN.getText()),
-				                    boxTitulo.getText(),
-				                    boxAutor.getText(),
-				                    Integer.parseInt(boxAnioPublicacion.getText()),
-				                    boxGenero.getText(),
-				                    boxEditorial.getText(),
-				                    Integer.parseInt(boxNumPaginas.getText()),
-				                    Double.parseDouble(boxPrecioVenta.getText()),
-				                    Integer.parseInt(boxCantidadInventario.getText()),
-				                    comboBoxFormato.getSelectedItem().toString()
-				);
-			}
-		});
-		return botonGuardar;
-	}
-
-	private JButton getJButtonBuscar (){
-		JButton botonBuscar = new JButton("Buscar");
-		botonBuscar.putClientProperty("BUSCAR_LIBRO", Long.parseLong(boxISBN.getText()));
-		botonBuscar.setActionCommand("metodoConParametros");
-		botonBuscar.addActionListener(evento);
-		return botonBuscar;
 	}
 
 	private String obtenerMensajeDeError (){
@@ -270,6 +252,37 @@ public class PanelActualizarLibro extends JPanel{
 			}
 		}
 
-		return null;
+		return "";
+	}
+
+	public long getISBN (){
+		return Long.parseLong(boxISBN.getText());
+	}
+
+	public Object[] getDatosLibro (){
+		return new Object[]{getISBN(),
+		                    boxTitulo.getText(),
+		                    boxAutor.getText(),
+		                    Integer.parseInt(boxAnioPublicacion.getText()),
+		                    boxGenero.getText(),
+		                    boxEditorial.getText(),
+		                    Integer.parseInt(boxNumPaginas.getText()),
+		                    Double.parseDouble(boxPrecioVenta.getText()),
+		                    Integer.parseInt(boxCantidadInventario.getText()),
+		                    comboBoxFormato.getSelectedItem().toString()
+		};
+	}
+
+	void setDatosLibro (Object[] datos){
+		boxISBN.setText(String.valueOf(datos[0]));
+		boxTitulo.setText((String) datos[1]);
+		boxAutor.setText((String) datos[2]);
+		boxAnioPublicacion.setText(String.valueOf(datos[3]));
+		boxGenero.setText((String) datos[4]);
+		boxEditorial.setText((String) datos[5]);
+		boxNumPaginas.setText(String.valueOf(datos[6]));
+		boxPrecioVenta.setText(String.valueOf(datos[7]));
+		boxCantidadInventario.setText(String.valueOf(datos[8]));
+		comboBoxFormato.setSelectedItem(datos[9]);
 	}
 }

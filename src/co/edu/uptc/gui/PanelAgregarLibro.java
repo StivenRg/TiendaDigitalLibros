@@ -4,20 +4,21 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelAgregarLibro extends JPanel{
-	private Evento     evento;
-	private JPanel     panelCampos;
-	private JPanel     panelFooter;
-	private JTextField boxISBN;
-	private JTextField boxTitulo;
-	private JTextField boxAutor;
-	private JTextField boxAnioPublicacion;
-	private JTextField boxGenero;
-	private JTextField boxEditorial;
-	private JTextField boxNumPaginas;
-	private JTextField boxPrecioVenta;
-	private JTextField boxCantidadInventario;
-	JComboBox<String> comboBoxFormato = new JComboBox<>(new String[]{"Digital", "Impreso"});
-	private JLabel mensajeDeError = new JLabel();
+	private       Evento            evento;
+	private       JPanel            panelCampos;
+	private       JPanel            panelFooter;
+	private       JTextField        boxISBN;
+	private       JTextField        boxTitulo;
+	private       JTextField        boxAutor;
+	private       JTextField        boxAnioPublicacion;
+	private       JTextField        boxGenero;
+	private       JTextField        boxEditorial;
+	private       JTextField        boxNumPaginas;
+	private       JTextField        boxPrecioVenta;
+	private       JTextField        boxCantidadInventario;
+	private final String[]          FORMATOS        = {"DIGITAL", "IMPRESO"};
+	private final JComboBox<String> comboBoxFormato = new JComboBox<>(FORMATOS);
+	private final JLabel            mensajeDeError  = new JLabel();
 
 	public PanelAgregarLibro (Evento evento){
 		this.evento = evento;
@@ -57,7 +58,7 @@ public class PanelAgregarLibro extends JPanel{
 		boxNumPaginas         = new JTextField("1");
 		boxPrecioVenta        = new JTextField("1.0");
 		boxCantidadInventario = new JTextField("1");
-		//Ya está inicializado el comboBoxFormato
+		JComboBox<String> comboBoxFormato = new JComboBox<>(FORMATOS);
 
 		//Centrado de JTextFields
 		boxISBN.setHorizontalAlignment(JTextField.CENTER);
@@ -69,7 +70,7 @@ public class PanelAgregarLibro extends JPanel{
 		boxNumPaginas.setHorizontalAlignment(JTextField.CENTER);
 		boxPrecioVenta.setHorizontalAlignment(JTextField.CENTER);
 		boxCantidadInventario.setHorizontalAlignment(JTextField.CENTER);
-		comboBoxFormato.setSelectedItem("Digital");
+		comboBoxFormato.setSelectedItem("IMPRESO");
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 5, 10, 5);
@@ -156,18 +157,9 @@ public class PanelAgregarLibro extends JPanel{
 		JButton botonGuardar = new JButton("Guardar");
 		botonGuardar.addActionListener(e -> {
 			mensajeDeError.setText(obtenerMensajeDeError());
-			if (mensajeDeError.getText() == null){
-				evento.agregarLibro(Long.parseLong(boxISBN.getText()),
-				                    boxTitulo.getText(),
-				                    boxAutor.getText(),
-				                    Integer.parseInt(boxAnioPublicacion.getText()),
-				                    boxGenero.getText(),
-				                    boxEditorial.getText(),
-				                    Integer.parseInt(boxNumPaginas.getText()),
-				                    Double.parseDouble(boxPrecioVenta.getText()),
-				                    Integer.parseInt(boxCantidadInventario.getText()),
-				                    comboBoxFormato.getSelectedItem().toString()
-				);
+			if (mensajeDeError.getText().isBlank()){
+				botonGuardar.setActionCommand(Evento.EVENTO.AGREGAR_LIBRO_AL_ARCHIVO.name());
+				botonGuardar.addActionListener(evento);
 			}
 		});
 		panelFooter.add(botonGuardar);
@@ -225,7 +217,7 @@ public class PanelAgregarLibro extends JPanel{
 				return "El campo Año de Publicación debe ser un número entero";
 			}
 
-			//Validacion de Numero de Páginas
+			//Validacion de Número de Páginas
 			try{
 				int numeroPaginas = Integer.parseInt(boxNumPaginas.getText());
 				if (numeroPaginas < 1){
@@ -239,7 +231,7 @@ public class PanelAgregarLibro extends JPanel{
 			try{
 				double precioVenta = Double.parseDouble(boxPrecioVenta.getText());
 				if (precioVenta < 1.0){
-					return "El campo Precio de Venta debe ser un número positivo";
+					return "El campo Precio de Venta debe ser un número positivo superior a 1";
 				}
 			}catch (NumberFormatException e){
 				return "El campo Precio de Venta debe ser un número";
@@ -256,10 +248,21 @@ public class PanelAgregarLibro extends JPanel{
 			}
 		}
 
-		return null;
+		return "";
 	}
 
-	public static void libroDuplicado (){
-		JOptionPane.showMessageDialog(null, "Libro ya existe");
+	Object[] getDatosLibro (){
+		Object[] datos = new Object[10];
+		datos[0] = Long.parseLong(boxISBN.getText());
+		datos[1] = boxTitulo.getText();
+		datos[2] = boxAutor.getText();
+		datos[3] = Integer.parseInt(boxAnioPublicacion.getText());
+		datos[4] = boxGenero.getText();
+		datos[5] = boxEditorial.getText();
+		datos[6] = Integer.parseInt(boxNumPaginas.getText());
+		datos[7] = Double.parseDouble(boxPrecioVenta.getText());
+		datos[8] = Integer.parseInt(boxCantidadInventario.getText());
+		datos[9] = comboBoxFormato.getSelectedItem().toString();
+		return datos;
 	}
 }
