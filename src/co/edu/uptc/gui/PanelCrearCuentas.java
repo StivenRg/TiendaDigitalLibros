@@ -3,7 +3,7 @@ package co.edu.uptc.gui;
 import javax.swing.*;
 
 public class PanelCrearCuentas extends JPanel{
-	public PanelCrearCuentas (Evento eventos){
+	public PanelCrearCuentas (Evento evento){
 
 	}
 }

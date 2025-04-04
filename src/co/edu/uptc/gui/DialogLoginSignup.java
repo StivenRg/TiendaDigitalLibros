@@ -6,9 +6,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 
-//REVISADO Y APROBADO
-public class PanelLoginSignup extends JPanel{
+public class DialogLoginSignup extends JDialog{
 	private final JTabbedPane    panelContenedor;
+	private final Evento         evento;
 	private       JPanel         panelLogin;
 	private       JPanel         panelRegistro;
 	private       JTextField     boxNombreCompleto;
@@ -18,24 +18,18 @@ public class PanelLoginSignup extends JPanel{
 	private       JPasswordField boxContrasena;
 	private       JPasswordField passwordFieldContrasena;
 	private final JLabel         mensajeDeError = new JLabel();
-	private final Evento         evento;
 
-	public PanelLoginSignup (Evento evento){
-		JFrame frameTemporal = new JFrame("Inicio de Sesión / Registro");
-		frameTemporal.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frameTemporal.setSize(500, 400);
-		frameTemporal.setLocationRelativeTo(null);
-
-		VentanaPrincipal.setPanelgLoginSignup(this);
+	public DialogLoginSignup (VentanaPrincipal ventanaPrincipal, Evento evento){
+		super(ventanaPrincipal, "Inicio de Sesión / Registro", true);
 		panelContenedor = new JTabbedPane();
+		this.evento     = evento;
 		agregarLogin();
 		agregarRegistro();
-		this.evento = evento;
 		panelContenedor.addTab("Login", panelLogin);
 		panelContenedor.addTab("SingUp", panelRegistro);
 		add(panelContenedor);
-		frameTemporal.add(this);
-		frameTemporal.setVisible(true);
+		pack();
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 	private void agregarLogin (){
@@ -79,7 +73,7 @@ public class PanelLoginSignup extends JPanel{
 		JCheckBox checkBoxMostrarContrasena = new JCheckBox("Mostrar Contraseña");
 		checkBoxMostrarContrasena.setSelected(false);
 		checkBoxMostrarContrasena.setHorizontalAlignment(JCheckBox.CENTER);
-		checkBoxMostrarContrasena.addActionListener(e -> {
+		checkBoxMostrarContrasena.addActionListener(_ -> {
 			if (checkBoxMostrarContrasena.isSelected()){
 				passwordFieldContrasena.setEchoChar((char) 0);
 			}else{
@@ -89,11 +83,11 @@ public class PanelLoginSignup extends JPanel{
 		panelLoginDatos.add(checkBoxMostrarContrasena, gbc);
 
 		//Botones
-		JPanel  botones            = new JPanel(new GridLayout(2, 1));
+		JPanel  panelBotones       = new JPanel(new GridLayout(2, 1));
 		JButton botonIniciarSesion = new JButton("Iniciar Sesión");
 		botonIniciarSesion.setActionCommand(Evento.EVENTO.INICIAR_SESION.name());
 		botonIniciarSesion.addActionListener(evento);
-		botones.add(botonIniciarSesion, gbc);
+		panelBotones.add(botonIniciarSesion, gbc);
 
 		JLabel linkRegistrarse = new JLabel("Registrarse");
 		linkRegistrarse.setForeground(Color.GRAY);
@@ -104,11 +98,11 @@ public class PanelLoginSignup extends JPanel{
 				panelContenedor.setSelectedComponent(panelRegistro);
 			}
 		});
-		botones.add(linkRegistrarse, gbc);
+		panelBotones.add(linkRegistrarse, gbc);
 
 		//Se agrega el panel de persistencia
 		panelLogin.add(panelLoginDatos, BorderLayout.CENTER);
-		panelLogin.add(botones, BorderLayout.SOUTH);
+		panelLogin.add(panelBotones, BorderLayout.SOUTH);
 	}
 
 	private void agregarRegistro (){
@@ -139,7 +133,7 @@ public class PanelLoginSignup extends JPanel{
 		JCheckBox checkBoxMostrarContrasena = new JCheckBox("Mostrar Contraseña");
 		checkBoxMostrarContrasena.setSelected(false);
 		checkBoxMostrarContrasena.setHorizontalAlignment(JCheckBox.RIGHT);
-		checkBoxMostrarContrasena.addActionListener(e -> {
+		checkBoxMostrarContrasena.addActionListener(_ -> {
 			if (checkBoxMostrarContrasena.isSelected()){
 				boxContrasena.setEchoChar((char) 0);
 			}else{
@@ -198,7 +192,7 @@ public class PanelLoginSignup extends JPanel{
 
 		JPanel  panelBotones   = new JPanel(new GridLayout(2, 1));
 		JButton botonRegistrar = new JButton("Crear Cuenta");
-		botonRegistrar.addActionListener(e -> {
+		botonRegistrar.addActionListener(_ -> {
 			mensajeDeError.setText(obtenerMensajeDeError());
 			if (mensajeDeError.getText().isEmpty()){
 				botonRegistrar.setActionCommand(Evento.EVENTO.REGISTRAR.name());

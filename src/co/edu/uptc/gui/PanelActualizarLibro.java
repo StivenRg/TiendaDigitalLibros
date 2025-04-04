@@ -4,20 +4,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelActualizarLibro extends JPanel{
-	private Evento     evento;
-	private JPanel     panelCampos;
-	private JPanel     panelFooter;
-	private JTextField boxISBN;
-	private JTextField boxTitulo;
-	private JTextField boxAutor;
-	private JTextField boxAnioPublicacion;
-	private JTextField boxGenero;
-	private JTextField boxEditorial;
-	private JTextField boxNumPaginas;
-	private JTextField boxPrecioVenta;
-	private JTextField boxCantidadInventario;
-	JComboBox<String> comboBoxFormato = new JComboBox<>(new String[]{"DIGITAL", "IMPRESO"});
-	private JLabel mensajeDeError = new JLabel();
+	private final Evento            evento;
+	private       JPanel            panelCampos;
+	private       JPanel            panelFooter;
+	private       JTextField        boxISBN;
+	private       JTextField        boxTitulo;
+	private       JTextField        boxAutor;
+	private       JTextField        boxAnioPublicacion;
+	private       JTextField        boxGenero;
+	private       JTextField        boxEditorial;
+	private       JTextField        boxNumPaginas;
+	private       JTextField        boxPrecioVenta;
+	private       JTextField        boxCantidadInventario;
+	private final JComboBox<String> comboBoxFormato = new JComboBox<>(new String[]{"DIGITAL", "IMPRESO"});
+	private final JLabel            mensajeDeError  = new JLabel();
 
 	public PanelActualizarLibro (Evento evento){
 		this.evento = evento;

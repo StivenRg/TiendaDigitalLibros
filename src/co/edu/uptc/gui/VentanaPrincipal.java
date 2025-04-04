@@ -10,11 +10,11 @@ import java.awt.event.WindowEvent;
 import java.util.HashMap;
 
 public class VentanaPrincipal extends JFrame{
-	private final  Evento            evento;
-	private final  Tienda            tienda;
-	private static PanelLoginSignup  staticPanelLoginSignup;
-	private        PantallaPrincipal pantallaPrincipal;
-	public static  boolean           LOGIN_CORRECTO = false;
+	private final Evento            evento;
+	private final Tienda            tienda;
+	private       DialogLoginSignup dialogLoginSignup;
+	private       PantallaPrincipal pantallaPrincipal;
+	public static boolean           LOGIN_CORRECTO = false;
 
 	public VentanaPrincipal (){
 		evento = new Evento(this);
@@ -53,26 +53,20 @@ public class VentanaPrincipal extends JFrame{
 		String[] datosUsuario      = getDatosLogin();
 		String   correoElectronico = datosUsuario[0];
 		String   claveAcceso       = datosUsuario[1];
-		if (tienda.validarUsuarioLogin(correoElectronico, claveAcceso)){
-			pantallaPrincipal.iniciarSesion(tienda.obtenerUsuarioSeguro(correoElectronico));
-			obtenerPanelLoginSignUp();
-			LOGIN_CORRECTO = true;
-		}else{
+		if (! tienda.validarUsuarioLogin(correoElectronico, claveAcceso)){
 			JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
+		pantallaPrincipal.iniciarSesion(tienda.obtenerUsuarioSeguro(correoElectronico));
+		LOGIN_CORRECTO = true;
 	}
 
 	private String[] getDatosLogin (){
-		System.out.println("Obteniendo Datos Login");//Temporal
-		return obtenerPanelLoginSignUp().getDatosLogin();
+		return getDialogLoginSignUp().getDatosLogin();
 	}
 
-	private PanelLoginSignup obtenerPanelLoginSignUp (){
-		return staticPanelLoginSignup;
-	}
-
-	static void setPanelgLoginSignup (PanelLoginSignup paramPanelLoginSignup){
-		staticPanelLoginSignup = paramPanelLoginSignup;
+	public DialogLoginSignup getDialogLoginSignUp (){
+		return dialogLoginSignup;
 	}
 
 	void validarRegistro (){
@@ -94,7 +88,7 @@ public class VentanaPrincipal extends JFrame{
 	}
 
 	private Object[] getDatosSignUp (){
-		return obtenerPanelLoginSignUp().getDatosRegistro();
+		return getDialogLoginSignUp().getDatosRegistro();
 	}
 
 	Object[][] obtenerListaLibros (){
@@ -112,7 +106,7 @@ public class VentanaPrincipal extends JFrame{
 				if (! carritoDeCompras.containsKey(ISBN)){
 					carritoDeCompras.put(ISBN, 1);
 					pantallaPrincipal.getPanelCarrito().agregarArticulo(ISBN);
-				} else{
+				}else{
 					pantallaPrincipal.getPanelCarrito().incrementarCantidad(ISBN);
 				}
 				tablaLibros.setValueAt(false, fila, columnaAgregar);
@@ -139,7 +133,8 @@ public class VentanaPrincipal extends JFrame{
 	}
 
 	void mostrarPanelLoginSignUp (){
-		new PanelLoginSignup(evento);
+		dialogLoginSignup = new DialogLoginSignup(this, evento);
+		dialogLoginSignup.setVisible(true);
 	}
 
 	static ROLES obtenerTipoUsuario (String correoElectronico){
@@ -173,5 +168,9 @@ public class VentanaPrincipal extends JFrame{
 
 	double obtenerPrecioImpuesto (double valorUnitario){
 		return tienda.calcularValorImpuesto(valorUnitario);
+	}
+
+	void eliminarPanelLoginSignUp (){
+		dialogLoginSignup.dispose();
 	}
 }

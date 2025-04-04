@@ -24,7 +24,7 @@ public class PanelPerfil extends JPanel{
 	private final String[]          NOMBRE_ATRIBUTOS       = {"Nombre Completo", "Correo Electronico", "Dirección", "Teléfono", "Tipo de Usuario", "Contraseña"
 	};
 
-	public PanelPerfil (Evento evento, PantallaPrincipal pantallaPrincipal){
+	public PanelPerfil (PantallaPrincipal pantallaPrincipal, Evento evento){
 		this.evento            = evento;
 		this.pantallaPrincipal = pantallaPrincipal;
 		inicializarPanelPerfil();
@@ -36,8 +36,6 @@ public class PanelPerfil extends JPanel{
 	}
 
 	private void refrescarDatosPerfil (Object[] datosUsuario){
-		inicializarPanelDatosUsuario();
-		inicializarPanelFooter();
 		if (datosUsuario.length < 5 || ! VentanaPrincipal.LOGIN_CORRECTO){
 			rellenarDatosVacios();
 			return;
@@ -50,26 +48,22 @@ public class PanelPerfil extends JPanel{
 		telefono          = (long) datosUsuario[3];
 		tipoUsuario       = VentanaPrincipal.obtenerTipoUsuario(correoElectronico);
 
-		boxNombreCompleto.setText(nombreCompleto);
-		boxCorreo.setText(correoElectronico);
-		boxDireccion.setText(direccion);
-		boxTelefono.setText(String.valueOf(telefono));
-		labelTipoUsuarioActual.setText(tipoUsuario.name());
+		inicializarPanelDatosUsuario();
+		inicializarPanelFooter();
 
-		add(mensajeDeError);
 		revalidate();
 		repaint();
 	}
 
 	private void rellenarDatosVacios (){
-		boxNombreCompleto.setText("");
-		boxCorreo.setText("");
-		boxDireccion.setText("");
-		boxTelefono.setText("");
-		labelTipoUsuarioActual.setText(tipoUsuario.name());
+		inicializarPanelDatosUsuario();
+		inicializarPanelFooter();
 	}
 
 	private void inicializarPanelDatosUsuario (){
+		if (VentanaPrincipal.LOGIN_CORRECTO){
+			removeAll();
+		}
 		//Banners de Datos
 		//Banner de Nombre Completo
 		JPanel panelNombreCompleto = new JPanel(new GridLayout(1, 2));
@@ -170,6 +164,7 @@ public class PanelPerfil extends JPanel{
 			});
 			botonGuardar.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 			panelFooter.add(botonGuardar);
+			panelFooter.add(mensajeDeError);
 			pantallaPrincipal.agregarPanelesSegunRol(tipoUsuario.name());
 		}else{
 			JButton botonLoginSignUp = new JButton("Login / SignUp");

@@ -61,7 +61,7 @@ public class PantallaPrincipal extends JPanel{
 	}
 
 	private void inicializarPanelPerfil (){
-		panelPerfil = new PanelPerfil(evento, this);
+		panelPerfil = new PanelPerfil(this, evento);
 	}
 
 	private void inicializarPanelHistorialCompras (){
@@ -78,6 +78,7 @@ public class PantallaPrincipal extends JPanel{
 
 	void iniciarSesion (Object[] datosUsuario){
 		panelPerfil.setDatosUsuario(datosUsuario);
+		ventanaPrincipal.eliminarPanelLoginSignUp();
 	}
 
 	PanelActualizarLibro getPanelActualizarLibro (){

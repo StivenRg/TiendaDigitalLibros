@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelAgregarLibro extends JPanel{
-	private       Evento            evento;
+	private       final Evento            evento;
 	private       JPanel            panelCampos;
 	private       JPanel            panelFooter;
 	private       JTextField        boxISBN;

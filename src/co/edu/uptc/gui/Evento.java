@@ -1,10 +1,12 @@
 package co.edu.uptc.gui;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Evento implements ActionListener{
-	private VentanaPrincipal ventana;
+	private final VentanaPrincipal ventana;
+
 	public enum EVENTO{
 		ACTUALIZAR_LIBRO,
 		ACTUALIZAR_DATOS_CLIENTE,

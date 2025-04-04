@@ -18,10 +18,10 @@ public class PanelCarrito extends JPanel{
 	                                                              "-",
 	                                                              "X"
 	};
-	private              HashMap<Long, Integer> carritoDeCompras;
+	private final        HashMap<Long, Integer> carritoDeCompras;
 	public               DefaultTableModel      model;
-	private              Evento                 evento;
-	private              VentanaPrincipal       ventanaPrincipal;
+	private final        Evento                 evento;
+	private final        VentanaPrincipal       ventanaPrincipal;
 	private              JLabel                 labelTotal;
 	private static       int                    identificadorCarrito;
 
@@ -56,7 +56,7 @@ public class PanelCarrito extends JPanel{
 		return new DefaultTableCellRenderer(){
 			@Override public Component getTableCellRendererComponent (JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
 				if (column == 3 || column == 4 || column == 6){
-					value = String.format("$%.2f", (double) value);
+					value = String.format("$%,.2f", (double) value);
 				}
 				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			}
@@ -203,6 +203,7 @@ public class PanelCarrito extends JPanel{
 
 	void agregarArticulo (long ISBN){
 		model.addRow(formatearArticulo(ISBN));
+		carritoDeCompras.put(ISBN, 1);
 	}
 
 	private Object[] formatearArticulo (long ISBN){
@@ -211,7 +212,7 @@ public class PanelCarrito extends JPanel{
 		String   autores         = (String) datosImportados[2];
 		double   precioUnitario  = (double) datosImportados[3];
 		double   precioImpuesto  = obtenerPrecioImpuesto(precioUnitario);
-		int      cantidad        = 1;
+		int      cantidad        = obtenerCantidadLibro(ISBN);
 		double   precioTotal     = obtenerPrecioVenta(precioUnitario, cantidad);
 		boolean  agregar         = false;
 		boolean  quitar          = false;
@@ -229,20 +230,31 @@ public class PanelCarrito extends JPanel{
 
 	private void actualizarPrecioTotal (){
 		double precioTotal = ventanaPrincipal.obtenerPrecioVentaTotal(model);
-		labelTotal.setText(String.format("$%.2f", precioTotal));
+		labelTotal.setText(String.format("$%,.2f", precioTotal));
 	}
 
 	void incrementarCantidad (Long ISBN){
-		int fila = 0;
-		for (int i = 0; i < model.getRowCount(); i++){
-			if (model.getValueAt(i, 0).equals(ISBN)){
-				fila = i;
+		final int columnaISBN           = 0;
+		final int columnaPrecioUnitario = 3;
+		final int columnaCantidad       = 5;
+		final int columnaPrecioVenta    = 6;
+		for (int fila = 0; fila < model.getRowCount(); fila++){
+			if (model.getValueAt(fila, columnaISBN).equals(ISBN)){
+				int cantidad = ((int) model.getValueAt(fila, columnaCantidad)) + 1;
+				carritoDeCompras.put(ISBN, cantidad);
+				model.setValueAt(cantidad, fila, columnaCantidad);
+				double precioUnitario = (double) model.getValueAt(fila, columnaPrecioUnitario);
+				model.setValueAt(obtenerPrecioVenta(precioUnitario, cantidad), fila, columnaPrecioVenta);
 				break;
 			}
 		}
-		final int columnaCantidad = 5;
-		int       cantidad        = ((int) model.getValueAt(fila, columnaCantidad)) + 1;
-		model.setValueAt(cantidad, fila, columnaCantidad);
 		actualizarPrecioTotal();
+	}
+
+	private int obtenerCantidadLibro (long ISBN){
+		if (carritoDeCompras.get(ISBN) == null){
+			return 1;
+		}
+		return carritoDeCompras.get(ISBN);
 	}
 }
