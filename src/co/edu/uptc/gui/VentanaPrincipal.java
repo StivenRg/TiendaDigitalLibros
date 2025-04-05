@@ -141,7 +141,7 @@ public class VentanaPrincipal extends JFrame{
 		return Tienda.obtenerTipoUsuario(correoElectronico);
 	}
 
-	void buscarLibro (){
+	void buscarLibroActualizar (){
 		long     ISBN  = pantallaPrincipal.getPanelActualizarLibro().getISBN();
 		Object[] datos = tienda.buscarLibro(ISBN);
 		if (datos != null){
@@ -172,5 +172,22 @@ public class VentanaPrincipal extends JFrame{
 
 	void eliminarPanelLoginSignUp (){
 		dialogLoginSignup.dispose();
+	}
+
+	void eliminarLibro (){
+		long ISBN = pantallaPrincipal.getPanelEliminarLibro().getISBN();
+		if (tienda.eliminarLibro(ISBN)){
+			JOptionPane.showMessageDialog(this, "Libro eliminado correctamente", "Alerta", JOptionPane.INFORMATION_MESSAGE);
+		}else{
+			JOptionPane.showMessageDialog(this, "No es posible eliminar el libro", "Alerta", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	void buscarLibroEliminar (){
+		long     ISBN           = pantallaPrincipal.getPanelEliminarLibro().getISBN();
+		Object[] datosObtenidos = tienda.buscarLibro(ISBN);
+		if (datosObtenidos != null){
+			pantallaPrincipal.getPanelEliminarLibro().setDatosLibro(datosObtenidos);
+		}
 	}
 }

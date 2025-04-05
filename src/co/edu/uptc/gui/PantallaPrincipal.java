@@ -88,4 +88,8 @@ public class PantallaPrincipal extends JPanel{
 	public PanelCarrito getPanelCarrito (){
 		return panelCarrito;
 	}
+
+	PanelEliminarLibro getPanelEliminarLibro (){
+		return panelEliminarLibro;
+	}
 }

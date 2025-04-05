@@ -153,7 +153,7 @@ public class PanelActualizarLibro extends JPanel{
 	private void inicializarPanelFooter (){
 		panelFooter = new JPanel(new GridLayout(2, 1));
 		JButton botonBuscar = new JButton("Buscar");
-		botonBuscar.setActionCommand(Evento.EVENTO.BUSCAR_LIBRO.name());
+		botonBuscar.setActionCommand(Evento.EVENTO.BUSCAR_LIBRO_ACTUALIZAR.name());
 		botonBuscar.addActionListener(evento);
 
 		JButton botonGuardar = new JButton("Guardar");

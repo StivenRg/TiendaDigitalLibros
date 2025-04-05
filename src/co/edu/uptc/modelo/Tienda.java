@@ -427,9 +427,15 @@ public class Tienda{
 
 	public boolean eliminarLibro (long ISBN){
 		Object libroObject = buscarLibro(ISBN);
+		//Se verifica que se obtenga un libro válido
 		if (libroObject == null){
 			return false;
 		}
+		//Se verifica que no exista ventas asociadas al libro para poder eliminarlo
+		if (ventasAsociadasLibro(ISBN)){
+			return false;
+		}
+
 		JsonObject jsonActual;
 		try (InputStream inputStream = new FileInputStream(RUTA_LIBROS); JsonReader reader = Json.createReader(inputStream)){
 			jsonActual = reader.readObject();
@@ -457,5 +463,10 @@ public class Tienda{
 			System.err.println("Error al escribir en LIBROS.json: " + e.getMessage());
 		}
 		return true;
+	}
+
+	public boolean ventasAsociadasLibro (long ISBN){
+		//TODO
+		return false;
 	}
 }

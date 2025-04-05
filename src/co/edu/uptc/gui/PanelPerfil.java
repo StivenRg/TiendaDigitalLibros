@@ -125,7 +125,7 @@ public class PanelPerfil extends JPanel{
 		add(panelTipoUsuario);
 
 		//Banner de Contraseña
-		JPanel panelContrasena = new JPanel(new GridLayout(1, 3));
+		JPanel panelContrasena = new JPanel(new GridLayout(2, 2));
 		panelContrasena.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 		JLabel labelContrasena = new JLabel("*" + NOMBRE_ATRIBUTOS[5]);
 		labelContrasena.setPreferredSize(new Dimension(100, 25));
@@ -144,6 +144,7 @@ public class PanelPerfil extends JPanel{
 		});
 		panelContrasena.add(labelContrasena);
 		panelContrasena.add(boxContrasena);
+		panelContrasena.add(new JLabel());
 		panelContrasena.add(checkBoxMostrarContrasena);
 		add(panelContrasena);
 
@@ -152,7 +153,7 @@ public class PanelPerfil extends JPanel{
 	}
 
 	private void inicializarPanelFooter (){
-		JPanel panelFooter = new JPanel(new GridLayout(1, 1));
+		JPanel panelFooter = new JPanel(new GridLayout(2, 1));
 		if (VentanaPrincipal.LOGIN_CORRECTO){
 			JButton botonGuardar = new JButton("Guardar");
 			botonGuardar.addActionListener(_ -> {
@@ -164,6 +165,9 @@ public class PanelPerfil extends JPanel{
 			});
 			botonGuardar.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 			panelFooter.add(botonGuardar);
+			mensajeDeError.setForeground(Color.RED);
+			mensajeDeError.setFont(new Font("Times New Roman", Font.BOLD, 20));
+			mensajeDeError.setHorizontalAlignment(JLabel.CENTER);
 			panelFooter.add(mensajeDeError);
 			pantallaPrincipal.agregarPanelesSegunRol(tipoUsuario.name());
 		}else{

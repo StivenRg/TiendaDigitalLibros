@@ -111,7 +111,7 @@ public class PanelEliminarLibro extends JPanel{
 
 		panelFooter = new JPanel(new GridLayout(2, 1));
 		JButton botonBuscar = new JButton("Buscar");
-		botonBuscar.setActionCommand(Evento.EVENTO.BUSCAR_LIBRO.name());
+		botonBuscar.setActionCommand(Evento.EVENTO.BUSCAR_LIBRO_ELIMINAR.name());
 		botonBuscar.addActionListener(evento);
 
 		JButton botonEliminar = new JButton("Eliminar");
@@ -152,16 +152,8 @@ public class PanelEliminarLibro extends JPanel{
 			if (boxEditorial.getText().isEmpty()){
 				return "Debe rellenar el campo Editorial";
 			}
-			if (boxNumPaginas.getText().isEmpty()){
-				return "Debe rellenar el campo Número de Páginas";
-			}
-			if (boxPrecioVenta.getText().isEmpty()){
-				return "Debe rellenar el campo Precio de Venta";
-			}
-			if (boxCantidadInventario.getText().isEmpty()){
-				return "Debe rellenar el campo Cantidad de Inventario";
-			}
 		}
+
 		//Validacion de Formato Valido
 		{
 			//Validacion de ISBN
@@ -178,38 +170,30 @@ public class PanelEliminarLibro extends JPanel{
 			}catch (NumberFormatException e){
 				return "El campo Año de Publicación debe ser un número entero";
 			}
-
-			//Validacion de Numero de Páginas
-			try{
-				int numeroPaginas = Integer.parseInt(boxNumPaginas.getText());
-				if (numeroPaginas < 1){
-					return "El campo Número de Páginas debe ser un entero positivo";
-				}
-			}catch (NumberFormatException e){
-				return "El campo Número de Páginas debe ser un número entero";
-			}
-
-			//Validacion de Precio de Venta
-			try{
-				double precioVenta = Double.parseDouble(boxPrecioVenta.getText());
-				if (precioVenta < 1.0){
-					return "El campo Precio de Venta debe ser un número positivo";
-				}
-			}catch (NumberFormatException e){
-				return "El campo Precio de Venta debe ser un número";
-			}
-
-			//Validacion de Cantidad de Inventario
-			try{
-				int cantidadInventario = Integer.parseInt(boxCantidadInventario.getText());
-				if (cantidadInventario < 1){
-					return "El campo Cantidad de Inventario debe ser un entero positivo";
-				}
-			}catch (NumberFormatException e){
-				return "El campo Cantidad de Inventario debe ser un número entero";
-			}
 		}
-
 		return "";
+	}
+
+	long getISBN (){
+		return Long.parseLong(boxISBN.getText());
+	}
+
+	Object[] getDatosLibro (){
+		return new Object[]{getISBN(),
+		                    boxTitulo.getText(),
+		                    boxAutor.getText(),
+		                    Integer.parseInt(boxAnioPublicacion.getText()),
+		                    boxGenero.getText(),
+		                    boxEditorial.getText()
+		};
+	}
+
+	void setDatosLibro (Object[] datos){
+		boxISBN.setText(String.valueOf(datos[0]));
+		boxTitulo.setText((String) datos[1]);
+		boxAutor.setText((String) datos[2]);
+		boxAnioPublicacion.setText(String.valueOf(datos[3]));
+		boxGenero.setText((String) datos[4]);
+		boxEditorial.setText((String) datos[5]);
 	}
 }
