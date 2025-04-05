@@ -212,6 +212,9 @@ public class DialogLoginSignup extends JDialog{
 			}
 		});
 		panelBotones.add(linkIniciarSesion, gbc);
+		mensajeDeError.setForeground(Color.RED);
+		mensajeDeError.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		mensajeDeError.setHorizontalAlignment(JLabel.CENTER);
 		panelBotones.add(mensajeDeError);
 
 		//Se agrega el panel de datos y de botones

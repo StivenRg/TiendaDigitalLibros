@@ -251,7 +251,6 @@ public class PanelActualizarLibro extends JPanel{
 				return "El campo Cantidad de Inventario debe ser un número entero";
 			}
 		}
-
 		return "";
 	}
 
