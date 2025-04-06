@@ -289,13 +289,13 @@ public class Tienda{
 
 	@SuppressWarnings("unchecked") //Se valida previamente que el objeto en el indice 6 es un HashMap<Long, Integer>
 	public void registrarUsuario (Object[] datosUsuario){
-		Usuario usuario = new Usuario((String) datosUsuario[0],
-		                              (String) datosUsuario[1],
-		                              (String) datosUsuario[2],
-		                              (long) datosUsuario[3],
-		                              (char[]) datosUsuario[4],
-		                              (int) datosUsuario[5],
-		                              (HashMap<Long, Integer>) datosUsuario[6]
+		Usuario usuario = new Usuario((String) datosUsuario[0], //Nombre Completo
+		                              (String) datosUsuario[1], //Correo Electronico
+		                              (String) datosUsuario[2], //Direccion
+		                              (long) datosUsuario[3],   //Telefono
+		                              (char[]) datosUsuario[4], //Clave de Acceso
+		                              (int) datosUsuario[5],    //CID
+		                              (HashMap<Long, Integer>) datosUsuario[6] //Carrito de Compras
 		);
 		guardarDatosUsuario(usuario);
 		VentanaPrincipal.LOGIN_CORRECTO = true;
@@ -334,13 +334,13 @@ public class Tienda{
 		return Json.createObjectBuilder().add("CID", CID).add("ARTICULOS", articulosBuilder).build();
 	}
 
-	private void guardarDatosUsuario (Usuario usuario){
+	private boolean guardarDatosUsuario (Usuario usuario){
 		JsonObject jsonActual;
 		try (InputStream inputStream = new FileInputStream(RUTA_USUARIOS); JsonReader reader = Json.createReader(inputStream)){
 			jsonActual = reader.readObject();
 		}catch (Exception e){
 			System.err.println(e.getMessage());
-			return;
+			return false;
 		}
 
 		ROLES            ROL          = Usuario.validarRolUsuario(usuario.getCorreoElectronico());
@@ -366,8 +366,10 @@ public class Tienda{
 			writer.writeObject(jsonFinal);
 		}catch (Exception e){
 			System.err.println(e.getMessage());
+			return false;
 		}
 		guardarCarritoDeCompras(obtenerNuevoCID(), usuario.getCarritoDeCompras());
+		return true;
 	}
 
 	private static JsonObject convertirUsuarioAJson (Usuario usuario){
@@ -450,9 +452,10 @@ public class Tienda{
 		for (JsonValue libroValue : librosExistentes){
 			JsonObject libro      = (JsonObject) libroValue;
 			long       ISBNActual = libro.getJsonNumber("ISBN").longValue();
-			if (ISBNActual != ISBN){
-				librosBuilder.add(libro);
+			if (ISBNActual == ISBN){
+				continue;
 			}
+			librosBuilder.add(libro);
 		}
 
 		librosBuilder.build();
@@ -467,6 +470,18 @@ public class Tienda{
 
 	public boolean ventasAsociadasLibro (long ISBN){
 		//TODO
-		return false;
+		return true;
+	}
+
+	public boolean crearCuenta (Object[] datosUsuario){
+		Usuario usuario = new Usuario();
+		usuario.setNombreCompleto((String) datosUsuario[0]);
+		usuario.setCorreoElectronico((String) datosUsuario[1]);
+		usuario.setDireccionEnvio((String) datosUsuario[2]);
+		usuario.setTelefonoContacto((long) datosUsuario[3]);
+		usuario.setClaveAcceso((char[]) datosUsuario[4]);
+		usuario.setRolUsuario(Usuario.validarRolUsuario(usuario.getCorreoElectronico()));
+		usuario.setCID(obtenerNuevoCID());
+		return guardarDatosUsuario(usuario);
 	}
 }

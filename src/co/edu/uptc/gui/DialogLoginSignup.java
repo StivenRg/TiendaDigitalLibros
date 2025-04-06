@@ -21,8 +21,8 @@ public class DialogLoginSignup extends JDialog{
 
 	public DialogLoginSignup (VentanaPrincipal ventanaPrincipal, Evento evento){
 		super(ventanaPrincipal, "Inicio de Sesión / Registro", true);
-		panelContenedor = new JTabbedPane();
 		this.evento     = evento;
+		panelContenedor = new JTabbedPane();
 		agregarLogin();
 		agregarRegistro();
 		panelContenedor.addTab("Login", panelLogin);

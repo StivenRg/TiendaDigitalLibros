@@ -68,7 +68,7 @@ public class PantallaPrincipal extends JPanel{
 		panelHistorialCompras = new PanelHistorialCompras(evento);
 	}
 
-	public PanelLibros getPanelLibros (){
+	PanelLibros getPanelLibros (){
 		return panelLibros;
 	}
 
@@ -85,11 +85,15 @@ public class PantallaPrincipal extends JPanel{
 		return panelActualizarLibro;
 	}
 
-	public PanelCarrito getPanelCarrito (){
+	PanelCarrito getPanelCarrito (){
 		return panelCarrito;
 	}
 
 	PanelEliminarLibro getPanelEliminarLibro (){
 		return panelEliminarLibro;
+	}
+
+	PanelCrearCuentas getPanelCrearCuentas (){
+		return panelCrearCuentas;
 	}
 }

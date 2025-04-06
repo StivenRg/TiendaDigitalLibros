@@ -47,6 +47,13 @@ public class PanelEliminarLibro extends JPanel{
 		boxGenero          = new JTextField();
 		boxEditorial       = new JTextField();
 
+		//Se hace que los campos no sean editables a excepcion del ISBN
+		boxTitulo.setEditable(false);
+		boxAutor.setEditable(false);
+		boxAnioPublicacion.setEditable(false);
+		boxGenero.setEditable(false);
+		boxEditorial.setEditable(false);
+
 		//Centrado de JTextFields
 		boxISBN.setHorizontalAlignment(JTextField.CENTER);
 		boxTitulo.setHorizontalAlignment(JTextField.CENTER);
@@ -176,16 +183,6 @@ public class PanelEliminarLibro extends JPanel{
 
 	long getISBN (){
 		return Long.parseLong(boxISBN.getText());
-	}
-
-	Object[] getDatosLibro (){
-		return new Object[]{getISBN(),
-		                    boxTitulo.getText(),
-		                    boxAutor.getText(),
-		                    Integer.parseInt(boxAnioPublicacion.getText()),
-		                    boxGenero.getText(),
-		                    boxEditorial.getText()
-		};
 	}
 
 	void setDatosLibro (Object[] datos){

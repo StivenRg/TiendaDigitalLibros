@@ -190,4 +190,21 @@ public class VentanaPrincipal extends JFrame{
 			pantallaPrincipal.getPanelEliminarLibro().setDatosLibro(datosObtenidos);
 		}
 	}
+
+	void crearCuenta (){
+		Object[] datosUsuario = pantallaPrincipal.getPanelCrearCuentas().getDatosUsuario();
+		if (tienda.crearCuenta(datosUsuario)){
+			JOptionPane.showMessageDialog(this, "Cuenta creada correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+		}else{
+			JOptionPane.showMessageDialog(this, "Error al crear la cuenta", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	void usuarioExiste (){
+		if (tienda.usuarioExiste(pantallaPrincipal.getPanelCrearCuentas().getCorreo())){
+			pantallaPrincipal.getPanelCrearCuentas().setMensajeDeError("Ya hay un usuario con ese correo");
+			return;
+		}
+		pantallaPrincipal.getPanelCrearCuentas().setMensajeDeError("Usuario Disponible");
+	}
 }

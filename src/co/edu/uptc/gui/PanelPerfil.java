@@ -67,7 +67,7 @@ public class PanelPerfil extends JPanel{
 		//Banners de Datos
 		//Banner de Nombre Completo
 		JPanel panelNombreCompleto = new JPanel(new GridLayout(1, 2));
-		panelNombreCompleto.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		panelNombreCompleto.setBorder(BorderFactory.createLineBorder(Color.BLACK));//TODO Un mejor separador
 		JLabel labelNombreCompleto = new JLabel(NOMBRE_ATRIBUTOS[0]);
 		labelNombreCompleto.setHorizontalAlignment(JLabel.CENTER);
 		labelNombreCompleto.setPreferredSize(new Dimension(100, 25));
@@ -79,7 +79,7 @@ public class PanelPerfil extends JPanel{
 
 		//Banner de Correo Electronico
 		JPanel panelCorreoElectronico = new JPanel(new GridLayout(1, 2));
-		panelCorreoElectronico.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		panelCorreoElectronico.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		JLabel labelCorreoElectronico = new JLabel(NOMBRE_ATRIBUTOS[1]);
 		labelCorreoElectronico.setPreferredSize(new Dimension(100, 25));
 		labelCorreoElectronico.setHorizontalAlignment(JLabel.CENTER);
@@ -91,7 +91,7 @@ public class PanelPerfil extends JPanel{
 
 		//Banner de Direccion
 		JPanel panelDireccion = new JPanel(new GridLayout(1, 2));
-		panelDireccion.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		panelDireccion.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		JLabel labelDireccion = new JLabel(NOMBRE_ATRIBUTOS[2]);
 		labelDireccion.setPreferredSize(new Dimension(100, 25));
 		labelDireccion.setHorizontalAlignment(JLabel.CENTER);
@@ -103,7 +103,7 @@ public class PanelPerfil extends JPanel{
 
 		//Banner de Teléfono
 		JPanel panelTelefono = new JPanel(new GridLayout(1, 2));
-		panelTelefono.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		panelTelefono.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		JLabel labelTelefono = new JLabel(NOMBRE_ATRIBUTOS[3]);
 		labelTelefono.setPreferredSize(new Dimension(100, 25));
 		labelTelefono.setHorizontalAlignment(JLabel.CENTER);
@@ -115,7 +115,7 @@ public class PanelPerfil extends JPanel{
 
 		//Banner de Tipo de Usuario
 		JPanel panelTipoUsuario = new JPanel(new GridLayout(1, 2));
-		panelTipoUsuario.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		panelTipoUsuario.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		JLabel labelTipoUsuario = new JLabel(NOMBRE_ATRIBUTOS[4]);
 		labelTipoUsuario.setPreferredSize(new Dimension(100, 25));
 		labelTipoUsuario.setHorizontalAlignment(JLabel.CENTER);
@@ -126,7 +126,7 @@ public class PanelPerfil extends JPanel{
 
 		//Banner de Contraseña
 		JPanel panelContrasena = new JPanel(new GridLayout(2, 2));
-		panelContrasena.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		panelContrasena.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		JLabel labelContrasena = new JLabel("*" + NOMBRE_ATRIBUTOS[5]);
 		labelContrasena.setPreferredSize(new Dimension(100, 25));
 		labelContrasena.setHorizontalAlignment(JLabel.CENTER);

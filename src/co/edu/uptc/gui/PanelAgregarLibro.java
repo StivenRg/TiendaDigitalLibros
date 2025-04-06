@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelAgregarLibro extends JPanel{
-	private       final Evento            evento;
+	private final Evento            evento;
 	private       JPanel            panelCampos;
 	private       JPanel            panelFooter;
 	private       JTextField        boxISBN;
@@ -39,7 +39,7 @@ public class PanelAgregarLibro extends JPanel{
 		//Creacion de Labels y centrado de cada uno
 		JLabel labelISBN               = new JLabel("*ISBN", SwingConstants.CENTER);
 		JLabel labelTitulo             = new JLabel("*Titulo", SwingConstants.CENTER);
-		JLabel labelAutor              = new JLabel("Autor(es)", SwingConstants.CENTER);
+		JLabel labelAutor              = new JLabel("*Autor(es)", SwingConstants.CENTER);
 		JLabel labelAnioPublicacion    = new JLabel("*Año de Publicación", SwingConstants.CENTER);
 		JLabel labelGenero             = new JLabel("*Género", SwingConstants.CENTER);
 		JLabel labelEditorial          = new JLabel("*Editorial", SwingConstants.CENTER);
@@ -262,7 +262,7 @@ public class PanelAgregarLibro extends JPanel{
 		datos[6] = Integer.parseInt(boxNumPaginas.getText());
 		datos[7] = Double.parseDouble(boxPrecioVenta.getText());
 		datos[8] = Integer.parseInt(boxCantidadInventario.getText());
-		datos[9] = comboBoxFormato.getSelectedItem().toString();
+		datos[9] = comboBoxFormato.getSelectedItem().toString(); //Se entiende que siempre tendra un elemento seleccionado
 		return datos;
 	}
 }

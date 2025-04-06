@@ -12,12 +12,14 @@ public class Evento implements ActionListener{
 		AGREGAR_LIBRO_AL_CARRITO,
 		BUSCAR_LIBRO_ACTUALIZAR,
 		BUSCAR_LIBRO_ELIMINAR,
+		CREAR_CUENTA,
 		ELIMINAR_LIBRO,
 		INICIAR_SESION,
 		LOGIN_SIGNUP,
 		PAGAR_EFECTIVO,
 		PAGAR_TARJETA,
-		REGISTRAR
+		REGISTRAR,
+		VALIDAR_USUARIO
 	}
 
 	public Evento (VentanaPrincipal ventana){
@@ -34,12 +36,14 @@ public class Evento implements ActionListener{
 			case AGREGAR_LIBRO_AL_ARCHIVO -> ventana.agregarLibroArchivo();
 			//case ACTUALIZAR_DATOS_CLIENTE -> ventana.actualizarDatosCliente();
 			case ACTUALIZAR_LIBRO -> ventana.actualizarLibro();
+			case CREAR_CUENTA -> ventana.crearCuenta();
 			case ELIMINAR_LIBRO -> ventana.eliminarLibro();
 			case INICIAR_SESION -> ventana.validarInicioSesion();
 			case LOGIN_SIGNUP -> ventana.mostrarPanelLoginSignUp();
-			//case PAGAR_EFECTIVO -> pagarEfectivo();
-			//case PAGAR_TARJETA -> pagarTarjeta();
+			//case PAGAR_EFECTIVO -> ventana.pagarEfectivo();
+			//case PAGAR_TARJETA -> ventana.pagarTarjeta();
 			case REGISTRAR -> ventana.validarRegistro();
+			case VALIDAR_USUARIO -> ventana.usuarioExiste();
 		}
 	}
 }
