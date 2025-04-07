@@ -6,6 +6,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class PanelLibros extends JPanel{
+	private final Evento            evento;
+	private final VentanaPrincipal  ventana;
 	private final String[]          nombreColumnas = {"ISBN",
 	                                                  "Titulo",
 	                                                  "Autor",
@@ -18,9 +20,10 @@ public class PanelLibros extends JPanel{
 	                                                  "Cantidad Disponible",
 	                                                  "Agregar"
 	};
+	private final Font              fuenteCabecera = new Font("Arial", Font.BOLD, 15);
+	private final Font              fuenteCelda    = new Font("Lucida Sans Unicode", Font.PLAIN, 12);
+	private final Font              fuenteBoton    = new Font("Lucida Sans Unicode", Font.BOLD, 20);
 	private       DefaultTableModel model;
-	private final VentanaPrincipal  ventana;
-	private final Evento            evento;
 
 	public PanelLibros (VentanaPrincipal ventana, Evento evento){
 		this.ventana = ventana;
@@ -57,16 +60,21 @@ public class PanelLibros extends JPanel{
 		setLayout(new BorderLayout());
 		model = getDefaultTableModel();
 		refrescarLista();
-		JTable locTableLibros = new JTable(model);
-		formatearColumnas(locTableLibros);
-		locTableLibros.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		JScrollPane scrollPane = new JScrollPane(locTableLibros);
+		JTable tableLibros = new JTable(model);
+		tableLibros.getTableHeader().setFont(fuenteCabecera);
+		tableLibros.setFont(fuenteCelda);
+		formatearColumnas(tableLibros);
+		tableLibros.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		JScrollPane scrollPane = new JScrollPane(tableLibros);
 		add(scrollPane, BorderLayout.CENTER);
 
 		JButton botonAgregar = new JButton("Agregar Libro");
 		botonAgregar.setActionCommand(Evento.EVENTO.AGREGAR_LIBRO_AL_CARRITO.name());
 		botonAgregar.addActionListener(evento);
 		add(botonAgregar, BorderLayout.SOUTH);
+
+		//Asignacion de fuente al boton
+		botonAgregar.setFont(fuenteBoton);
 	}
 
 	private void formatearColumnas (JTable tableLibros){

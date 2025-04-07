@@ -9,6 +9,11 @@ import java.util.Arrays;
 public class DialogLoginSignup extends JDialog{
 	private final JTabbedPane    panelContenedor;
 	private final Evento         evento;
+	private final Font           fuentePestania  = new Font("Arial", Font.BOLD, 15);
+	private final Font           fuenteLabel     = new Font("Lucida Sans Unicode", Font.PLAIN, 20);
+	private final Font           fuenteTextField = new Font("Times New Roman", Font.PLAIN, 20);
+	private final Font           fuenteBoton     = new Font("Lucida Sans Unicode", Font.BOLD, 20);
+	private final JLabel         mensajeDeError  = new JLabel();
 	private       JPanel         panelLogin;
 	private       JPanel         panelRegistro;
 	private       JTextField     boxNombreCompleto;
@@ -17,12 +22,12 @@ public class DialogLoginSignup extends JDialog{
 	private       JTextField     boxTelefono;
 	private       JPasswordField boxContrasena;
 	private       JPasswordField passwordFieldContrasena;
-	private final JLabel         mensajeDeError = new JLabel();
 
 	public DialogLoginSignup (VentanaPrincipal ventanaPrincipal, Evento evento){
 		super(ventanaPrincipal, "Inicio de Sesión / Registro", true);
 		this.evento     = evento;
 		panelContenedor = new JTabbedPane();
+		panelContenedor.setFont(fuentePestania);
 		agregarLogin();
 		agregarRegistro();
 		panelContenedor.addTab("Login", panelLogin);
@@ -40,13 +45,23 @@ public class DialogLoginSignup extends JDialog{
 		JPanel panelLoginDatos = new JPanel(new GridBagLayout());
 		JLabel labelUsuario    = new JLabel("Correo Electronico", SwingConstants.CENTER);
 		JLabel labelContrasena = new JLabel("Contraseña", SwingConstants.CENTER);
-		boxCorreo = new JTextField("admin1@example.com");
-		//Validacion en tiempo real del campo de correo electronico
-		validarCampoCorreo(boxCorreo);
+
+		//Asignacion de fuente a cada label
+		labelUsuario.setFont(fuenteLabel);
+		labelContrasena.setFont(fuenteLabel);
+
+		boxCorreo               = new JTextField("admin1@example.com");
 		passwordFieldContrasena = new JPasswordField("admin");
 
+		//Asignacion de fuente a cada text field
+		boxCorreo.setFont(fuenteTextField);
+		passwordFieldContrasena.setFont(fuenteTextField);
+
+		//Validacion en tiempo real del campo de correo electronico
+		validarCampoCorreo(boxCorreo);
+
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 10, 5);
+		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.fill   = GridBagConstraints.BOTH;
 
 		//Peso Componente
@@ -100,7 +115,10 @@ public class DialogLoginSignup extends JDialog{
 		});
 		panelBotones.add(linkRegistrarse, gbc);
 
-		//Se agrega el panel de persistencia
+		//Asignacion de fuente a cada boton
+		botonIniciarSesion.setFont(fuenteBoton);
+		linkRegistrarse.setFont(fuenteBoton);
+
 		panelLogin.add(panelLoginDatos, BorderLayout.CENTER);
 		panelLogin.add(panelBotones, BorderLayout.SOUTH);
 	}
@@ -115,6 +133,13 @@ public class DialogLoginSignup extends JDialog{
 		JLabel labelDireccion      = new JLabel("*Direccion", SwingConstants.CENTER);
 		JLabel labelTelefono       = new JLabel("*Teléfono", SwingConstants.CENTER);
 		JLabel labelContrasena     = new JLabel("*Contraseña", SwingConstants.CENTER);
+
+		//Asignacion de fuente a cada label
+		labelNombreCompleto.setFont(fuenteLabel);
+		labelCorreo.setFont(fuenteLabel);
+		labelDireccion.setFont(fuenteLabel);
+		labelTelefono.setFont(fuenteLabel);
+		labelContrasena.setFont(fuenteLabel);
 
 		//Text Fields
 		boxNombreCompleto = new JTextField("");
@@ -141,10 +166,18 @@ public class DialogLoginSignup extends JDialog{
 			}
 		});
 
+		//Asignacion de fuente a cada text field y al check box
+		boxNombreCompleto.setFont(fuenteTextField);
+		boxCorreo.setFont(fuenteTextField);
+		boxDireccion.setFont(fuenteTextField);
+		boxTelefono.setFont(fuenteTextField);
+		boxContrasena.setFont(fuenteTextField);
+		checkBoxMostrarContrasena.setFont(fuenteTextField);
+
 		//Layout
 		JPanel             panelRegistroDatos = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc                = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 10, 5);
+		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.fill   = GridBagConstraints.BOTH;
 
 		//Peso Componente
@@ -190,7 +223,13 @@ public class DialogLoginSignup extends JDialog{
 		gbc.gridx = 1;
 		panelRegistroDatos.add(checkBoxMostrarContrasena, gbc);
 
-		JPanel  panelBotones   = new JPanel(new GridLayout(2, 1));
+		JPanel panelBotones = new JPanel(new GridLayout(3, 1));
+
+		mensajeDeError.setForeground(Color.RED);
+		mensajeDeError.setFont(new Font("Arial", Font.BOLD, 20));
+		mensajeDeError.setHorizontalAlignment(JLabel.CENTER);
+		panelBotones.add(mensajeDeError);
+
 		JButton botonRegistrar = new JButton("Crear Cuenta");
 		botonRegistrar.addActionListener(_ -> {
 			mensajeDeError.setText(obtenerMensajeDeError());
@@ -212,10 +251,10 @@ public class DialogLoginSignup extends JDialog{
 			}
 		});
 		panelBotones.add(linkIniciarSesion, gbc);
-		mensajeDeError.setForeground(Color.RED);
-		mensajeDeError.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		mensajeDeError.setHorizontalAlignment(JLabel.CENTER);
-		panelBotones.add(mensajeDeError);
+
+		//Asignacion de fuente a cada boton
+		botonRegistrar.setFont(fuenteBoton);
+		linkIniciarSesion.setFont(fuenteBoton);
 
 		//Se agrega el panel de datos y de botones
 		panelRegistro.add(panelRegistroDatos, BorderLayout.CENTER);

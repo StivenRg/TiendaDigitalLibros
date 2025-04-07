@@ -5,6 +5,11 @@ import java.awt.*;
 
 public class PanelEliminarLibro extends JPanel{
 	private final Evento     evento;
+	private final JButton    botonEliminar   = new JButton("Eliminar");
+	private final Font       fuenteLabel     = new Font("Lucida Sans Unicode", Font.PLAIN, 20);
+	private final Font       fuenteTextField = new Font("Times New Roman", Font.PLAIN, 20);
+	private final Font       fuenteBoton     = new Font("Lucida Sans Unicode", Font.BOLD, 20);
+	private final JLabel     mensajeDeError  = new JLabel();
 	private       JPanel     panelCampos;
 	private       JPanel     panelFooter;
 	private       JTextField boxISBN;
@@ -13,7 +18,6 @@ public class PanelEliminarLibro extends JPanel{
 	private       JTextField boxAnioPublicacion;
 	private       JTextField boxGenero;
 	private       JTextField boxEditorial;
-	private final JLabel     mensajeDeError = new JLabel();
 
 	public PanelEliminarLibro (Evento evento){
 		this.evento = evento;
@@ -39,6 +43,14 @@ public class PanelEliminarLibro extends JPanel{
 		JLabel labelGenero          = new JLabel("**Género", SwingConstants.CENTER);
 		JLabel labelEditorial       = new JLabel("**Editorial", SwingConstants.CENTER);
 
+		//Asignacion de fuente a cada label
+		labelISBN.setFont(fuenteLabel);
+		labelTitulo.setFont(fuenteLabel);
+		labelAutor.setFont(fuenteLabel);
+		labelAnioPublicacion.setFont(fuenteLabel);
+		labelGenero.setFont(fuenteLabel);
+		labelEditorial.setFont(fuenteLabel);
+
 		//Text Fields
 		boxISBN            = new JTextField();
 		boxTitulo          = new JTextField();
@@ -46,6 +58,14 @@ public class PanelEliminarLibro extends JPanel{
 		boxAnioPublicacion = new JTextField();
 		boxGenero          = new JTextField();
 		boxEditorial       = new JTextField();
+
+		//Asignacion de fuente a cada text field
+		boxISBN.setFont(fuenteTextField);
+		boxTitulo.setFont(fuenteTextField);
+		boxAutor.setFont(fuenteTextField);
+		boxAnioPublicacion.setFont(fuenteTextField);
+		boxGenero.setFont(fuenteTextField);
+		boxEditorial.setFont(fuenteTextField);
 
 		//Se hace que los campos no sean editables a excepcion del ISBN
 		boxTitulo.setEditable(false);
@@ -115,7 +135,6 @@ public class PanelEliminarLibro extends JPanel{
 	}
 
 	private void inicializarPanelFooter (){
-
 		panelFooter = new JPanel(new GridLayout(2, 1));
 		JButton botonBuscar = new JButton("Buscar");
 		botonBuscar.setActionCommand(Evento.EVENTO.BUSCAR_LIBRO_ELIMINAR.name());
@@ -124,17 +143,17 @@ public class PanelEliminarLibro extends JPanel{
 		JButton botonEliminar = new JButton("Eliminar");
 		botonEliminar.addActionListener(_ -> {
 			mensajeDeError.setText(obtenerMensajeDeError());
-			if (mensajeDeError.getText().isBlank()){
-				botonEliminar.setActionCommand(Evento.EVENTO.ELIMINAR_LIBRO.name());
-				botonEliminar.addActionListener(evento);
-			}
 		});
+
+		//Asignacion de fuente al boton
+		botonBuscar.setFont(fuenteBoton);
+		botonEliminar.setFont(fuenteBoton);
 
 		panelFooter.add(botonBuscar);
 		panelFooter.add(botonEliminar);
 
 		mensajeDeError.setForeground(Color.RED);
-		mensajeDeError.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		mensajeDeError.setFont(new Font("Arial", Font.BOLD, 20));
 		mensajeDeError.setHorizontalAlignment(JLabel.CENTER);
 		panelFooter.add(mensajeDeError);
 
@@ -182,6 +201,9 @@ public class PanelEliminarLibro extends JPanel{
 	}
 
 	long getISBN (){
+		if (boxISBN.getText().isEmpty()){
+			return - 1;
+		}
 		return Long.parseLong(boxISBN.getText());
 	}
 
@@ -192,5 +214,16 @@ public class PanelEliminarLibro extends JPanel{
 		boxAnioPublicacion.setText(String.valueOf(datos[3]));
 		boxGenero.setText((String) datos[4]);
 		boxEditorial.setText((String) datos[5]);
+	}
+
+	void validarSesionIniciada (){
+		if (mensajeDeError.getText().isBlank()){
+			botonEliminar.setActionCommand(Evento.EVENTO.ELIMINAR_LIBRO.name());
+			botonEliminar.addActionListener(evento);
+		}
+	}
+
+	void setMensajeDeError (String mensaje){
+		mensajeDeError.setText(mensaje);
 	}
 }

@@ -5,22 +5,6 @@ import java.awt.event.ActionListener;
 
 public class Evento implements ActionListener{
 	private final VentanaPrincipal ventana;
-	public enum EVENTO{
-		ACTUALIZAR_LIBRO,
-		ACTUALIZAR_DATOS_CLIENTE,
-		AGREGAR_LIBRO_AL_ARCHIVO,
-		AGREGAR_LIBRO_AL_CARRITO,
-		BUSCAR_LIBRO_ACTUALIZAR,
-		BUSCAR_LIBRO_ELIMINAR,
-		CREAR_CUENTA,
-		ELIMINAR_LIBRO,
-		INICIAR_SESION,
-		LOGIN_SIGNUP,
-		PAGAR_EFECTIVO,
-		PAGAR_TARJETA,
-		REGISTRAR,
-		VALIDAR_USUARIO
-	}
 
 	public Evento (VentanaPrincipal ventana){
 		this.ventana = ventana;
@@ -40,10 +24,27 @@ public class Evento implements ActionListener{
 			case ELIMINAR_LIBRO -> ventana.eliminarLibro();
 			case INICIAR_SESION -> ventana.validarInicioSesion();
 			case LOGIN_SIGNUP -> ventana.mostrarPanelLoginSignUp();
-			//case PAGAR_EFECTIVO -> ventana.pagarEfectivo();
-			//case PAGAR_TARJETA -> ventana.pagarTarjeta();
+			case PAGAR_EFECTIVO -> ventana.pagarEfectivo();
+			case PAGAR_TARJETA -> ventana.pagarTarjeta();
 			case REGISTRAR -> ventana.validarRegistro();
 			case VALIDAR_USUARIO -> ventana.usuarioExiste();
 		}
+	}
+
+	public enum EVENTO{
+		ACTUALIZAR_LIBRO,
+		ACTUALIZAR_DATOS_CLIENTE,
+		AGREGAR_LIBRO_AL_ARCHIVO,
+		AGREGAR_LIBRO_AL_CARRITO,
+		BUSCAR_LIBRO_ACTUALIZAR,
+		BUSCAR_LIBRO_ELIMINAR,
+		CREAR_CUENTA,
+		ELIMINAR_LIBRO,
+		INICIAR_SESION,
+		LOGIN_SIGNUP,
+		PAGAR_EFECTIVO,
+		PAGAR_TARJETA,
+		REGISTRAR,
+		VALIDAR_USUARIO
 	}
 }

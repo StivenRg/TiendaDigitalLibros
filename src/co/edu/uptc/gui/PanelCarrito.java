@@ -7,23 +7,28 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class PanelCarrito extends JPanel{
-	private static final String[]               nombreColumnas = {"ISBN",
-	                                                              "Titulo",
-	                                                              "Autor",
-	                                                              "Precio C/u",
-	                                                              "Valor Impuesto",
-	                                                              "Cantidad",
-	                                                              "Precio Total",
-	                                                              "+",
-	                                                              "-",
-	                                                              "X"
+	private final  Evento                 evento;
+	private static int                    identificadorCarrito;
+	private final  VentanaPrincipal       ventanaPrincipal;
+	private final  String[]               nombreColumnas     = {"ISBN",
+	                                                            "Titulo",
+	                                                            "Autor",
+	                                                            "Precio C/u",
+	                                                            "Vlr Impuesto",
+	                                                            "Cantidad",
+	                                                            "Precio Total",
+	                                                            "+",
+	                                                            "-",
+	                                                            "X"
 	};
-	private final        HashMap<Long, Integer> carritoDeCompras;
-	public               DefaultTableModel      model;
-	private final        Evento                 evento;
-	private final        VentanaPrincipal       ventanaPrincipal;
-	private              JLabel                 labelTotal;
-	private static       int                    identificadorCarrito;
+	private final  HashMap<Long, Integer> carritoDeCompras;
+	private final  Font                   fuenteCabecera     = new Font("Arial", Font.BOLD, 15);
+	private final  Font                   fuenteCelda        = new Font("Lucida Sans Unicode", Font.PLAIN, 15);
+	private final  Font                   fuenteBoton        = new Font("Lucida Sans Unicode", Font.BOLD, 20);
+	private final  JButton                botonPagarEfectivo = new JButton("Pagar en Efectivo");
+	private final  JButton                botonPagarTarjeta  = new JButton("Pagar con Tarjeta");
+	public         DefaultTableModel      model;
+	private        JLabel                 labelTotal;
 
 	public PanelCarrito (VentanaPrincipal ventanaPrincipal, Evento evento){
 		this.evento           = evento;
@@ -72,6 +77,8 @@ public class PanelCarrito extends JPanel{
 		model = getDefaultTableModel();
 		modificacionesCarrito(model);
 		JTable tableCarrito = new JTable(model);
+		tableCarrito.getTableHeader().setFont(fuenteCabecera);
+		tableCarrito.setFont(fuenteCelda);
 		formatearColumnas(tableCarrito);
 		JScrollPane scrollPane = new JScrollPane(tableCarrito);
 		add(scrollPane, BorderLayout.CENTER);
@@ -85,13 +92,10 @@ public class PanelCarrito extends JPanel{
 
 	private void inicializarPanelFooter (){
 		//Footer (incluye el label de precio total)
-		JButton botonPagarEfectivo = new JButton("Pagar en Efectivo");
 		botonPagarEfectivo.setActionCommand(Evento.EVENTO.PAGAR_EFECTIVO.name());
-		botonPagarEfectivo.addActionListener(evento);
-
-		JButton botonPagarTarjeta = new JButton("Pagar con Tarjeta");
 		botonPagarTarjeta.setActionCommand(Evento.EVENTO.PAGAR_TARJETA.name());
 		botonPagarTarjeta.addActionListener(evento);
+		botonPagarEfectivo.addActionListener(evento);
 
 		labelTotal = new JLabel("Total: $0.00");
 		labelTotal.setHorizontalAlignment(JLabel.CENTER);
@@ -114,7 +118,12 @@ public class PanelCarrito extends JPanel{
 		gbc.gridx   = 2;
 		gbc.weightx = pesoComponentes[2];
 		footer.add(botonPagarTarjeta, gbc);
-		this.add(footer, BorderLayout.SOUTH);
+
+		//Asignacion de fuente a cada boton
+		botonPagarEfectivo.setFont(fuenteBoton);
+		botonPagarTarjeta.setFont(fuenteBoton);
+
+		add(footer, BorderLayout.SOUTH);
 	}
 
 	private void modificacionesCarrito (DefaultTableModel model){
@@ -197,10 +206,6 @@ public class PanelCarrito extends JPanel{
 		VentanaPrincipal.guardarCarritoDeCompras(identificadorCarrito, carritoDeCompras);
 	}
 
-	public static void setIdentificadorCarrito (int paramIdentificadorCarrito){
-		identificadorCarrito = paramIdentificadorCarrito;
-	}
-
 	void agregarArticulo (long ISBN){
 		model.addRow(formatearArticulo(ISBN));
 		carritoDeCompras.put(ISBN, 1);
@@ -256,5 +261,9 @@ public class PanelCarrito extends JPanel{
 			return 1;
 		}
 		return carritoDeCompras.get(ISBN);
+	}
+
+	public static void setIdentificadorCarrito (int paramIdentificadorCarrito){
+		identificadorCarrito = paramIdentificadorCarrito;
 	}
 }

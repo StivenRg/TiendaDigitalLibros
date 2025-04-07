@@ -1,0 +1,82 @@
+@startuml
+class VentanaPrincipal {
+    + {static} LOGIN_CORRECTO:boolean
+    -evento:Evento
+    -dialogLoginSignup:DialogLoginSignup
+    -pantallaPrincipal:PantallaPrincipal
+    +<<create>>VentanaPrincipal():void
+    ~actualizarLibro():void
+    ~crearCuenta():void
+    ~eliminarLibro():void
+    ~ {static} obtenerTipoUsuario(correoElectronico:String):ROLES
+    +getDialogLoginSignUp():DialogLoginSignup
+    -getDatosLogin():String[]
+    -getDatosSignUp():Object[]
+    ~usuarioExiste():void
+    -inicializarFrame():void
+    ~agregarLibroArchivo():void
+    +obtenerDatosLibroCarrito(ISBN:long):Object[]
+    ~obtenerListaLibros():Object[][]
+    ~mostrarPanelLoginSignUp():void
+    ~obtenerPrecioTotalProducto(valorUnitario:double,cantidad:int):double
+    ~agregarLibroCarrito():void
+    ~eliminarPanelLoginSignUp():void
+    ~validarInicioSesion():void
+    ~buscarLibroEliminar():void
+    -salirFormaSegura():void
+    + {static} guardarCarritoDeCompras(CID:int,carritoDeCompras:HashMap):void
+    ~pagarEfectivo():void
+    ~buscarLibroActualizar():void
+    ~validarRegistro():void
+    ~obtenerPrecioImpuesto(valorUnitario:double):double
+    ~pagarTarjeta():void
+    ~obtenerPrecioVentaTotal(model:DefaultTableModel):double
+    ~obtenerListaCompras(CID:int):Object[][]
+}
+class Tienda {
+    - {static} RUTA_CARRITOS:String
+    - {static} RUTA_LIBROS:String
+    - {static} RUTA_USUARIOS:String
+    - {static} RUTA_COMPRAS:String
+    +<<create>>Tienda():void
+    +actualizarLibro(datos:Object[]):boolean
+    +calcularPrecioVenta(valorUnitario:double,cantidad:int):double
+    +calcularValorImpuesto(precioUnidad:double):double
+    +crearCuenta(datosUsuario:Object[]):boolean
+    +eliminarLibro(ISBN:long):boolean
+    + {static} obtenerNuevoCID():int
+    +calcularSubTotalVenta(model:DefaultTableModel):double
+    + {static} obtenerTipoUsuario(correoElectronico:String):ROLES
+    +validarUsuarioLogin(correoElectronico:String,claveAcceso:String):boolean
+    +buscarLibro(ISBN:long):Object[]
+    +registrarUsuario(datosUsuario:Object[]):void
+    +obtenerUsuarioSeguro(correoElectronico:String):Object[]
+    +usuarioExiste(correoElectronico:String):boolean
+    +getDataVectorLibros():Object[][]
+    +agregarLibroArchivo(datos:Object[]):boolean
+    +getDataVectorCompras(CID:int):Object[][]
+    -obtenerLibro(ISBN:long,libros:JsonArray):Object[]
+    -obtenerUsuario(correoElectronico:String):Usuario
+    -obtenerListaDeLibros(librosJson:JsonArray):ArrayList
+    -guardarDatosUsuario(usuario:Usuario):boolean
+    -obtenerMapLibrosCarrito(carritoActual:JsonObject):HashMap
+    -obtenerPorcentajeDescuento(rol:ROLES):float
+    +ventasAsociadasLibro(ISBN:long):boolean
+    - {static} convertirUsuarioAJson(usuario:Usuario):JsonObject
+    -obtenerListaTotalDeCompras(comprasArrayJson:JsonArray):ArrayList
+    -filtrarPorCID(listaTotalDeCompras:ArrayList,CID:int):ArrayList
+    -getCarritoDeCompras(CID:int):HashMap
+    -escribirLibroEnArchivo(libro:Libro):void
+    -convertirLibroAJson(libro:Libro):JsonObject
+    - {static} convertirCarritoDeComprasAJson(CID:int,carritoDeCompras:HashMap):JsonObject
+    + {static} obtenerNuevoIDCompras():long
+    +calcularTotalVenta(subTotal:double,rol:ROLES):double
+}
+class Main {
+    +<<create>>Main():void
+    + {static} main(args:String[]):void
+}
+
+VentanaPrincipal --> "1" Tienda
+
+@enduml

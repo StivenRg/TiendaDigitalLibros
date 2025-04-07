@@ -5,6 +5,13 @@ import java.awt.*;
 
 public class PanelAgregarLibro extends JPanel{
 	private final Evento            evento;
+	private final JButton           botonGuardar    = new JButton("Guardar");
+	private final Font              fuenteLabel     = new Font("Lucida Sans Unicode", Font.PLAIN, 20);
+	private final Font              fuenteTextField = new Font("Times New Roman", Font.PLAIN, 20);
+	private final Font              fuenteBoton     = new Font("Lucida Sans Unicode", Font.BOLD, 20);
+	private final String[]          FORMATOS        = {"DIGITAL", "IMPRESO"};
+	private final JComboBox<String> comboBoxFormato = new JComboBox<>(FORMATOS);
+	private final JLabel            mensajeDeError  = new JLabel();
 	private       JPanel            panelCampos;
 	private       JPanel            panelFooter;
 	private       JTextField        boxISBN;
@@ -16,9 +23,6 @@ public class PanelAgregarLibro extends JPanel{
 	private       JTextField        boxNumPaginas;
 	private       JTextField        boxPrecioVenta;
 	private       JTextField        boxCantidadInventario;
-	private final String[]          FORMATOS        = {"DIGITAL", "IMPRESO"};
-	private final JComboBox<String> comboBoxFormato = new JComboBox<>(FORMATOS);
-	private final JLabel            mensajeDeError  = new JLabel();
 
 	public PanelAgregarLibro (Evento evento){
 		this.evento = evento;
@@ -48,6 +52,18 @@ public class PanelAgregarLibro extends JPanel{
 		JLabel labelCantidadInventario = new JLabel("*Cantidad de Inventario", SwingConstants.CENTER);
 		JLabel labelFormato            = new JLabel("*Formato", SwingConstants.CENTER);
 
+		//Asignacion de fuente a cada label
+		labelISBN.setFont(fuenteLabel);
+		labelTitulo.setFont(fuenteLabel);
+		labelAutor.setFont(fuenteLabel);
+		labelAnioPublicacion.setFont(fuenteLabel);
+		labelGenero.setFont(fuenteLabel);
+		labelEditorial.setFont(fuenteLabel);
+		labelNumPaginas.setFont(fuenteLabel);
+		labelPrecioVenta.setFont(fuenteLabel);
+		labelCantidadInventario.setFont(fuenteLabel);
+		labelFormato.setFont(fuenteLabel);
+
 		//Text Fields
 		boxISBN               = new JTextField();
 		boxTitulo             = new JTextField();
@@ -59,6 +75,17 @@ public class PanelAgregarLibro extends JPanel{
 		boxPrecioVenta        = new JTextField("1.0");
 		boxCantidadInventario = new JTextField("1");
 		JComboBox<String> comboBoxFormato = new JComboBox<>(FORMATOS);
+
+		//Asignacion de fuente a cada text field
+		boxISBN.setFont(fuenteTextField);
+		boxTitulo.setFont(fuenteTextField);
+		boxAutor.setFont(fuenteTextField);
+		boxAnioPublicacion.setFont(fuenteTextField);
+		boxGenero.setFont(fuenteTextField);
+		boxEditorial.setFont(fuenteTextField);
+		boxNumPaginas.setFont(fuenteTextField);
+		boxPrecioVenta.setFont(fuenteTextField);
+		boxCantidadInventario.setFont(fuenteTextField);
 
 		//Centrado de JTextFields
 		boxISBN.setHorizontalAlignment(JTextField.CENTER);
@@ -73,7 +100,7 @@ public class PanelAgregarLibro extends JPanel{
 		comboBoxFormato.setSelectedItem("IMPRESO");
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 10, 5);
+		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.fill   = GridBagConstraints.BOTH;
 
 		//Peso Componente
@@ -154,20 +181,20 @@ public class PanelAgregarLibro extends JPanel{
 
 	private void inicializarPanelFooter (){
 		panelFooter = new JPanel(new GridLayout(2, 1));
+
+		mensajeDeError.setForeground(Color.RED);
+		mensajeDeError.setFont(new Font("Arial", Font.BOLD, 20));
+		mensajeDeError.setHorizontalAlignment(JLabel.CENTER);
+		panelFooter.add(mensajeDeError);
+
 		JButton botonGuardar = new JButton("Guardar");
 		botonGuardar.addActionListener(e -> {
 			mensajeDeError.setText(obtenerMensajeDeError());
-			if (mensajeDeError.getText().isBlank()){
-				botonGuardar.setActionCommand(Evento.EVENTO.AGREGAR_LIBRO_AL_ARCHIVO.name());
-				botonGuardar.addActionListener(evento);
-			}
 		});
-		panelFooter.add(botonGuardar);
 
-		mensajeDeError.setForeground(Color.RED);
-		mensajeDeError.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		mensajeDeError.setHorizontalAlignment(JLabel.CENTER);
-		panelFooter.add(mensajeDeError);
+		//Asignacion de fuente al boton
+		botonGuardar.setFont(fuenteBoton);
+		panelFooter.add(botonGuardar);
 
 		add(panelFooter, BorderLayout.SOUTH);
 	}
@@ -264,5 +291,12 @@ public class PanelAgregarLibro extends JPanel{
 		datos[8] = Integer.parseInt(boxCantidadInventario.getText());
 		datos[9] = comboBoxFormato.getSelectedItem().toString(); //Se entiende que siempre tendra un elemento seleccionado
 		return datos;
+	}
+
+	void validarSesionIniciada (){
+		if (mensajeDeError.getText().isBlank()){
+			botonGuardar.setActionCommand(Evento.EVENTO.AGREGAR_LIBRO_AL_ARCHIVO.name());
+			botonGuardar.addActionListener(evento);
+		}
 	}
 }

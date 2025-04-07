@@ -1,0 +1,452 @@
+@startuml
+class PanelEliminarLibro {
+    -botonEliminar:JButton
+    -fuenteLabel:Font
+    -fuenteTextField:Font
+    -fuenteBoton:Font
+    -mensajeDeError:JLabel
+    -panelCampos:JPanel
+    -panelFooter:JPanel
+    -boxISBN:JTextField
+    -boxTitulo:JTextField
+    -boxAutor:JTextField
+    -boxAnioPublicacion:JTextField
+    -boxGenero:JTextField
+    -boxEditorial:JTextField
+    +<<create>>PanelEliminarLibro(evento:Evento):void
+    ~setMensajeDeError(mensaje:String):void
+    ~validarSesionIniciada():void
+    -obtenerMensajeDeError():String
+    ~setDatosLibro(datos:Object[]):void
+    ~getISBN():long
+    -inicializarPanel():void
+    -inicializarPanelCampos():void
+    -inicializarPanelFooter():void
+    -lambda$inicializarPanelFooter$0(arg0:ActionEvent):void
+}
+class PanelCarrito {
+    - {static} identificadorCarrito:int
+    -nombreColumnas:String[]
+    -carritoDeCompras:HashMap
+    -fuenteCabecera:Font
+    -fuenteCelda:Font
+    -fuenteBoton:Font
+    -botonPagarEfectivo:JButton
+    -botonPagarTarjeta:JButton
+    +model:DefaultTableModel
+    -labelTotal:JLabel
+    +<<create>>PanelCarrito(ventanaPrincipal:VentanaPrincipal,evento:Evento):void
+    -lambda$modificacionesCarrito$0(arg0:DefaultTableModel,arg1:TableModelEvent):void
+    -inicializarPanelCarrito():void
+    -obtenerPrecioVenta(valorUnitario:double,cantidad:int):double
+    -formatearArticulo(ISBN:long):Object[]
+    -actualizarPrecioTotal():void
+    -descartarDelCarrito(model:DefaultTableModel,fila:int):void
+    -actualizarCarrito(model:DefaultTableModel):void
+    -quitarAlCarrito(model:DefaultTableModel,fila:int):void
+    -obtenerPrecioImpuesto(valorUnitario:double):double
+    ~incrementarCantidad(ISBN:Long):void
+    -sumarAlCarrito(model:DefaultTableModel,fila:int):void
+    ~agregarArticulo(ISBN:long):void
+    -obtenerCantidadLibro(ISBN:long):int
+    -modificacionesCarrito(model:DefaultTableModel):void
+    + {static} setIdentificadorCarrito(paramIdentificadorCarrito:int):void
+    +actualizarCarritoArchivo():void
+    +getDefaultTableModel():DefaultTableModel
+    -formatearColumnas(tableCarrito:JTable):void
+    -inicializarPanelFooter():void
+    -celdasDoubleFormateadas():DefaultTableCellRenderer
+    +getCarritoDeComprasTemporal():HashMap
+}
+class PanelPerfil {
+    -botonGuardar:JButton
+    -boxNombreCompleto:JTextField
+    -boxCorreo:JTextField
+    -boxDireccion:JTextField
+    -boxTelefono:JTextField
+    -fuenteLabel:Font
+    -fuenteTextField:Font
+    -fuenteBoton:Font
+    -mensajeDeError:JLabel
+    -datosUsuario:Object[]
+    -nombreCompleto:String
+    -correoElectronico:String
+    -direccion:String
+    -telefono:long
+    -CID:int
+    -labelTipoUsuarioActual:JLabel
+    -boxContrasena:JPasswordField
+    +<<create>>PanelPerfil(pantallaPrincipal:PantallaPrincipal,evento:Evento):void
+    -lambda$inicializarPanelDatosUsuario$0(arg0:JCheckBox,arg1:ActionEvent):void
+    -inicializarPanelDatosUsuario():void
+    ~validarSesionIniciada():void
+    -obtenerMensajeDeError():String
+    +getCID():int
+    -inicializarPanelFooter():void
+    -lambda$inicializarPanelFooter$0(arg0:ActionEvent):void
+    -inicializarPanelPerfil():void
+    -refrescarDatosPerfil(datosUsuario:Object[]):void
+    -rellenarDatosVacios():void
+    +setDatosUsuario(datosUsuario:Object[]):void
+}
+class Main {
+    +<<create>>Main():void
+    + {static} main(args:String[]):void
+}
+class Usuario {
+    -nombreCompleto:String
+    -correoElectronico:String
+    -direccionEnvio:String
+    -telefonoContacto:long
+    -claveAcceso:char[]
+    -carritoDeCompras:HashMap
+    -CID:int
+    +<<create>>Usuario():void
+    +<<create>>Usuario(nombreCompleto:String,correoElectronico:String,direccionEnvio:String,telefonoContacto:long,claveAcceso:char[],CID:int,carritoDeCompras:HashMap):void
+    ~ {static} validarRolUsuario(correoElectronico:String):ROLES
+    ~setNombreCompleto(paramNombreCompleto:String):void
+    ~getNombreCompleto():String
+    +setClaveAcceso(paramClaveAcceso:char[]):void
+    ~setDireccionEnvio(paramDireccionEnvio:String):void
+    ~setTelefonoContacto(paramTelefonoContacto:long):void
+    ~getDireccionEnvio():String
+    +getCarritoDeCompras():HashMap
+    +getRolUsuario():ROLES
+    ~getClaveAcceso():char[]
+    ~getTelefonoContacto():long
+    +setRolUsuario(rolUsuario:ROLES):void
+    ~setCorreoElectronico(paramCorreoElectronico:String):void
+    +setCarritoDeCompras(carritoDeCompras:HashMap):void
+    ~getCorreoElectronico():String
+    +getCID():int
+    +setCID(CID:int):void
+}
+class VentanaPrincipal {
+    + {static} LOGIN_CORRECTO:boolean
+    +<<create>>VentanaPrincipal():void
+    ~obtenerPrecioImpuesto(valorUnitario:double):double
+    ~obtenerPrecioTotalProducto(valorUnitario:double,cantidad:int):double
+    +obtenerDatosLibroCarrito(ISBN:long):Object[]
+    ~obtenerPrecioVentaTotal(model:DefaultTableModel):double
+    + {static} guardarCarritoDeCompras(CID:int,carritoDeCompras:HashMap):void
+    ~obtenerListaCompras(CID:int):Object[][]
+    ~obtenerListaLibros():Object[][]
+    ~eliminarLibro():void
+    ~usuarioExiste():void
+    ~ {static} obtenerTipoUsuario(correoElectronico:String):ROLES
+    ~agregarLibroArchivo():void
+    ~actualizarLibro():void
+    ~buscarLibroActualizar():void
+    ~mostrarPanelLoginSignUp():void
+    ~pagarEfectivo():void
+    ~validarInicioSesion():void
+    ~validarRegistro():void
+    ~buscarLibroEliminar():void
+    ~crearCuenta():void
+    ~agregarLibroCarrito():void
+    ~pagarTarjeta():void
+    -getDatosLogin():String[]
+    -getDatosSignUp():Object[]
+    ~eliminarPanelLoginSignUp():void
+    -salirFormaSegura():void
+    -inicializarFrame():void
+    +getDialogLoginSignUp():DialogLoginSignup
+}
+class PantallaPrincipal {
+    -fuentePestania:Font
+    -panelPrincipal:JTabbedPane
+    +<<create>>PantallaPrincipal(ventana:VentanaPrincipal,evento:Evento):void
+    -inicializarPanelCarrito():void
+    -inicializarPanelHistorialCompras():void
+    -activarFuncionalidadBotones():void
+    -inicalizarPanelesAdministrador():void
+    -inicializarPanelLibros(ventana:VentanaPrincipal):void
+    +agregarPanelesSegunRol(rol:String):void
+    -inicializarPanelPerfil():void
+    ~getDatosLibroNuevo():Object[]
+    ~getPanelLibros():PanelLibros
+    ~getPanelActualizarLibro():PanelActualizarLibro
+    ~getPanelCrearCuentas():PanelCrearCuentas
+    ~getPanelEliminarLibro():PanelEliminarLibro
+    ~iniciarSesion(datosUsuario:Object[]):void
+    ~getPanelCarrito():PanelCarrito
+}
+class Tienda {
+    - {static} RUTA_CARRITOS:String
+    - {static} RUTA_LIBROS:String
+    - {static} RUTA_USUARIOS:String
+    - {static} RUTA_COMPRAS:String
+    +<<create>>Tienda():void
+    - {static} convertirCarritoDeComprasAJson(CID:int,carritoDeCompras:HashMap):JsonObject
+    -getCarritoDeCompras(CID:int):HashMap
+    +buscarLibro(ISBN:long):Object[]
+    -escribirLibroEnArchivo(libro:Libro):void
+    -convertirLibroAJson(libro:Libro):JsonObject
+    + {static} obtenerNuevoCID():int
+    -obtenerListaDeLibros(librosJson:JsonArray):ArrayList
+    -filtrarPorCID(listaTotalDeCompras:ArrayList,CID:int):ArrayList
+    +eliminarLibro(ISBN:long):boolean
+    +calcularValorImpuesto(precioUnidad:double):double
+    - {static} convertirUsuarioAJson(usuario:Usuario):JsonObject
+    -obtenerLibro(ISBN:long,libros:JsonArray):Object[]
+    -obtenerPorcentajeDescuento(rol:ROLES):float
+    +usuarioExiste(correoElectronico:String):boolean
+    -obtenerListaTotalDeCompras(comprasArrayJson:JsonArray):ArrayList
+    + {static} obtenerTipoUsuario(correoElectronico:String):ROLES
+    +getDataVectorLibros():Object[][]
+    -obtenerUsuario(correoElectronico:String):Usuario
+    +ventasAsociadasLibro(ISBN:long):boolean
+    +agregarLibroArchivo(datos:Object[]):boolean
+    +calcularPrecioVenta(valorUnitario:double,cantidad:int):double
+    -obtenerMapLibrosCarrito(carritoActual:JsonObject):HashMap
+    -guardarDatosUsuario(usuario:Usuario):boolean
+    +validarUsuarioLogin(correoElectronico:String,claveAcceso:String):boolean
+    +obtenerUsuarioSeguro(correoElectronico:String):Object[]
+    +calcularTotalVenta(subTotal:double,rol:ROLES):double
+    +actualizarLibro(datos:Object[]):boolean
+    +getDataVectorCompras(CID:int):Object[][]
+    + {static} obtenerNuevoIDCompras():long
+    +calcularSubTotalVenta(model:DefaultTableModel):double
+    +crearCuenta(datosUsuario:Object[]):boolean
+    +registrarUsuario(datosUsuario:Object[]):void
+}
+class Compra {
+    -ID_Compra:long
+    -CID_Asociado:int
+    -fechaCompra:LocalDateTime
+    -valorCompra:double
+    -cantidadCompra:int
+    -FORMATO_FECHA:DateTimeFormatter
+    +<<create>>Compra():void
+    +<<create>>Compra(CID_Asociado:int,fechaCompra:LocalDateTime,valorCompra:double,cantidadCompra:int):void
+    +getFechaCompraLocalDateTime():LocalDateTime
+    +setFechaCompra(fechaCompra:String):void
+    +getCantidadCompra():int
+    +getCID_Asociado():int
+    +setCantidadCompra(cantidadCompra:int):void
+    +getFechaCompraString():String
+    +getID_Compra():long
+    +setID_Compra(ID_Compra:long):void
+    +getValorCompra():double
+    +setCID_Asociado(CID_Asociado:int):void
+    +setValorCompra(valorCompra:double):void
+    -obtenerFechaLocalDateTime(fechaString:String):LocalDateTime
+    -obtenerFechaString():String
+}
+class DialogLoginSignup {
+    -panelContenedor:JTabbedPane
+    -fuentePestania:Font
+    -fuenteLabel:Font
+    -fuenteTextField:Font
+    -fuenteBoton:Font
+    -mensajeDeError:JLabel
+    -panelLogin:JPanel
+    -panelRegistro:JPanel
+    -boxNombreCompleto:JTextField
+    -boxCorreo:JTextField
+    -boxDireccion:JTextField
+    -boxTelefono:JTextField
+    -boxContrasena:JPasswordField
+    -passwordFieldContrasena:JPasswordField
+    +<<create>>DialogLoginSignup(ventanaPrincipal:VentanaPrincipal,evento:Evento):void
+    -obtenerMensajeDeError():String
+    +getDatosLogin():String[]
+    -lambda$agregarLogin$0(arg0:JCheckBox,arg1:ActionEvent):void
+    -validarCampoCorreo(boxCorreo:JTextField):void
+    -agregarRegistro():void
+    +getDatosRegistro():Object[]
+    -lambda$agregarRegistro$1(arg0:JButton,arg1:ActionEvent):void
+    -lambda$agregarRegistro$0(arg0:JCheckBox,arg1:ActionEvent):void
+    -agregarLogin():void
+}
+class PanelLibros {
+    -nombreColumnas:String[]
+    -fuenteCabecera:Font
+    -fuenteCelda:Font
+    -fuenteBoton:Font
+    -model:DefaultTableModel
+    +<<create>>PanelLibros(ventana:VentanaPrincipal,evento:Evento):void
+    -getDefaultTableModel():DefaultTableModel
+    -formatearColumnas(tableLibros:JTable):void
+    -inicializarPanelLibros():void
+    -refrescarLista():void
+    +getTableModel():DefaultTableModel
+    -celdasDoubleFormateadas():DefaultTableCellRenderer
+}
+class PanelAgregarLibro {
+    -botonGuardar:JButton
+    -fuenteLabel:Font
+    -fuenteTextField:Font
+    -fuenteBoton:Font
+    -FORMATOS:String[]
+    -comboBoxFormato:JComboBox
+    -mensajeDeError:JLabel
+    -panelCampos:JPanel
+    -panelFooter:JPanel
+    -boxISBN:JTextField
+    -boxTitulo:JTextField
+    -boxAutor:JTextField
+    -boxAnioPublicacion:JTextField
+    -boxGenero:JTextField
+    -boxEditorial:JTextField
+    -boxNumPaginas:JTextField
+    -boxPrecioVenta:JTextField
+    -boxCantidadInventario:JTextField
+    +<<create>>PanelAgregarLibro(evento:Evento):void
+    ~validarSesionIniciada():void
+    -obtenerMensajeDeError():String
+    ~getDatosLibro():Object[]
+    -inicializarPanel():void
+    -inicializarPanelCampos():void
+    -inicializarPanelFooter():void
+    -lambda$inicializarPanelFooter$0(arg0:ActionEvent):void
+}
+class Evento {
+    +<<create>>Evento(ventana:VentanaPrincipal):void
+    +actionPerformed(e:ActionEvent):void
+}
+class PanelHistorialCompras {
+    -fuenteCabecera:Font
+    -fuenteCelda:Font
+    -nombreColumnas:String[]
+    -model:DefaultTableModel
+    -CID:int
+    +<<create>>PanelHistorialCompras(ventanaPrincipal:VentanaPrincipal,CID:int):void
+    -rellenarTablaCompras():void
+    -inicializarPanel():void
+    -getDefaultTableModel():DefaultTableModel
+    -celdasFormateadas():DefaultTableCellRenderer
+}
+class PanelActualizarLibro {
+    -botonBuscar:JButton
+    -botonGuardar:JButton
+    -fuenteLabel:Font
+    -fuenteTextField:Font
+    -fuenteBoton:Font
+    -comboBoxFormato:JComboBox
+    -mensajeDeError:JLabel
+    -panelCampos:JPanel
+    -panelFooter:JPanel
+    -boxISBN:JTextField
+    -boxTitulo:JTextField
+    -boxAutor:JTextField
+    -boxAnioPublicacion:JTextField
+    -boxGenero:JTextField
+    -boxEditorial:JTextField
+    -boxNumPaginas:JTextField
+    -boxPrecioVenta:JTextField
+    -boxCantidadInventario:JTextField
+    +<<create>>PanelActualizarLibro(evento:Evento):void
+    ~validarSesionIniciada():void
+    -obtenerMensajeDeError():String
+    +getDatosLibro():Object[]
+    ~setDatosLibro(datos:Object[]):void
+    +getISBN():long
+    -inicializarPanel():void
+    -inicializarPanelCampos():void
+    -inicializarPanelFooter():void
+    -lambda$inicializarPanelFooter$0(arg0:ActionEvent):void
+    -lambda$inicializarPanelFooter$1(arg0:ActionEvent):void
+}
+class ROLES {
+    -<<create>>ROLES($enum$name:String,$enum$ordinal:int):void
+    + {static} values():ROLES[]
+    + {static} valueOf(name:String):ROLES
+    - {static} $values():ROLES[]
+}
+class Libro {
+    -isbn:long
+    -titulo:String
+    -autores:String
+    -anioPublicacion:int
+    -categoria:String
+    -editorial:String
+    -numeroPaginas:int
+    -precioVenta:double
+    -cantidadDisponible:int
+    -formato:String
+    +<<create>>Libro():void
+    +<<create>>Libro(isbn:long,titulo:String,autores:String,anioPublicacion:int,categoria:String,editorial:String,numeroPaginas:int,precioVenta:double,cantidadDisponible:int,formato:String):void
+    +getAnioPublicacion():int
+    +setEditorial(paramEditorial:String):void
+    +setAnioPublicacion(paramAnioPublicacion:int):void
+    +getCategoria():String
+    +setCategoria(paramCategoria:String):void
+    +getEditorial():String
+    +getNumeroPaginas():int
+    +setNumeroPaginas(paramNumeroPaginas:int):void
+    +setCantidadDisponible(paramCantidadDisponible:int):void
+    +getPrecioVenta():double
+    +setPrecioVenta(paramPrecioVenta:double):void
+    +getCantidadDisponible():int
+    +setAutores(paramAutores:String):void
+    +getIsbn():long
+    +setIsbn(paramIsbn:long):void
+    +getTitulo():String
+    +setFormato(paramFormato:String):void
+    +setTitulo(paramTitulo:String):void
+    +getFormato():String
+    +getAutores():String
+}
+class PanelCrearCuentas {
+    -botonValidar:JButton
+    -botonCrearCuenta:JButton
+    -fuenteLabel:Font
+    -fuenteTextField:Font
+    -fuenteBoton:Font
+    -panelDatos:JPanel
+    -panelFooter:JPanel
+    -boxCorreo:JTextField
+    -boxClave:JTextField
+    -boxNombre:JTextField
+    -boxDireccion:JTextField
+    -boxTelefono:JTextField
+    -mensajeDeError:JLabel
+    +<<create>>PanelCrearCuentas(evento:Evento):void
+    +setMensajeDeError(mensaje:String):void
+    ~validarSesionIniciada():void
+    +getDatosUsuario():Object[]
+    -obtenerMensajeDeError():String
+    -inicializarPanel():void
+    -inicializarPanelCampos():void
+    -inicializarPanelFooter():void
+    +getCorreo():String
+}
+
+PanelEliminarLibro --> "1" Evento
+PanelCarrito --> "1" Evento
+PanelCarrito --> "1" VentanaPrincipal
+PanelPerfil --> "1" Evento
+PanelPerfil --> "1" PantallaPrincipal
+PanelPerfil --> "1" ROLES
+Usuario --> "1" ROLES
+VentanaPrincipal --> "1" Evento
+VentanaPrincipal --> "1" Tienda
+VentanaPrincipal --> "1" DialogLoginSignup
+VentanaPrincipal --> "1" PantallaPrincipal
+VentanaPrincipal ..> ROLES
+PantallaPrincipal --> "1" Evento
+PantallaPrincipal --> "1" VentanaPrincipal
+PantallaPrincipal --> "1" PanelLibros
+PantallaPrincipal --> "1" PanelCarrito
+PantallaPrincipal --> "1" PanelPerfil
+PantallaPrincipal --> "1" PanelAgregarLibro
+PantallaPrincipal --> "1" PanelActualizarLibro
+PantallaPrincipal --> "1" PanelEliminarLibro
+PantallaPrincipal --> "1" PanelCrearCuentas
+PantallaPrincipal --> "1" PanelHistorialCompras
+Tienda ..> Libro
+Tienda ..> Usuario
+Tienda ..> ROLES
+DialogLoginSignup --> "1" Evento
+DialogLoginSignup ..> VentanaPrincipal
+PanelLibros --> "1" Evento
+PanelLibros --> "1" VentanaPrincipal
+PanelAgregarLibro --> "1" Evento
+Evento --> "1" VentanaPrincipal
+PanelHistorialCompras --> "1" VentanaPrincipal
+PanelActualizarLibro --> "1" Evento
+ROLES --> "*" ROLES
+PanelCrearCuentas --> "1" Evento
+
+@enduml

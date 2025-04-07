@@ -36,7 +36,7 @@ public class Usuario{
 	static ROLES validarRolUsuario (String correoElectronico){
 		if (correoElectronico.matches("^(?i)admin.*$")){
 			return ROLES.ADMIN;
-		}else if (correoElectronico.matches("^(?i)vip.*$")){
+		}else if (correoElectronico.matches("^(?i)premium.*$")){
 			return ROLES.PREMIUM;
 		}
 		return ROLES.REGULAR;

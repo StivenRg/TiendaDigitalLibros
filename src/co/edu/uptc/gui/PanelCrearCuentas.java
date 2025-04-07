@@ -5,6 +5,11 @@ import java.awt.*;
 
 public class PanelCrearCuentas extends JPanel{
 	private final Evento     evento;
+	private final JButton    botonValidar     = new JButton("Validar Usuario");
+	private final JButton    botonCrearCuenta = new JButton("Crear Usuario");
+	private final Font       fuenteLabel      = new Font("Lucida Sans Unicode", Font.PLAIN, 20);
+	private final Font       fuenteTextField  = new Font("Times New Roman", Font.PLAIN, 20);
+	private final Font       fuenteBoton      = new Font("Lucida Sans Unicode", Font.BOLD, 20);
 	private       JPanel     panelDatos;
 	private       JPanel     panelFooter;
 	private       JTextField boxCorreo;
@@ -12,7 +17,7 @@ public class PanelCrearCuentas extends JPanel{
 	private       JTextField boxNombre;
 	private       JTextField boxDireccion;
 	private       JTextField boxTelefono;
-	private       JLabel     mensajeDeError = new JLabel();
+	private final JLabel     mensajeDeError = new JLabel();
 
 	public PanelCrearCuentas (Evento evento){
 		this.evento = evento;
@@ -27,12 +32,12 @@ public class PanelCrearCuentas extends JPanel{
 
 	private void inicializarPanelCampos (){
 		panelDatos = new JPanel(new GridLayout(10, 1));
-		//Creacion de Labels
-		JLabel labelNombre    = new JLabel("Nombre");
-		JLabel labelCorreo    = new JLabel("Correo Electronico");
-		JLabel labelDireccion = new JLabel("Dirección");
-		JLabel labelTelefono  = new JLabel("Teléfono");
-		JLabel labelClave     = new JLabel("Contraseña");
+		//Creacion de Labels y centrado de cada uno
+		JLabel labelNombre    = new JLabel("Nombre", SwingConstants.CENTER);
+		JLabel labelCorreo    = new JLabel("Correo Electronico", SwingConstants.CENTER);
+		JLabel labelDireccion = new JLabel("Dirección", SwingConstants.CENTER);
+		JLabel labelTelefono  = new JLabel("Teléfono", SwingConstants.CENTER);
+		JLabel labelClave     = new JLabel("Contraseña", SwingConstants.CENTER);
 
 		//Centrado de Labels
 		labelNombre.setHorizontalAlignment(JLabel.CENTER);
@@ -40,6 +45,13 @@ public class PanelCrearCuentas extends JPanel{
 		labelDireccion.setHorizontalAlignment(JLabel.CENTER);
 		labelTelefono.setHorizontalAlignment(JLabel.CENTER);
 		labelClave.setHorizontalAlignment(JLabel.CENTER);
+
+		//Asignacion de fuente a cada label
+		labelNombre.setFont(fuenteLabel);
+		labelCorreo.setFont(fuenteLabel);
+		labelDireccion.setFont(fuenteLabel);
+		labelTelefono.setFont(fuenteLabel);
+		labelClave.setFont(fuenteLabel);
 
 		//Creacion de Text Fields
 		boxNombre    = new JTextField();
@@ -54,6 +66,13 @@ public class PanelCrearCuentas extends JPanel{
 		boxDireccion.setHorizontalAlignment(JTextField.CENTER);
 		boxTelefono.setHorizontalAlignment(JTextField.CENTER);
 		boxClave.setHorizontalAlignment(JPasswordField.CENTER);
+
+		//Asignacion de fuente a cada text field
+		boxNombre.setFont(fuenteTextField);
+		boxCorreo.setFont(fuenteTextField);
+		boxDireccion.setFont(fuenteTextField);
+		boxTelefono.setFont(fuenteTextField);
+		boxClave.setFont(fuenteTextField);
 
 		//Agregacion de Labels y Text Fields a Panel
 		panelDatos.add(labelNombre);
@@ -81,36 +100,24 @@ public class PanelCrearCuentas extends JPanel{
 		gbc.gridx   = 0;
 		gbc.gridy   = 0;
 		gbc.weightx = pesoBotones;
-		JButton botonValidar = new JButton("Validar Usuario");
-		botonValidar.addActionListener(_ -> {
-			if (boxCorreo.getText().isBlank()){
-				mensajeDeError.setText("Debe rellenar el campo Correo Electronico para validarlo");
-				return;
-			}
-			botonValidar.setActionCommand(Evento.EVENTO.VALIDAR_USUARIO.name());
-			botonValidar.addActionListener(evento);
-		});
 		botonValidar.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 		panelFooter.add(botonValidar, gbc);
 
 		gbc.gridx   = 0;
 		gbc.gridy   = 1;
 		gbc.weightx = pesoBotones;
-		JButton botonCrear = new JButton("Crear Usuario");
-		botonCrear.addActionListener(_ -> {
-			mensajeDeError.setText(obtenerMensajeDeError());
-			if (! mensajeDeError.getText().isBlank()){
-				botonCrear.setActionCommand(Evento.EVENTO.CREAR_CUENTA.name());
-				botonCrear.addActionListener(evento);
-			}
-		});
-		botonCrear.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-		panelFooter.add(botonCrear, gbc);
+		botonCrearCuenta.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+		panelFooter.add(botonCrearCuenta, gbc);
+
+		//Asignacion de fuente al boton
+		botonValidar.setFont(fuenteBoton);
+		botonCrearCuenta.setFont(fuenteBoton);
 
 		gbc.gridx   = 0;
 		gbc.gridy   = 2;
 		gbc.weightx = pesoMensaje;
 		mensajeDeError.setForeground(Color.RED);
+		mensajeDeError.setFont(new Font("Arial", Font.BOLD, 20));
 		mensajeDeError.setHorizontalAlignment(JLabel.CENTER);
 		panelFooter.add(mensajeDeError, gbc);
 
@@ -144,9 +151,11 @@ public class PanelCrearCuentas extends JPanel{
 				return "El campo Correo Electronico tiene un formato inválido";
 			}
 
-			final String regexDireccion = "^(Calle|Carrera|Avenida|Diagonal|Transversal|Circunvalar)\\s\\d+\\s*(#|No\\.)\\s*\\d+(-\\d+)?(\\s*,\\s*[\\w\\s]+)?$\n";
+			final String regexDireccion = "^(Calle|Carrera|Avenida|Diagonal|Transversal|Circunvalar)\\s\\d+\\s*(#|No\\.)\\s*\\d+(-\\d+)?(\\s*,\\s*[\\w\\s]+)" +
+			                              "?$\n";
 			if (! boxDireccion.getText().matches(regexDireccion)){
-				return "El campo Dirección debe tener la siguiente forma: (Calle / Carrera / Avenida / Diagonal / Transversal / Circunvalar) número (# / No.) " +
+				return "El campo Dirección debe tener la siguiente forma: (Calle / Carrera / Avenida / Diagonal / Transversal / Circunvalar) número (# / No.)" +
+				       " " +
 				       "número - numero, Texto Adicional";
 			}
 
@@ -159,6 +168,9 @@ public class PanelCrearCuentas extends JPanel{
 	}
 
 	public String getCorreo (){
+		if (boxCorreo.getText().isBlank()){
+			return "";
+		}
 		return boxCorreo.getText();
 	}
 
@@ -168,5 +180,14 @@ public class PanelCrearCuentas extends JPanel{
 
 	public void setMensajeDeError (String mensaje){
 		mensajeDeError.setText(mensaje);
+	}
+
+	void validarSesionIniciada (){
+		botonValidar.setActionCommand(Evento.EVENTO.VALIDAR_USUARIO.name());
+		botonValidar.addActionListener(evento);
+		if (mensajeDeError.getText().isBlank()){
+			botonCrearCuenta.setActionCommand(Evento.EVENTO.CREAR_CUENTA.name());
+			botonCrearCuenta.addActionListener(evento);
+		}
 	}
 }

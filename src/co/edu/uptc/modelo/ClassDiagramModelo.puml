@@ -1,0 +1,143 @@
+@startuml
+class Main {
+    +<<create>>Main():void
+    + {static} main(args:String[]):void
+}
+class ROLES {
+    -<<create>>ROLES($enum$name:String,$enum$ordinal:int):void
+    + {static} values():ROLES[]
+    + {static} valueOf(name:String):ROLES
+    - {static} $values():ROLES[]
+}
+class Compra {
+    -ID_Compra:long
+    -CID_Asociado:int
+    -fechaCompra:LocalDateTime
+    -valorCompra:double
+    -cantidadCompra:int
+    -FORMATO_FECHA:DateTimeFormatter
+    +<<create>>Compra():void
+    +<<create>>Compra(CID_Asociado:int,fechaCompra:LocalDateTime,valorCompra:double,cantidadCompra:int):void
+    -obtenerFechaLocalDateTime(fechaString:String):LocalDateTime
+    +getFechaCompraString():String
+    +getCantidadCompra():int
+    +getCID_Asociado():int
+    +setCantidadCompra(cantidadCompra:int):void
+    +getValorCompra():double
+    -obtenerFechaString():String
+    +getID_Compra():long
+    +setFechaCompra(fechaCompra:String):void
+    +setCID_Asociado(CID_Asociado:int):void
+    +setID_Compra(ID_Compra:long):void
+    +setValorCompra(valorCompra:double):void
+    +getFechaCompraLocalDateTime():LocalDateTime
+}
+class Tienda {
+    - {static} RUTA_CARRITOS:String
+    - {static} RUTA_LIBROS:String
+    - {static} RUTA_USUARIOS:String
+    - {static} RUTA_COMPRAS:String
+    +<<create>>Tienda():void
+    -getCarritoDeCompras(CID:int):HashMap
+    -obtenerListaDeLibros(librosJson:JsonArray):ArrayList
+    -filtrarPorCID(listaTotalDeCompras:ArrayList,CID:int):ArrayList
+    -obtenerLibro(ISBN:long,libros:JsonArray):Object[]
+    +agregarLibroArchivo(datos:Object[]):boolean
+    +ventasAsociadasLibro(ISBN:long):boolean
+    +validarUsuarioLogin(correoElectronico:String,claveAcceso:String):boolean
+    +getDataVectorLibros():Object[][]
+    -escribirLibroEnArchivo(libro:Libro):void
+    - {static} convertirUsuarioAJson(usuario:Usuario):JsonObject
+    -obtenerPorcentajeDescuento(rol:ROLES):float
+    -obtenerUsuario(correoElectronico:String):Usuario
+    -guardarDatosUsuario(usuario:Usuario):boolean
+    +calcularPrecioVenta(valorUnitario:double,cantidad:int):double
+    + {static} obtenerTipoUsuario(correoElectronico:String):ROLES
+    -obtenerMapLibrosCarrito(carritoActual:JsonObject):HashMap
+    +usuarioExiste(correoElectronico:String):boolean
+    +eliminarLibro(ISBN:long):boolean
+    +calcularValorImpuesto(precioUnidad:double):double
+    + {static} obtenerNuevoCID():int
+    -obtenerListaTotalDeCompras(comprasArrayJson:JsonArray):ArrayList
+    +buscarLibro(ISBN:long):Object[]
+    -convertirLibroAJson(libro:Libro):JsonObject
+    +calcularTotalVenta(subTotal:double,rol:ROLES):double
+    +actualizarLibro(datos:Object[]):boolean
+    +crearCuenta(datosUsuario:Object[]):boolean
+    +getDataVectorCompras(CID:int):Object[][]
+    +registrarUsuario(datosUsuario:Object[]):void
+    +calcularSubTotalVenta(model:DefaultTableModel):double
+    +obtenerUsuarioSeguro(correoElectronico:String):Object[]
+    + {static} obtenerNuevoIDCompras():long
+    - {static} convertirCarritoDeComprasAJson(CID:int,carritoDeCompras:HashMap):JsonObject
+}
+class Usuario {
+    -nombreCompleto:String
+    -correoElectronico:String
+    -direccionEnvio:String
+    -telefonoContacto:long
+    -claveAcceso:char[]
+    -carritoDeCompras:HashMap
+    -CID:int
+    +<<create>>Usuario():void
+    +<<create>>Usuario(nombreCompleto:String,correoElectronico:String,direccionEnvio:String,telefonoContacto:long,claveAcceso:char[],CID:int,carritoDeCompras:HashMap):void
+    +getCarritoDeCompras():HashMap
+    ~getCorreoElectronico():String
+    ~setCorreoElectronico(paramCorreoElectronico:String):void
+    ~getTelefonoContacto():long
+    ~getNombreCompleto():String
+    ~setDireccionEnvio(paramDireccionEnvio:String):void
+    ~setTelefonoContacto(paramTelefonoContacto:long):void
+    ~getClaveAcceso():char[]
+    +setClaveAcceso(paramClaveAcceso:char[]):void
+    +getRolUsuario():ROLES
+    +setRolUsuario(rolUsuario:ROLES):void
+    ~ {static} validarRolUsuario(correoElectronico:String):ROLES
+    ~setNombreCompleto(paramNombreCompleto:String):void
+    ~getDireccionEnvio():String
+    +setCarritoDeCompras(carritoDeCompras:HashMap):void
+    +setCID(CID:int):void
+    +getCID():int
+}
+class Libro {
+    -isbn:long
+    -titulo:String
+    -autores:String
+    -anioPublicacion:int
+    -categoria:String
+    -editorial:String
+    -numeroPaginas:int
+    -precioVenta:double
+    -cantidadDisponible:int
+    -formato:String
+    +<<create>>Libro():void
+    +<<create>>Libro(isbn:long,titulo:String,autores:String,anioPublicacion:int,categoria:String,editorial:String,numeroPaginas:int,precioVenta:double,cantidadDisponible:int,formato:String):void
+    +setAnioPublicacion(paramAnioPublicacion:int):void
+    +getNumeroPaginas():int
+    +getPrecioVenta():double
+    +setEditorial(paramEditorial:String):void
+    +setCategoria(paramCategoria:String):void
+    +setNumeroPaginas(paramNumeroPaginas:int):void
+    +setPrecioVenta(paramPrecioVenta:double):void
+    +getAnioPublicacion():int
+    +getCategoria():String
+    +getCantidadDisponible():int
+    +setCantidadDisponible(paramCantidadDisponible:int):void
+    +getEditorial():String
+    +getIsbn():long
+    +setIsbn(paramIsbn:long):void
+    +getTitulo():String
+    +getFormato():String
+    +getAutores():String
+    +setTitulo(paramTitulo:String):void
+    +setFormato(paramFormato:String):void
+    +setAutores(paramAutores:String):void
+}
+
+ROLES --> "*" ROLES
+Tienda ..> Libro
+Tienda ..> Usuario
+Tienda ..> ROLES
+Usuario --> "1" ROLES
+
+@enduml

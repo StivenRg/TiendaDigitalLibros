@@ -1,16 +1,16 @@
 package co.edu.uptc.modelo;
 
 public class Libro{
-	private             long     isbn;
-	private             String   titulo;
-	private             String   autores;
-	private             int      anioPublicacion;
-	private             String   categoria;
-	private             String   editorial;
-	private             int      numeroPaginas;
-	private             double   precioVenta;
-	private             int      cantidadDisponible;
-	private             String   formato;
+	private long   isbn;
+	private String titulo;
+	private String autores;
+	private int    anioPublicacion;
+	private String categoria;
+	private String editorial;
+	private int    numeroPaginas;
+	private double precioVenta;
+	private int    cantidadDisponible;
+	private String formato;
 
 	public Libro (){
 	}

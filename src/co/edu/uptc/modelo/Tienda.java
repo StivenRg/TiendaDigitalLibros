@@ -1,11 +1,10 @@
 package co.edu.uptc.modelo;
 
-import co.edu.uptc.gui.VentanaPrincipal;
-
 import javax.json.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +12,7 @@ public class Tienda{
 	private static final String RUTA_CARRITOS = "persistencia/CARRITOS.json";
 	private static final String RUTA_LIBROS   = "persistencia/LIBROS.json";
 	private static final String RUTA_USUARIOS = "persistencia/USUARIOS.json";
+	private static final String RUTA_COMPRAS  = "persistencia/COMPRAS.json";
 
 	public Tienda (){
 	}
@@ -32,6 +32,54 @@ public class Tienda{
 			totalUsuarios += usuariosDelRol.size();
 		}
 		return totalUsuarios + 1;
+	}
+
+	//	public static void guardarCarritoDeCompras (int CID, HashMap<Long, Integer> carritoDeCompras){
+	//		JsonObject jsonActual;
+	//		try (InputStream inputStream = new FileInputStream(RUTA_CARRITOS); JsonReader reader = Json.createReader(inputStream)){
+	//			jsonActual = reader.readObject();
+	//		}catch (Exception e){
+	//			System.err.println(e.getMessage());
+	//			return;
+	//		}
+	//
+	//		JsonArrayBuilder carritosBuilder    = Json.createArrayBuilder();
+	//		JsonArray        carritosExistentes = jsonActual.getJsonArray("CARRITOS");
+	//		for (JsonValue carrito : carritosExistentes){
+	//			carritosBuilder.add(carrito);
+	//		}
+	//		carritosBuilder.add(convertirCarritoDeComprasAJson(CID, carritoDeCompras)).build();
+	//
+	//		JsonObject jsonFinal = Json.createObjectBuilder().add("CARRITOS", carritosBuilder).build();
+	//		try (OutputStream outputStream = new FileOutputStream(RUTA_CARRITOS); JsonWriter writer = Json.createWriter(outputStream)){
+	//			writer.writeObject(jsonFinal);
+	//		}catch (Exception e){
+	//			System.err.println(e.getMessage());
+	//		}
+	//	}
+
+	private static JsonObject convertirCarritoDeComprasAJson (int CID, HashMap<Long, Integer> carritoDeCompras){
+		JsonArrayBuilder articulosBuilder = Json.createArrayBuilder();
+		for (Map.Entry<Long, Integer> entry : carritoDeCompras.entrySet()){
+			articulosBuilder.add(Json.createObjectBuilder().add("ISBN", entry.getKey()).add("cantidad", entry.getValue()));
+			articulosBuilder.build();
+		}
+		return Json.createObjectBuilder().add("CID", CID).add("ARTICULOS", articulosBuilder).build();
+	}
+
+	private static JsonObject convertirUsuarioAJson (Usuario usuario){
+		JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+		jsonObjectBuilder.add("nombreCompleto", usuario.getNombreCompleto());
+		jsonObjectBuilder.add("correoElectronico", usuario.getCorreoElectronico());
+		jsonObjectBuilder.add("direccionEnvio", usuario.getDireccionEnvio());
+		jsonObjectBuilder.add("telefonoContacto", usuario.getTelefonoContacto());
+		jsonObjectBuilder.add("claveAcceso", String.valueOf(usuario.getClaveAcceso()));
+		jsonObjectBuilder.add("CID", usuario.getCID());
+		return jsonObjectBuilder.build();
+	}
+
+	public static ROLES obtenerTipoUsuario (String correoElectronico){
+		return Usuario.validarRolUsuario(correoElectronico);
 	}
 
 	public boolean agregarLibroArchivo (Object[] datos){
@@ -131,7 +179,7 @@ public class Tienda{
 	}
 
 	public Object[][] getDataVectorLibros (){
-		Object[][] dataVectorLibros = new Object[0][11];
+		Object[][] dataVectorLibros = null;
 		try (InputStream inputStream = new FileInputStream(RUTA_LIBROS); JsonReader reader = Json.createReader(inputStream)){
 			JsonObject       jsonObject    = reader.readObject();
 			JsonArray        libros        = jsonObject.getJsonArray("LIBROS");
@@ -182,11 +230,7 @@ public class Tienda{
 		for (char c : usuario.getClaveAcceso()){
 			pswd.append(c);
 		}
-		if (pswd.toString().equals(claveAcceso)){
-			VentanaPrincipal.LOGIN_CORRECTO = true;
-			return true;
-		}
-		return false;
+		return pswd.toString().equals(claveAcceso);
 	}
 
 	private Usuario obtenerUsuario (String correoElectronico){
@@ -295,43 +339,9 @@ public class Tienda{
 		                              (long) datosUsuario[3],   //Telefono
 		                              (char[]) datosUsuario[4], //Clave de Acceso
 		                              (int) datosUsuario[5],    //CID
-		                              (HashMap<Long, Integer>) datosUsuario[6] //Carrito de Compras
+		                              (HashMap<Long, Integer>) datosUsuario[6] //Carrito de Compra
 		);
 		guardarDatosUsuario(usuario);
-		VentanaPrincipal.LOGIN_CORRECTO = true;
-	}
-
-	public static void guardarCarritoDeCompras (int CID, HashMap<Long, Integer> carritoDeCompras){
-		JsonObject jsonActual;
-		try (InputStream inputStream = new FileInputStream(RUTA_CARRITOS); JsonReader reader = Json.createReader(inputStream)){
-			jsonActual = reader.readObject();
-		}catch (Exception e){
-			System.err.println(e.getMessage());
-			return;
-		}
-
-		JsonArrayBuilder carritosBuilder    = Json.createArrayBuilder();
-		JsonArray        carritosExistentes = jsonActual.getJsonArray("CARRITOS");
-		for (JsonValue carrito : carritosExistentes){
-			carritosBuilder.add(carrito);
-		}
-		carritosBuilder.add(convertirCarritoDeComprasAJson(CID, carritoDeCompras)).build();
-
-		JsonObject jsonFinal = Json.createObjectBuilder().add("CARRITOS", carritosBuilder).build();
-		try (OutputStream outputStream = new FileOutputStream(RUTA_CARRITOS); JsonWriter writer = Json.createWriter(outputStream)){
-			writer.writeObject(jsonFinal);
-		}catch (Exception e){
-			System.err.println(e.getMessage());
-		}
-	}
-
-	private static JsonObject convertirCarritoDeComprasAJson (int CID, HashMap<Long, Integer> carritoDeCompras){
-		JsonArrayBuilder articulosBuilder = Json.createArrayBuilder();
-		for (Map.Entry<Long, Integer> entry : carritoDeCompras.entrySet()){
-			articulosBuilder.add(Json.createObjectBuilder().add("ISBN", entry.getKey()).add("cantidad", entry.getValue()));
-			articulosBuilder.build();
-		}
-		return Json.createObjectBuilder().add("CID", CID).add("ARTICULOS", articulosBuilder).build();
 	}
 
 	private boolean guardarDatosUsuario (Usuario usuario){
@@ -368,19 +378,8 @@ public class Tienda{
 			System.err.println(e.getMessage());
 			return false;
 		}
-		guardarCarritoDeCompras(obtenerNuevoCID(), usuario.getCarritoDeCompras());
+		//guardarCarritoDeCompras(obtenerNuevoCID(), usuario.getCarritoDeCompras());
 		return true;
-	}
-
-	private static JsonObject convertirUsuarioAJson (Usuario usuario){
-		JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
-		jsonObjectBuilder.add("nombreCompleto", usuario.getNombreCompleto());
-		jsonObjectBuilder.add("correoElectronico", usuario.getCorreoElectronico());
-		jsonObjectBuilder.add("direccionEnvio", usuario.getDireccionEnvio());
-		jsonObjectBuilder.add("telefonoContacto", usuario.getTelefonoContacto());
-		jsonObjectBuilder.add("claveAcceso", String.valueOf(usuario.getClaveAcceso()));
-		jsonObjectBuilder.add("CID", usuario.getCID());
-		return jsonObjectBuilder.build();
 	}
 
 	private float obtenerPorcentajeDescuento (ROLES rol){
@@ -414,10 +413,6 @@ public class Tienda{
 		}else{
 			return precioUnidad * 0.05;
 		}
-	}
-
-	public static ROLES obtenerTipoUsuario (String correoElectronico){
-		return Usuario.validarRolUsuario(correoElectronico);
 	}
 
 	public boolean actualizarLibro (Object[] datos){
@@ -483,5 +478,64 @@ public class Tienda{
 		usuario.setRolUsuario(Usuario.validarRolUsuario(usuario.getCorreoElectronico()));
 		usuario.setCID(obtenerNuevoCID());
 		return guardarDatosUsuario(usuario);
+	}
+
+	public static long obtenerNuevoIDCompras (){
+		try{
+			InputStream inputStream = new FileInputStream(RUTA_COMPRAS);
+			JsonReader  reader      = Json.createReader(inputStream);
+			JsonObject  jsonObject  = reader.readObject();
+			JsonArray   compras     = jsonObject.getJsonArray("COMPRAS");
+			return ((long) compras.size()) + 1;
+		}catch (Exception e){
+			System.err.println(e.getMessage());
+			return - 1;
+		}
+	}
+
+	public Object[][] getDataVectorCompras (int CID){
+		Object[][] dataVectorCompras = null;
+		try (InputStream inputStream = new FileInputStream(RUTA_COMPRAS); JsonReader reader = Json.createReader(inputStream)){
+			JsonObject        jsonObject     = reader.readObject();
+			JsonArray         compras        = jsonObject.getJsonArray("COMPRAS");
+			ArrayList<Compra> listaDeCompras = obtenerListaTotalDeCompras(compras);
+			listaDeCompras = filtrarPorCID(listaDeCompras, CID);
+			Collections.reverse(listaDeCompras);
+			dataVectorCompras = new Object[listaDeCompras.size()][4];
+			for (int i = 0; i < listaDeCompras.size(); i++){
+				Compra compra = listaDeCompras.get(i);
+				dataVectorCompras[i][0] = compra.getID_Compra();
+				dataVectorCompras[i][1] = compra.getCantidadCompra();
+				dataVectorCompras[i][2] = compra.getValorCompra();
+				dataVectorCompras[i][3] = compra.getFechaCompraString();
+			}
+		}catch (Exception e){
+			System.err.println(e.getMessage());
+		}
+		return dataVectorCompras;
+	}
+
+	private ArrayList<Compra> filtrarPorCID (ArrayList<Compra> listaTotalDeCompras, int CID){
+		ArrayList<Compra> listaFiltrada = new ArrayList<>();
+		for (Compra locCompra : listaTotalDeCompras){
+			if (locCompra.getCID_Asociado() == CID){
+				listaFiltrada.add(locCompra);
+			}
+		}
+		return listaFiltrada;
+	}
+
+	private ArrayList<Compra> obtenerListaTotalDeCompras (JsonArray comprasArrayJson){
+		ArrayList<Compra> listaDeCompras = new ArrayList<>();
+		for (JsonObject compraObject : comprasArrayJson.getValuesAs(JsonObject.class)){
+			Compra compra = new Compra();
+			compra.setCID_Asociado(compraObject.getInt("CID_Asociado"));
+			compra.setID_Compra(compraObject.getJsonNumber("ID_Compra").longValue());
+			compra.setCantidadCompra(compraObject.getInt("cantidadCompra"));
+			compra.setValorCompra(compraObject.getJsonNumber("valorCompra").doubleValue());
+			compra.setFechaCompra(compraObject.getString("fechaCompra"));
+			listaDeCompras.add(compra);
+		}
+		return listaDeCompras;
 	}
 }

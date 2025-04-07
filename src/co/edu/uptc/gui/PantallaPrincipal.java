@@ -6,6 +6,8 @@ import java.awt.*;
 public class PantallaPrincipal extends JPanel{
 	private final Evento                evento;
 	private final VentanaPrincipal      ventanaPrincipal;
+	private final Font                  fuentePestania = new Font("Arial", Font.BOLD, 15);
+	private final JTabbedPane           panelPrincipal;
 	private       PanelLibros           panelLibros;
 	private       PanelCarrito          panelCarrito;
 	private       PanelPerfil           panelPerfil;
@@ -13,14 +15,14 @@ public class PantallaPrincipal extends JPanel{
 	private       PanelActualizarLibro  panelActualizarLibro; //Solo para los administradores
 	private       PanelEliminarLibro    panelEliminarLibro; //Solo para los administradores
 	private       PanelCrearCuentas     panelCrearCuentas; //Solo para los administradores
-	private       PanelHistorialCompras panelHistorialCompras; //TODO
-	private final JTabbedPane           panelPrincipal;
+	private       PanelHistorialCompras panelHistorialCompras;
 
 	public PantallaPrincipal (VentanaPrincipal ventana, Evento evento){
 		this.evento           = evento;
 		this.ventanaPrincipal = ventana;
 		setLayout(new BorderLayout());
 		panelPrincipal = new JTabbedPane();
+		panelPrincipal.setFont(fuentePestania);
 
 		inicializarPanelLibros(ventana);
 		panelPrincipal.addTab("Lista de Libros", panelLibros);
@@ -65,7 +67,7 @@ public class PantallaPrincipal extends JPanel{
 	}
 
 	private void inicializarPanelHistorialCompras (){
-		panelHistorialCompras = new PanelHistorialCompras(evento);
+		panelHistorialCompras = new PanelHistorialCompras(ventanaPrincipal, panelPerfil.getCID());
 	}
 
 	PanelLibros getPanelLibros (){
@@ -79,6 +81,15 @@ public class PantallaPrincipal extends JPanel{
 	void iniciarSesion (Object[] datosUsuario){
 		panelPerfil.setDatosUsuario(datosUsuario);
 		ventanaPrincipal.eliminarPanelLoginSignUp();
+		activarFuncionalidadBotones();
+	}
+
+	private void activarFuncionalidadBotones (){
+		panelPerfil.validarSesionIniciada();
+		panelAgregarLibro.validarSesionIniciada();
+		panelActualizarLibro.validarSesionIniciada();
+		panelEliminarLibro.validarSesionIniciada();
+		panelCrearCuentas.validarSesionIniciada();
 	}
 
 	PanelActualizarLibro getPanelActualizarLibro (){

@@ -10,16 +10,25 @@ import java.awt.event.WindowEvent;
 import java.util.HashMap;
 
 public class VentanaPrincipal extends JFrame{
+	public static boolean           LOGIN_CORRECTO;
 	private final Evento            evento;
 	private final Tienda            tienda;
 	private       DialogLoginSignup dialogLoginSignup;
 	private       PantallaPrincipal pantallaPrincipal;
-	public static boolean           LOGIN_CORRECTO = false;
 
 	public VentanaPrincipal (){
-		evento = new Evento(this);
-		tienda = new Tienda();
+		evento         = new Evento(this);
+		tienda         = new Tienda();
+		LOGIN_CORRECTO = false;
 		inicializarFrame();
+	}
+
+	public static void guardarCarritoDeCompras (int CID, HashMap<Long, Integer> carritoDeCompras){
+		//Tienda.guardarCarritoDeCompras(CID, carritoDeCompras);
+	}
+
+	static ROLES obtenerTipoUsuario (String correoElectronico){
+		return Tienda.obtenerTipoUsuario(correoElectronico);
 	}
 
 	public Object[] obtenerDatosLibroCarrito (long ISBN){
@@ -46,7 +55,7 @@ public class VentanaPrincipal extends JFrame{
 		this.pantallaPrincipal = new PantallaPrincipal(this, evento);
 		setVisible(true);
 		setResizable(true);
-		setSize(1000, 600);
+		setSize(1400, 600);
 	}
 
 	void validarInicioSesion (){
@@ -54,11 +63,11 @@ public class VentanaPrincipal extends JFrame{
 		String   correoElectronico = datosUsuario[0];
 		String   claveAcceso       = datosUsuario[1];
 		if (! tienda.validarUsuarioLogin(correoElectronico, claveAcceso)){
-			JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Usuario y/o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		pantallaPrincipal.iniciarSesion(tienda.obtenerUsuarioSeguro(correoElectronico));
 		LOGIN_CORRECTO = true;
+		pantallaPrincipal.iniciarSesion(tienda.obtenerUsuarioSeguro(correoElectronico));
 	}
 
 	private String[] getDatosLogin (){
@@ -82,8 +91,8 @@ public class VentanaPrincipal extends JFrame{
 
 			Object[] datos = new Object[]{nombreCompleto, correoElectronico, direccion, telefono, claveAcceso, CID, carrito};
 			tienda.registrarUsuario(datos);
-			pantallaPrincipal.iniciarSesion(tienda.obtenerUsuarioSeguro(correoElectronico));
 			LOGIN_CORRECTO = true;
+			pantallaPrincipal.iniciarSesion(tienda.obtenerUsuarioSeguro(correoElectronico));
 		}
 	}
 
@@ -114,10 +123,6 @@ public class VentanaPrincipal extends JFrame{
 		}
 	}
 
-	public static void guardarCarritoDeCompras (int CID, HashMap<Long, Integer> carritoDeCompras){
-		Tienda.guardarCarritoDeCompras(CID, carritoDeCompras);
-	}
-
 	void agregarLibroArchivo (){
 		if (tienda.agregarLibroArchivo(pantallaPrincipal.getDatosLibroNuevo())){
 			JOptionPane.showMessageDialog(this, "Libro agregado correctamente", "Alerta", JOptionPane.INFORMATION_MESSAGE);
@@ -135,10 +140,6 @@ public class VentanaPrincipal extends JFrame{
 	void mostrarPanelLoginSignUp (){
 		dialogLoginSignup = new DialogLoginSignup(this, evento);
 		dialogLoginSignup.setVisible(true);
-	}
-
-	static ROLES obtenerTipoUsuario (String correoElectronico){
-		return Tienda.obtenerTipoUsuario(correoElectronico);
 	}
 
 	void buscarLibroActualizar (){
@@ -184,7 +185,11 @@ public class VentanaPrincipal extends JFrame{
 	}
 
 	void buscarLibroEliminar (){
-		long     ISBN           = pantallaPrincipal.getPanelEliminarLibro().getISBN();
+		long ISBN = pantallaPrincipal.getPanelEliminarLibro().getISBN();
+		if (ISBN == - 1){
+			pantallaPrincipal.getPanelEliminarLibro().setMensajeDeError("Debe rellenar el campo ISBN");
+			return;
+		}
 		Object[] datosObtenidos = tienda.buscarLibro(ISBN);
 		if (datosObtenidos != null){
 			pantallaPrincipal.getPanelEliminarLibro().setDatosLibro(datosObtenidos);
@@ -201,10 +206,37 @@ public class VentanaPrincipal extends JFrame{
 	}
 
 	void usuarioExiste (){
-		if (tienda.usuarioExiste(pantallaPrincipal.getPanelCrearCuentas().getCorreo())){
+		String correo = pantallaPrincipal.getPanelCrearCuentas().getCorreo();
+		if (correo.isBlank()){
+			pantallaPrincipal.getPanelCrearCuentas().setMensajeDeError("Debe rellenar el campo Correo Electronico");
+			return;
+		}
+		if (tienda.usuarioExiste(correo)){
 			pantallaPrincipal.getPanelCrearCuentas().setMensajeDeError("Ya hay un usuario con ese correo");
 			return;
 		}
 		pantallaPrincipal.getPanelCrearCuentas().setMensajeDeError("Usuario Disponible");
+	}
+
+	void pagarEfectivo (){
+		if (LOGIN_CORRECTO){
+			JOptionPane.showMessageDialog(null, "Pago en efectivo", "Alerta", JOptionPane.INFORMATION_MESSAGE);
+		}else{
+			JOptionPane.showMessageDialog(null, "Debe iniciar sesion para pagar", "Alerta", JOptionPane.INFORMATION_MESSAGE);
+		}
+		//TODO
+	}
+
+	void pagarTarjeta (){
+		if (LOGIN_CORRECTO){
+			JOptionPane.showMessageDialog(null, "Pago con Tarjeta", "Alerta", JOptionPane.INFORMATION_MESSAGE);
+		}else{
+			JOptionPane.showMessageDialog(null, "Debe iniciar sesion para pagar", "Alerta", JOptionPane.INFORMATION_MESSAGE);
+		}
+		//TODO
+	}
+
+	Object[][] obtenerListaCompras (int CID){
+		return tienda.getDataVectorCompras(CID);
 	}
 }
