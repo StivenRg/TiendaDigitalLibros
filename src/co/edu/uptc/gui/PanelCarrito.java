@@ -50,7 +50,7 @@ public class PanelCarrito extends JPanel{
 					case 0 -> long.class;
 					case 3, 4, 6 -> double.class;
 					case 5 -> int.class;
-					case 7, 8, 9 -> boolean.class;
+					case 7, 8, 9 -> Boolean.class;
 					default -> String.class;
 				};
 			}
@@ -145,11 +145,11 @@ public class PanelCarrito extends JPanel{
 	}
 
 	private void sumarAlCarrito (DefaultTableModel model, int fila){
-		final int columnaAgregar = 6;
+		final int columnaAgregar = 7;
 		if (! ((boolean) model.getValueAt(fila, columnaAgregar))){
 			return;
 		}
-		final int columnaCantidad = 4;
+		final int columnaCantidad = 5;
 		try{
 			int cantidad = (int) (model.getValueAt(fila, columnaCantidad)); //Posible error en la conversion de tipo de dato, en ese caso usar parseInt()
 			model.setValueAt(cantidad + 1, fila, columnaCantidad);
@@ -162,7 +162,7 @@ public class PanelCarrito extends JPanel{
 	}
 
 	private void quitarAlCarrito (DefaultTableModel model, int fila){
-		final int columnaQuitar = 7;
+		final int columnaQuitar = 8;
 		if (! (boolean) model.getValueAt(fila, columnaQuitar)){
 			return;
 		}
@@ -183,8 +183,10 @@ public class PanelCarrito extends JPanel{
 	}
 
 	private void actualizarCarrito (DefaultTableModel model){
-		final int columnaISBN     = 0;
-		final int columnaCantidad = 5;
+		final int columnaISBN          = 0;
+		final int columnaValorUnitario = 3;
+		final int columnaCantidad      = 5;
+		final int columnaPrecioVenta   = 6;
 		for (int fila = 0; fila < model.getRowCount(); fila++){
 			long ISBN     = (long) model.getValueAt(fila, columnaISBN);
 			int  cantidad = (int) model.getValueAt(fila, columnaCantidad);
@@ -192,6 +194,9 @@ public class PanelCarrito extends JPanel{
 				carritoDeCompras.remove(ISBN);
 			}
 			carritoDeCompras.put(ISBN, cantidad);
+			double valorUnitario = (double) model.getValueAt(fila, columnaValorUnitario);
+			double precioVenta   = obtenerPrecioVenta(valorUnitario, cantidad);
+			model.setValueAt(precioVenta, fila, columnaPrecioVenta);
 		}
 	}
 

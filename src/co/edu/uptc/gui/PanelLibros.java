@@ -37,7 +37,6 @@ public class PanelLibros extends JPanel{
 				return column == 10;
 			}
 
-			// La última columna es de tipo Boolean para mostrar un JCheckBox
 			@Override public Class<?> getColumnClass (int columnIndex){
 				// La última columna es de tipo Boolean para mostrar un JCheckBox
 				return (columnIndex == 10) ? Boolean.class : String.class;
